@@ -115,6 +115,10 @@ do_extract() {
 	rm -f ${_pkg}.run
 }
 
+do_patch() {
+	cd ${_pkg}
+	patch -p1 < ${FILESDIR}/linux5.6.patch
+}
 do_install() {
 	cd ${_pkg}
 
