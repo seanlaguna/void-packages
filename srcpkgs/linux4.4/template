@@ -1,14 +1,15 @@
 # Template file for 'linux4.4'
 pkgname=linux4.4
-version=4.4.217
-revision=1
+version=4.4.218
+revision=2
 wrksrc="linux-${version}"
+short_desc="Linux kernel and modules (${version%.*} series)"
 maintainer="Orphaned <orphan@voidlinux.org>"
-homepage="https://www.kernel.org"
 license="GPL-2.0-only"
-short_desc="The Linux kernel and modules (${version%.*} series)"
+homepage="https://www.kernel.org"
 distfiles="${KERNEL_SITE}/kernel/v4.x/linux-${version}.tar.xz"
-checksum=fdeac4c05fcca993927fdce51446b4f81725f54e753fea02b0b2dacf3d64526f
+checksum=ea68cb8e9fa255bb1d0402c5aa8f26984f9b1c8607ff3bed5d3284109167f063
+python_version=2 #unverified
 
 nocross=yes
 nodebug=yes
@@ -30,6 +31,7 @@ _kernver="${version}_${revision}"
 # These files could be modified when an external module is built.
 mutable_files="
  /usr/lib/modules/${_kernver}/modules.builtin.bin
+ /usr/lib/modules/${_kernver}/modules.builtin.alias.bin
  /usr/lib/modules/${_kernver}/modules.softdep
  /usr/lib/modules/${_kernver}/modules.dep
  /usr/lib/modules/${_kernver}/modules.dep.bin

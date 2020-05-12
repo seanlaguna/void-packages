@@ -1,6 +1,6 @@
 # Template file for 'libcbor'
 pkgname=libcbor
-version=0.6.1
+version=0.7.0
 revision=1
 build_style=cmake
 make_build_args="cbor_shared"
@@ -9,7 +9,7 @@ maintainer="Leah Neukirchen <leah@vuxu.org>"
 license="MIT"
 homepage="https://github.com/PJK/libcbor"
 distfiles="https://github.com/PJK/libcbor/archive/v${version}.tar.gz"
-checksum=19309b84d4d88ae1179f3686bd246d977710801c1603915c51f618ba76727e94
+checksum=fb731afe0a9980581d85e4b8d4ef128b175f782d92e0cd898935f3d26dd3dde7
 
 post_install() {
 	vlicense LICENSE.md

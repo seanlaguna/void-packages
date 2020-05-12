@@ -1,6 +1,6 @@
 # Template file for 'linux5.5'
 pkgname=linux5.5
-version=5.5.14
+version=5.5.18
 revision=1
 wrksrc="linux-${version}"
 short_desc="Linux kernel and modules (${version%.*} series)"
@@ -8,7 +8,8 @@ maintainer="Juan RP <xtraeme@gmail.com>"
 license="GPL-2.0-only"
 homepage="https://www.kernel.org"
 distfiles="https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-${version}.tar.xz"
-checksum=4c529e4e100df11887e0a789d0e46d7ffd053e68a0380b6173a3a2799192ef6a
+checksum=e804347326d707a68720a16d71426cf037a355ea8a8bb28c2fcc7bdd088e3106
+python_version=2 #unverified
 patch_args="-Np1"
 
 # XXX restrict archs until all archs are updated.
@@ -20,7 +21,7 @@ noverifyrdeps=yes
 noshlibprovides=yes
 preserve=yes
 
-hostmakedepends="tar xz bc elfutils-devel flex gmp-devel kmod libmpc-devel 
+hostmakedepends="tar xz bc elfutils-devel flex gmp-devel kmod libmpc-devel
  libressl-devel perl uboot-mkimage cpio"
 
 _kernver="${version}_${revision}"
@@ -30,6 +31,7 @@ kernel_hooks_version="${_kernver}"
 # These files could be modified when an external module is built.
 mutable_files="
  /usr/lib/modules/${_kernver}/modules.builtin.bin
+ /usr/lib/modules/${_kernver}/modules.builtin.alias.bin
  /usr/lib/modules/${_kernver}/modules.softdep
  /usr/lib/modules/${_kernver}/modules.dep
  /usr/lib/modules/${_kernver}/modules.dep.bin

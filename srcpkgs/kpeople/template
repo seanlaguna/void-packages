@@ -1,6 +1,6 @@
 # Template file for 'kpeople'
 pkgname=kpeople
-version=5.68.0
+version=5.70.0
 revision=1
 build_style=cmake
 configure_args="-DBUILD_TESTING=OFF"
@@ -13,7 +13,7 @@ maintainer="John <johnz@posteo.net>"
 license="LGPL-2.1-or-later"
 homepage="https://projects.kde.org/projects/frameworks/kpeople"
 distfiles="${KDE_SITE}/frameworks/${version%.*}/${pkgname}-${version}.tar.xz"
-checksum=1cae86d527d650d9fa311f6007cc33b5dcd858bcfe4eb7cae65b5402205c4675
+checksum=d4e7e4f29a2d7e21c418ff930d7750b9fe15994e88d5f3d0e934c99b82a71bb6
 
 kpeople-devel_package() {
 	short_desc+=" - development"

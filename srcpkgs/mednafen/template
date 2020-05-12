@@ -1,6 +1,6 @@
 # Template file for 'mednafen'
 pkgname=mednafen
-version=1.24.1
+version=1.24.3
 revision=1
 wrksrc="$pkgname"
 build_style=gnu-configure
@@ -13,7 +13,7 @@ maintainer="Orphaned <orphan@voidlinux.org>"
 license="GPL-2.0-or-later"
 homepage="https://mednafen.github.io/"
 distfiles="https://mednafen.github.io/releases/files/mednafen-${version}.tar.xz"
-checksum=a47adf3faf4da66920bebb9436e28cbf87ff66324d0bb392033cbb478b675fe7
+checksum=3dea853f784364557fa59e9ba11a17eb2674fc0fb93205f33bdbdaba1da3f70f
 nopie=yes
 
 build_options="altivec"

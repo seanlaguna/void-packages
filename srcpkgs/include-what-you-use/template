@@ -1,7 +1,7 @@
 # Template file for 'include-what-you-use'
 pkgname=include-what-you-use
 version=0.13
-revision=1
+revision=2
 wrksrc="${pkgname}"
 build_style=cmake
 configure_args="-DIWYU_LLVM_ROOT_PATH=${XBPS_CROSS_BASE}/usr "
@@ -13,6 +13,7 @@ license="NCSA"
 homepage="https://include-what-you-use.org/"
 distfiles="https://include-what-you-use.org/downloads/${pkgname}-${version}.src.tar.gz"
 checksum=49294270aa64e8c04182369212cd919f3b3e0e47601b1f935f038c761c265bc9
+python_version=2 #unverified
 
 post_install() {
 	vlicense LICENSE.TXT

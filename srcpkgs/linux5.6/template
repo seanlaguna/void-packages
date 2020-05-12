@@ -1,18 +1,19 @@
 # Template file for 'linux5.6'
 pkgname=linux5.6
-version=5.6.2
+version=5.6.11
 revision=1
 wrksrc="linux-${version}"
 short_desc="Linux kernel and modules (${version%.*} series)"
-maintainer="Juan RP <xtraeme@gmail.com>"
+maintainer="Orphaned <orphan@voidlinux.org>"
 license="GPL-2.0-only"
 homepage="https://www.kernel.org"
 distfiles="https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-${version}.tar.xz"
-checksum=2d4d91d8329c1ed3826c61463650dd4bfbb6ad39dcee6dba4f98a7e94a67b5b9
+checksum=d6dd6cbe99429f088eddb248abce7832e8f8e45eb072cbf0d0f86b5b87221baa
+python_version=3
 patch_args="-Np1"
 
 # XXX Restrict archs until a proper <arch>-dotconfig is available in FILESDIR.
-archs="x86_64*"
+archs="x86_64* i686* ppc*"
 
 nodebug=yes  # -dbg package is generated below manually
 nostrip=yes
@@ -20,7 +21,7 @@ noverifyrdeps=yes
 noshlibprovides=yes
 preserve=yes
 
-hostmakedepends="tar xz bc elfutils-devel flex gmp-devel kmod libmpc-devel 
+hostmakedepends="tar xz bc elfutils-devel flex gmp-devel kmod libmpc-devel
  libressl-devel perl uboot-mkimage cpio"
 
 _kernver="${version}_${revision}"
@@ -30,6 +31,7 @@ kernel_hooks_version="${_kernver}"
 # These files could be modified when an external module is built.
 mutable_files="
  /usr/lib/modules/${_kernver}/modules.builtin.bin
+ /usr/lib/modules/${_kernver}/modules.builtin.alias.bin
  /usr/lib/modules/${_kernver}/modules.softdep
  /usr/lib/modules/${_kernver}/modules.dep
  /usr/lib/modules/${_kernver}/modules.dep.bin

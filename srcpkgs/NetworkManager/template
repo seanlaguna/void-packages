@@ -1,6 +1,6 @@
 # Template file for 'NetworkManager'
 pkgname=NetworkManager
-version=1.22.6
+version=1.22.10
 revision=2
 build_style=meson
 build_helper="gir qemu"
@@ -33,7 +33,7 @@ maintainer="Enno Boland <gottox@voidlinux.org>"
 license="GPL-2.0-or-later"
 homepage="https://wiki.gnome.org/Projects/NetworkManager"
 distfiles="${GNOME_SITE}/${pkgname}/${version%.*}/${pkgname}-${version}.tar.xz"
-checksum=bc9923fc9bc41148ebadc786b62208247590f3cd3c246826c192106ecf84c564
+checksum=2b29ccc1531ba7ebba95a97f40c22b963838e8b6833745efe8e6fb71fd8fca77
 lib32disabled=yes
 conf_files="/etc/${pkgname}/${pkgname}.conf"
 make_dirs="
@@ -68,6 +68,8 @@ pre_configure() {
 
 post_install() {
 	vinstall ${FILESDIR}/${pkgname}.conf 644 etc/${pkgname}
+	vinstall ${FILESDIR}/50-org.freedesktop.NetworkManager.rules 644 \
+		/usr/share/polkit-1/rules.d
 	vsv ${pkgname}
 }
 

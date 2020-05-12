@@ -1,16 +1,16 @@
 # Template file for 'postfix'
 pkgname=postfix
-version=3.4.10
+version=3.5.1
 revision=1
 hostmakedepends="perl m4"
 makedepends="icu-devel libldap-devel libmysqlclient-devel pcre-devel
  postgresql-libs-devel sqlite-devel"
 short_desc="High-performance mail transport agent"
-maintainer="Leah Neukirchen <leah@vuxu.org>"
+maintainer="Benjamín Albiñana <benalb@gmail.com>"
 license="IPL-1.0, EPL-2.0"
 homepage="http://www.postfix.org/"
 distfiles="http://ftp.porcupine.org/mirrors/postfix-release/official/${pkgname}-${version}.tar.gz"
-checksum=908a66fc38537a0047e8561e1bc0ef096c53357ffad16d2d728cd4fc8ae56654
+checksum=dbce092db23253c0e990c082da2ef1d7921e6896c0a2991d2a8fd9443abb41d4
 
 system_accounts="postfix"
 postfix_homedir="/var/spool/postfix"
@@ -52,7 +52,7 @@ if [ "$CROSS_BUILD" ]; then
 fi
 
 do_build() {
-	sed -e "s,\(/usr/include/db.h\),${XBPS_CROSS_BASE}/\1,g" \
+	vsed -e "s,\(/usr/include/db.h\),${XBPS_CROSS_BASE}/\1,g" \
 		-e 's,^\(\s\+\)CCARGS="$CCARGS -DNO_EAI",\1CCARGS="$CCARGS $icu_cppflags"\n\1SYSLIBS="$SYSLIBS $icu_ldflags",' \
 		-i makedefs
 
@@ -84,7 +84,7 @@ do_build() {
 
 pre_install() {
 	if [ "$CROSS_BUILD" ]; then
-		sed -e 's,bin/postconf,/usr/bin/postconf,g' -i postfix-install
+		vsed -e 's,bin/postconf,/usr/bin/postconf,g' -i postfix-install
 	fi
 }
 

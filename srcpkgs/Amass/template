@@ -1,6 +1,6 @@
 # Template file for 'Amass'
 pkgname=Amass
-version=3.5.4
+version=3.6.0
 revision=1
 build_style=go
 go_import_path="github.com/OWASP/Amass/..."
@@ -9,4 +9,4 @@ maintainer="Andrew Benson <abenson+void@gmail.com>"
 license="Apache-2.0"
 homepage="https://www.owasp.org/index.php/OWASP_Amass_Project"
 distfiles="https://github.com/OWASP/Amass/archive/v${version}.tar.gz"
-checksum=89aeff31f5d98d1f3b4f0cd27950ec46fe8955eaabaadc2b0fa5531474f47079
+checksum=4a1a04512a00336612835234511f6d527296877b19d58ad0a3450655bec2b47e

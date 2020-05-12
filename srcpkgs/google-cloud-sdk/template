@@ -1,6 +1,6 @@
 # Template file for 'google-cloud-sdk'
 pkgname=google-cloud-sdk
-version=286.0.0
+version=291.0.0
 revision=1
 archs=noarch
 wrksrc=$pkgname
@@ -10,7 +10,7 @@ maintainer="Daniel Santana <daniel@santana.tech>"
 license="Apache-2.0"
 homepage="https://cloud.google.com/sdk"
 distfiles="https://dl.google.com/dl/cloudsdk/release/downloads/for_packagers/linux/${pkgname}_${version}.orig.tar.gz"
-checksum=24f1be5a0065efa4e5bfa33b6184ab71b5a55ffd72d27f2fa152a472715aa671
+checksum=cbef3c6bce8d958584c55451734d32c6b33255d53d2a8b6287852b4705ace40d
 python_version=3
 
 do_install() {

@@ -1,6 +1,6 @@
 # Template file for 'freecell-solver'
 pkgname=freecell-solver
-version=5.20.1
+version=5.24.0
 revision=1
 build_style=cmake
 configure_args="-DFCS_WITH_TEST_SUITE=OFF"
@@ -11,8 +11,9 @@ short_desc="Automatically solves Freecell and similar variants of solitaire"
 maintainer="Piotr Wójcik <chocimier@tlen.pl>"
 license="MIT"
 homepage="https://fc-solve.shlomifish.org/"
+changelog="https://fc-solve.shlomifish.org/docs/distro/NEWS.html"
 distfiles="https://fc-solve.shlomifish.org/downloads/fc-solve/freecell-solver-${version}.tar.xz"
-checksum=339339a47b1842624ea9e322e4fe5af5a48a63310571595ca00b0b03f6f25524
+checksum=34b924e2774ef167d673055c32a829edb1fc9b44112544e99834272a8119af76
 
 if [ "$XBPS_TARGET_LIBC" = "musl" ]; then
 	makedepends+=" musl-legacy-compat"

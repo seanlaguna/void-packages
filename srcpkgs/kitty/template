@@ -1,6 +1,6 @@
 # Template file for 'kitty'
 pkgname=kitty
-version=0.17.1
+version=0.17.4
 revision=1
 pycompile_dirs="usr/lib/kitty"
 hostmakedepends="ncurses pkg-config python3 wayland-devel wayland-protocols"
@@ -13,9 +13,9 @@ license="GPL-3.0-or-later"
 homepage="https://sw.kovidgoyal.net/kitty/"
 changelog="https://sw.kovidgoyal.net/kitty/changelog.html"
 distfiles="https://github.com/kovidgoyal/kitty/releases/download/v${version}/kitty-${version}.tar.xz"
-checksum=f8487ce0611999deb9dcdc0bdcc5e6ff47923a426f23dc07a80a42a3df2a85cb
+checksum=9c4a32588a52051552f3daffccd14445327e132138bb5afb486f12e4f0308f2a
 patch_args="-Np1"
-pycompile_version="$py3_ver"
+python_version=3
 LDFLAGS+=" -Wl,-z,stack-size=2097152"
 
 # TIOCSWINSZ on ppc overflows signed int, used in ioctl()

@@ -1,6 +1,6 @@
 # Template file for 'stress-ng'
 pkgname=stress-ng
-version=0.11.07
+version=0.11.09
 revision=1
 build_style=gnu-makefile
 make_use_env=1
@@ -9,4 +9,4 @@ maintainer="Leah Neukirchen <leah@vuxu.org>"
 license="GPL-2.0-or-later"
 homepage="http://kernel.ubuntu.com/~cking/stress-ng/"
 distfiles="http://kernel.ubuntu.com/~cking/tarballs/stress-ng/${pkgname}-${version}.tar.xz"
-checksum=705b9061e7d9e4babfbd8f580d8eb8947fda538383f7ed7d308178142c9fddcf
+checksum=3637e6d37f511ddb43798875584fdf0db05abfe586e4c4123c0e8dd1f6280686
