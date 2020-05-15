@@ -1,0 +1,9 @@
+--- a/drivers/platform/x86/asus-wmi.c
++++ b/drivers/platform/x86/asus-wmi.c
+@@ -116,6 +116,8 @@  struct bios_args {
+        u32 arg0;
+        u32 arg1;
+        u32 arg2; /* At least TUF Gaming series uses 3 dword input buffer. */
++       u32 arg3;
++       u32 arg4;
+ } __packed;
