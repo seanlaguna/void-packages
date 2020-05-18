@@ -1,0 +1,86 @@
+# Template file for 'gdm-prime'
+pkgname=gdm-prime
+version=3.34.1
+revision=1
+_pkg=gdm
+wrksrc=gdm-${version}
+build_helper="gir"
+build_style=gnu-configure
+configure_args="$(vopt_enable gir introspection)
+ --disable-schemas-compile --disable-static --with-default-pam-config=arch
+ --with-at-spi-registryd-directory=/usr/libexec --without-tcp-wrappers
+ --with-screenshot-dir=/var/lib/gdm/greeter --sbindir=/usr/bin --without-plymouth
+ --with-xauth-dir=/run/gdm --with-pid-file=/run/gdm/gdm.pid
+ --disable-systemd-journal --with-initial-vt=7 --enable-gdm-xsession
+ --enable-wayland-support"
+hostmakedepends="dconf gettext itstool pkg-config"
+makedepends="libtool automake tar autoconf accountsservice-devel elogind-devel gettext-devel glib-devel
+ iso-codes libSM-devel libcanberra-devel nss-devel pam-devel upower-devel"
+depends="gnome-settings-daemon gnome-shell xorg-server xorg-server-xwayland
+ xrdb"
+short_desc="GNOME Display Manager patched with Prime support for Optimus laptops"
+maintainer="Hyper-KVM <hyperkvmx86@gmail.com>"
+license="GPL-2.0-or-later"
+homepage="https://wiki.gnome.org/Projects/GDM"
+distfiles="${GNOME_SITE}/${_pkg}/${version%.*}/${_pkg}-${version}.tar.xz"
+checksum=e85df657aa8d9361af4fb122014d8f123a93bfe45a7662fba2b373d839dbd8d3
+
+conf_files="
+	/etc/gdm/custom.conf
+	/etc/pam.d/gdm-autologin
+	/etc/pam.d/gdm-fingerprint
+	/etc/pam.d/gdm-launch-environment
+	/etc/pam.d/gdm-password
+	/etc/pam.d/gdm-pin
+	/etc/pam.d/gdm-smartcard"
+# Create the 'gdm' system user/group.
+system_accounts="gdm"
+gdm_homedir="/var/lib/gdm"
+
+# Package build options
+build_options="gir"
+build_options_default="gir"
+
+if [ "$CROSS_BUILD" ]; then
+	hostmakedepends+=" glib-devel pam-devel"
+fi
+
+do_patch() {
+	patch -Np1 < ${FILESDIR}/0001-Xsession-Don-t-start-ssh-agent-by-default.patch
+	patch -Np1 < ${FILESDIR}/0002-pam-arch-Don-t-check-greeter-account-for-expiry.patch
+	patch -Np1 < ${FILESDIR}/0003-pam-arch-Restrict-greeter-service-to-the-gdm-user.patch
+	patch -Np1 < ${FILESDIR}/0004-nvidia-prime.patch
+}
+
+pre_configure() {
+	autoreconf -f -i -s
+}
+
+post_install() {
+	vinstall $FILESDIR/Xsession 755 etc/gdm
+
+	vsed -i "s/pam_systemd\.so/pam_elogind.so/" $DESTDIR/etc/pam.d/*
+
+	# runit service
+	vsv gdm
+}
+
+libgdm-prime_package() {
+	short_desc+=" - runtime libraries"
+	pkg_install() {
+		vmove "usr/lib/*.so.*"
+	}
+}
+
+gdm-prime-devel_package() {
+	depends="libgdm-prime>=${version}_${revision}"
+	short_desc+=" - development files"
+	pkg_install() {
+		vmove usr/include
+		vmove usr/lib/pkgconfig
+		if [ "$build_option_gir" ]; then
+			vmove usr/share/gir-1.0
+		fi
+		vmove "usr/lib/*.so"
+	}
+}
