@@ -1,9 +1,9 @@
 # Template file for 'ImageMagick'
 pkgname=ImageMagick
 _majorver=7.0.10
-_patchver=10
+_patchver=16
 version="${_majorver}.${_patchver}"
-revision=1
+revision=2
 wrksrc="${pkgname}-${_majorver}-${_patchver}"
 build_style=gnu-configure
 configure_args="--without-autotrace --with-wmf=yes
@@ -21,7 +21,7 @@ license="ImageMagick"
 homepage="https://www.imagemagick.org/"
 changelog="https://imagemagick.org/script/changelog.php"
 distfiles="https://github.com/ImageMagick/ImageMagick/archive/${_majorver}-${_patchver}.tar.gz"
-checksum=52afac02954c6c6f593e2842fbecb630a765e2152eb84a5f4bb47429ae20db5a
+checksum=377375a264030a27fdb641e48531c0b86d95c900577b117f726337242d178c80
 
 subpackages="libmagick libmagick-devel"
 
@@ -47,6 +47,10 @@ do_check() {
 }
 
 post_install() {
+	if [ "$CROSS_BUILD" ]; then
+		vsed -i -e "s,$XBPS_WRAPPERDIR/$XBPS_CROSS_TRIPLET-,,g" \
+			$DESTDIR/usr/bin/*-config
+	fi
 	vlicense LICENSE
 	vlicense NOTICE
 }

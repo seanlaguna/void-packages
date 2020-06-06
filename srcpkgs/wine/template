@@ -1,6 +1,6 @@
 # Template file for 'wine'
 pkgname=wine
-version=5.8
+version=5.10
 revision=1
 build_style=gnu-configure
 configure_args="--bindir=/usr/libexec/wine"
@@ -9,12 +9,12 @@ maintainer="Helmut Pozimski <helmut@pozimski.eu>"
 license="LGPL-2.1-or-later"
 homepage="http://www.winehq.org/"
 distfiles="https://dl.winehq.org/wine/source/${version%%.*}.x/wine-${version}.tar.xz"
-checksum=cbad04c261437abec16945cd7ca83c77950f3e03099d7e3f883a6ea7293233cf
+checksum=9baaa09216c817f61bce39626b869d1e387d436eccda3d9e054cfab84802333d
 
 lib32mode=full
-archs="i686 x86_64"
+archs="i686 x86_64*"
 
-hostmakedepends="pkg-config flex prelink gettext"
+hostmakedepends="pkg-config flex gettext"
 makedepends="gettext-devel lcms2-devel zlib-devel ncurses-devel
  glu-devel libSM-devel libXext-devel libX11-devel libXpm-devel
  libXinerama-devel libXcomposite-devel libXmu-devel libXxf86vm-devel
@@ -40,6 +40,10 @@ case $XBPS_TARGET_MACHINE in
 		;;
 esac
 
+if [ "$XBPS_LIBC" = "glibc" ]; then
+	hostmakedepends+=" prelink"
+fi
+
 _wine_libexec="/usr/libexec/wine"
 nopie_files="${_wine_libexec}/wine${_wine_suffix}"
 
@@ -57,6 +61,11 @@ post_install() {
 	do
 		mv ${DESTDIR}/usr/libexec/wine/${file} ${DESTDIR}/usr/bin/
 	done
+	case $XBPS_TARGET_MACHINE in
+		x86_64*)
+			ln -s ${_wine_libexec}/wine64 ${DESTDIR}/usr/bin/wine64
+		;;
+	esac
 }
 
 libwine_package() {
@@ -85,7 +94,7 @@ wine-common_package() {
 	binfmts="/usr/bin/wine --magic MZ"
 	pkg_install() {
 		vmove usr/share
-		vmove etc
+		vmove etc/fonts
 		for file in wine wineserver msiexec regedit regsvr32 wineboot winecfg winepath winemine winefile winedbg wineconsole notepad msidb
 		do
 			vmove usr/bin/${file}
