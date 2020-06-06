@@ -1,6 +1,6 @@
 # Template file for 'etesync-dav'
 pkgname=etesync-dav
-version=0.16.0
+version=0.17.1
 revision=1
 archs=noarch
 wrksrc="etesync-dav-${version}"
@@ -13,7 +13,7 @@ maintainer="projectmoon <projectmoon@agnos.is>"
 license="GPL-3.0-only"
 homepage="http://www.etesync.com"
 distfiles="${PYPI_SITE}/e/etesync-dav/etesync-dav-${version}.tar.gz"
-checksum="c9ec3f39bd9a096823f5439aa3d7a3a93b7dfdf19fdef8a1f9ed3c48b3280de4"
+checksum=2d7018e3a0af8c203671eed4098f970d629876d17b235d434a595a5056aa7972
 
 do_check() {
 	pytest3
