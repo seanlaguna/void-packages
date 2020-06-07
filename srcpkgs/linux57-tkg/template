@@ -1,10 +1,10 @@
 # Template file for 'linux57-tkg'
 # based on PKGBUILD from Tk-Glitch <ti3nou@gmail.com>
 pkgname=linux57-tkg
-_sub=0
-version=5.7 # forced version number
+_sub=1
+version=5.7.1 # forced version number
 _basever=5.7
-revision=2
+revision=3
 archs="x86_64" # PKGBUILD declares x86_64 only
 wrksrc=linux-${version}
 python_version=3
@@ -19,7 +19,9 @@ maintainer="Hyper-KVM <hyperkvmx86@gmail.com>"
 license="GPL-2.0-only"
 homepage="http://www.kernel.org"
 distfiles="https://www.kernel.org/pub/linux/kernel/v5.x/linux-${version}.tar.xz"
-checksum="de8163bb62f822d84f7a3983574ec460060bf013a78ff79cd7c979ff1ec1d7e0"
+#https://www.kernel.org/pub/linux/kernel/v5.x/patch-${version}.xz"
+checksum="40d318add8cefe3fdb26f19dac7386f5e7b63854ae021e593466902856ce9ded"
+#febbb12fde35d754628930805f696d692d5e17fcea34469b96a81072b9dd7179"
 nostrip=yes
 noshlibprovides=yes
 preserve=yes
@@ -167,6 +169,9 @@ export KBUILD_BUILD_TIMESTAMP="$(date -Ru${SOURCE_DATE_EPOCH:+d @$SOURCE_DATE_EP
 	fi
 
   ln -sf "${FILESDIR}/customization.cfg" "${wrksrc}" # workaround
+
+# add upstream patch
+#patch -Np1 < ${XBPS_BUILDDIR}/patch-"${version}"
 
 
   # ARCH Patches
@@ -682,7 +687,7 @@ export KBUILD_BUILD_TIMESTAMP="$(date -Ru${SOURCE_DATE_EPOCH:+d @$SOURCE_DATE_EP
     read -rp "`echo $'    > N/y : '`" CONDITION7;
   fi
   if [ "$CONDITION7" == "y" ] || [ "$_acs_override" == "true" ]; then
-    patch -Np1 -i ${FILESDIR}/0006-add-acs-overrides_iommu.patch
+    patch -Np1 -i ${FILESDIR}/linux57-tkg-patches/0006-add-acs-overrides_iommu.patch
   fi
 
   # bcachefs
