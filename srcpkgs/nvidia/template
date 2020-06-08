@@ -115,6 +115,11 @@ do_extract() {
 	rm -f ${_pkg}.run
 }
 
+do_patch() {
+	cd ${_pkg}
+	patch -Np1 < ${FILESDIR}/kernel-5.7.patch
+}
+
 do_install() {
 	cd ${_pkg}
 
