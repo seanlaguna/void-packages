@@ -1,10 +1,10 @@
 # Template file for 'linux57-tkg'
 # based on PKGBUILD from Tk-Glitch <ti3nou@gmail.com>
 pkgname=linux57-tkg
-_sub=1
-version=5.7.1 # forced version number
+_sub=2
+version=5.7.2 # forced version number
 _basever=5.7
-revision=3
+revision=5
 archs="x86_64" # PKGBUILD declares x86_64 only
 wrksrc=linux-${version}
 python_version=3
