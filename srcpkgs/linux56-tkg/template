@@ -2,9 +2,9 @@
 # based on PKGBUILD from Tk-Glitch <ti3nou@gmail.com>
 pkgname=linux56-tkg
 _basekernel=5.6
-_sub=15
-version=5.6.16 # forced version number
-revision=33
+_sub=18
+version=5.6.18 # forced version number
+revision=35
 archs="x86_64" # PKGBUILD declares x86_64 only
 wrksrc=linux-5.6
 hostmakedepends="xz schedtool xmlto libressl-devel docbook-xsl kmod inetutils bc libelf patchutils flex python-Sphinx python-sphinx_rtd_theme graphviz ImageMagick perl uboot-mkimage cpio gmp-devel libmpc-devel elfutils-devel"
@@ -191,7 +191,7 @@ fi
 
 if [ "${_cpusched}" == "MuQSS" ]; then
 	# MuQSS
-	patch -Np1 < ${FILESDIR}/linux56-tkg-patches/0004-5.6-ck1.patch
+	patch -Np1 < ${FILESDIR}/linux56-tkg-patches/0004-5.6-ck2.patch
 	if [ "${_aggressive_ondemand}" == "true" ]; then
 		patch -Np1 < ${FILESDIR}/linux56-tkg-patches/0004-glitched-ondemand-muqss.patch
 	fi
