@@ -1,6 +1,6 @@
 # Template file for 'linux5.6'
 pkgname=linux5.6
-version=5.6.16
+version=5.6.18
 revision=1
 wrksrc="linux-${version}"
 short_desc="Linux kernel and modules (${version%.*} series)"
@@ -8,7 +8,7 @@ maintainer="Orphaned <orphan@voidlinux.org>"
 license="GPL-2.0-only"
 homepage="https://www.kernel.org"
 distfiles="https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-${version}.tar.xz"
-checksum=25504b4de7baf912071d1ed40b13af0689305442b9dea9218fd096d8bd997cf7
+checksum=1041f4e50b4efaef98fb21de492dc9f612b0a89afa285ac1f7626b61f2f7f132
 python_version=3
 patch_args="-Np1"
 
