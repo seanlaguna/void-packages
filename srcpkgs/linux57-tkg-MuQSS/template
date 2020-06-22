@@ -1,10 +1,10 @@
 # Template file for 'linux57-tkg-MuQSS'
 # based on PKGBUILD from Tk-Glitch <ti3nou@gmail.com>
 pkgname=linux57-tkg-MuQSS
-_sub=4
-version=5.7.4 # forced version number
+_sub=5
+version=5.7.5 # forced version number
 _basever=5.7
-revision=7
+revision=8
 archs="x86_64" # PKGBUILD declares x86_64 only
 wrksrc=linux-${version}
 python_version=3
@@ -20,7 +20,7 @@ license="GPL-2.0-only"
 homepage="http://www.kernel.org"
 distfiles="https://www.kernel.org/pub/linux/kernel/v5.x/linux-${version}.tar.xz"
 #https://www.kernel.org/pub/linux/kernel/v5.x/patch-${version}.xz"
-checksum="bca4f5ca3001a4cde341652af7fcaefed555be52a92e08ddf58a142eeb02b51a"
+checksum="6c37f90354dbe1e29aa144f850b2050259f8a2d180fd24101f9eafc636bb0b01"
 #febbb12fde35d754628930805f696d692d5e17fcea34469b96a81072b9dd7179"
 nostrip=yes
 noshlibprovides=yes
