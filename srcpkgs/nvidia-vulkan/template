@@ -3,7 +3,7 @@
 _desc="NVIDIA drivers for linux (Vulkan developer branch)"
 
 pkgname=nvidia-vulkan
-version=440.66.15
+version=440.66.17
 revision=1
 maintainer="Hyper-KVM <hyperkvmx86@gmail.com>"
 license="custom:NVIDIA Proprietary"
@@ -18,7 +18,7 @@ conflicts="xserver-abi-video>24_1 nvidia nvidia-libs nvidia-libs-32bit nvidia-op
 
 _pkg="NVIDIA-Linux-x86_64-${version}"
 distfiles="https://developer.nvidia.com/vulkan-beta-${version//.}-linux>${_pkg}.run"
-checksum="f1e843ade389dbdce62036a931a060de238dcad0e62752b1fcd78a1f4c4ca548"
+checksum="1e9bcc3211b8611ded6d59fe6bd36e8bb60d1f42f54c37e50a3977c4a26f8163"
 subpackages="nvidia-gtklibs-vulkan nvidia-dkms-vulkan nvidia-opencl-vulkan nvidia-libs-vulkan nvidia-libs-32bit-vulkan"
 depends="nvidia-libs-vulkan-${version}_${revision} nvidia-gtklibs-vulkan-${version}_${revision} nvidia-dkms-vulkan-${version}_${revision}"
 
@@ -116,6 +116,7 @@ do_patch() {
 	cd ${_pkg}
 	patch -Np1 < ${FILESDIR}/kernel-5.6-vulkan.patch
 	patch -Np1 < ${FILESDIR}/kernel-5.7.patch
+	patch -Np1 < ${FILESDIR}/kernel-5.8.patch
 }
 
 do_install() {
