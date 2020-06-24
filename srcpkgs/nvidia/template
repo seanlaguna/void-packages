@@ -3,7 +3,7 @@
 _desc="NVIDIA drivers for linux"
 
 pkgname=nvidia
-version=440.82
+version=450.51
 revision=1
 maintainer="Juan RP <xtraeme@gmail.com>"
 license="custom:NVIDIA Proprietary"
@@ -19,7 +19,7 @@ conflicts="xserver-abi-video>24_1"
 
 _pkg="NVIDIA-Linux-x86_64-${version}"
 distfiles="http://uk.download.nvidia.com/XFree86/Linux-x86_64/${version}/${_pkg}.run"
-checksum=edd415acf2f75a659e0f3b4f27c1fab770cf21614e84a18152d94f0d004a758e
+checksum=c25155bc5ad0121f1665047d5719cb17c60c9453b9a8fad9dea9cb334eaaea9e
 subpackages="nvidia-gtklibs nvidia-dkms nvidia-opencl nvidia-libs nvidia-libs-32bit"
 depends="nvidia-libs-${version}_${revision}
  nvidia-gtklibs-${version}_${revision}
@@ -76,12 +76,6 @@ _install_libs() {
 	ln -sf libnvidia-fbc.so.${version} ${DESTDIR}/${libdir}/libnvidia-fbc.so
 	ln -sf libnvidia-fbc.so.${version} ${DESTDIR}/${libdir}/libnvidia-fbc.so.1
 
-	vinstall libnvidia-fatbinaryloader.so.${version} 755 ${libdir}
-	ln -sf libnvidia-fatbinaryloader.so.${version} \
-		${DESTDIR}/${libdir}/libnvidia-fatbinaryloader.so.1
-	ln -sf libnvidia-fatbinaryloader.so.1 \
-		${DESTDIR}/${libdir}/libnvidia-fatbinaryloader.so
-
 	# CUDA
 	vinstall libcuda.so.${version} 755 ${libdir}
 	ln -sf libcuda.so.${version} ${DESTDIR}/${libdir}/libcuda.so
@@ -113,6 +107,11 @@ do_extract() {
 	cd ${wrksrc}
 	./${_pkg}.run --extract-only
 	rm -f ${_pkg}.run
+}
+
+do_patch() {
+	cd ${_pkg}
+	patch -Np1 < ${FILESDIR}/kernel-5.8.patch
 }
 
 do_install() {
@@ -192,6 +191,13 @@ do_install() {
 		${DESTDIR}/usr/lib/libnvidia-opencl.so
 	ln -sf libnvidia-opencl.so.${version} \
 		${DESTDIR}/usr/lib/libnvidia-opencl.so.1
+
+	# NGX
+	vinstall libnvidia-ngx.so.${version} 755 usr/lib
+	ln -sf libnvidia-ngx.so.${version} \
+		${DESTDIR}/usr/lib/libnvidia-ngx.so
+	ln -sf libnvidia-ngx.so.${version} \
+		${DESTDIR}/usr/lib/libnvidia-ngx.so.1
 
 	# vulkan icd
 	vinstall nvidia_icd.json 644 usr/share/vulkan/icd.d
