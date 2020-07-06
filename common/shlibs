@@ -867,7 +867,8 @@ libgslcblas.so.0 gsl-1.15_1
 libgsl.so.25 gsl-2.6_1
 liblua5.1.so.5.1 lua51-5.1.5_1
 liblua5.2.so.5.2 lua52-5.2.4_2
-liblua5.3.so.5.3 lua-5.3.1_2
+liblua5.3.so.5.3 lua53-5.3.5_4
+liblua5.4.so.5.4 lua54-5.4.0_1
 libburn.so.4 libburn-0.7.2_1
 libKF5Auth.so.5 kauth-5.26.0_1
 libKF5AuthCore.so.5 kauth-5.56.0_1
@@ -3590,6 +3591,9 @@ libssl.so.46 libssl46-2.8.2_1
 libcrypto.so.45 libcrypto45-2.9.2_1
 libtls.so.19 libtls19-2.9.2_1
 libssl.so.47 libssl47-2.9.2_1
+libcrypto.so.46 libcrypto46-3.1.1_1
+libtls.so.20 libtls20-3.1.1_1
+libssl.so.48 libssl48-3.1.1_1
 libxmlb.so.1 libxmlb-0.1.3_1
 libvoikko.so.1 libvoikko-4.2_1
 libfstrcmp.so.0 libfstrcmp-0.7.D001_1
