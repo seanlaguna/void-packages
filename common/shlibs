@@ -433,9 +433,9 @@ libFLAC.so.8 libflac-1.2.1_1
 libFLAC++.so.6 libflac-1.2.1_1
 libMAC.so.6 libMAC-5.28_1
 libmad.so.0 libmad-0.15.1b_1
-libmatroska.so.6 libmatroska-1.4.1_5
+libmatroska.so.7 libmatroska-1.6.0_1
 libmatrix_client.so.0.3.1 mtxclient-0.3.1_1
-libebml.so.4 libebml-1.3.0_5
+libebml.so.5 libebml-1.4.0_1
 libdvdread.so.8 libdvdread-6.1.1_1
 libdvdnav.so.4 libdvdnav-4.1.3_1
 libdvbpsi.so.10 libdvbpsi-1.3.1_1
@@ -1665,9 +1665,6 @@ libOgreVolume.so.1.10.11 libogre-1.10.11_2
 libOgreBites.so.1.10.11 libogre-1.10.11_2
 libOgreMain.so.1.10.11 libogre-1.10.11_2
 libOgreOverlay.so.1.10.11 libogre-1.10.11_2
-libzzip.so libogre-1.10.11_2
-libz.so.1 libogre-1.10.11_2
-libfreetype.so.2.6 libogre-1.10.11_2
 libglut.so.3 libfreeglut-2.8.1_1
 libogmrip-gtk.so.1 ogmrip-1.0.0_1
 libogmdvd.so.1 ogmrip-1.0.0_1
@@ -3968,7 +3965,7 @@ libjpegxr.so.0 jxrlib-0.2.2_1
 libjxrglue.so.0 jxrlib-0.2.2_1
 libhidrd_util.so.0 hidrd-0.2.0_1
 libhidrd_usage.so.0 hidrd-0.2.0_1
-libhidrd_item.so.0
+libhidrd_item.so.0 hidrd-0.2.0_1
 libhidrd_opt.so.0 hidrd-0.2.0_1
 libhidrd_strm.so.0 hidrd-0.2.0_1
 libhidrd_fmt.so.0 hidrd-0.2.0_1
@@ -3980,3 +3977,4 @@ libselinux.so.1 libselinux-3.0_1
 libsepol.so.1 libsepol-3.0_1
 libfrrcares.so.0 libfrr-7.3.1_1
 libhugetlbfs.so.0 libhugetlbfs-2.22_1
+libdolphinvcs.so.5 dolphin-plugins-20.04.2_1
