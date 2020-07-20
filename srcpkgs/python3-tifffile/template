@@ -1,0 +1,18 @@
+# Template file for 'python3-tifffile'
+pkgname=python3-tifffile
+version=2020.7.17
+revision=1
+wrksrc="${pkgname#python3-}-${version}"
+build_style=python3-module
+hostmakedepends="python3-setuptools"
+depends="python3-numpy"
+short_desc="Read and write TIFF files"
+maintainer="Andrew J. Hesford <ajh@sideband.org>"
+license="BSD-3-Clause"
+homepage="https://github.com/cgohlke/tifffile"
+distfiles="${homepage}/archive/v${version}.tar.gz"
+checksum=113b75045ca523d13f95d04056c94768f3afbc9d612b0bfd342ffb1290065ee6
+
+post_install() {
+	vlicense LICENSE
+}
