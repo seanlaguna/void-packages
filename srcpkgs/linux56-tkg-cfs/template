@@ -103,9 +103,15 @@ export KBUILD_BUILD_TIMESTAMP="$(date -Ru${SOURCE_DATE_EPOCH:+d @$SOURCE_DATE_EP
     patch -Np1 < ${FILESDIR}/linux56-tkg-cfs-patches/0001-add-sysctl-to-disallow-unprivileged-CLONE_NEWUSER-by.patch
   fi
 
+  # graysky's cpu opts - https://github.com/graysky2/kernel_gcc_patch
+  echo "Applying graysky's cpu opts patch"
+  patch -Np1 -i ../enable_additional_cpu_optimizations_for_gcc_v10.1%2B_kernel_v5.5-v5.6.patch
+
   # TkG
+  echo "Applying clear linux patches"
   patch -Np1 < ${FILESDIR}/linux56-tkg-cfs-patches/0002-clear-patches.patch
 
+  echo "Applying glitched base patch"
   patch -Np1 < ${FILESDIR}/linux56-tkg-cfs-patches/0003-glitched-base.patch
 
   if [ "${_tp_smapi_ec}" != "false" ]; then

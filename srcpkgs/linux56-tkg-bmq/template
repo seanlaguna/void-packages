@@ -104,9 +104,15 @@ export KBUILD_BUILD_TIMESTAMP="$(date -Ru${SOURCE_DATE_EPOCH:+d @$SOURCE_DATE_EP
     patch -Np1 < ${FILESDIR}/linux56-tkg-bmq-patches/0001-add-sysctl-to-disallow-unprivileged-CLONE_NEWUSER-by.patch
   fi
 
+  # graysky's cpu opts - https://github.com/graysky2/kernel_gcc_patch
+  echo "Applying graysky's cpu opts patch"
+  patch -Np1 < ${FILESDIR}/linux56-tkg-bmq-patches/enable_additional_cpu_optimizations_for_gcc_v10.1+_kernel_v5.5-v5.6.patch
+
   # TkG
+  echo "Applying clear linux patches"
   patch -Np1 < ${FILESDIR}/linux56-tkg-bmq-patches/0002-clear-patches.patch
 
+  echo "Apllying glitched base patches"
   patch -Np1 < ${FILESDIR}/linux56-tkg-bmq-patches/0003-glitched-base.patch
 
   if [ "${_tp_smapi_ec}" != "false" ]; then
@@ -177,6 +183,8 @@ export KBUILD_BUILD_TIMESTAMP="$(date -Ru${SOURCE_DATE_EPOCH:+d @$SOURCE_DATE_EP
   echo "# CONFIG_MGOLDMONT is not set" >> ${wrksrc}/.config
   echo "# CONFIG_MGOLDMONTPLUS is not set" >> ${wrksrc}/.config
   echo "# CONFIG_MCASCADELAKE is not set" >> ${wrksrc}/.config
+  echo "# CONFIG_MCOOPERLAKE is not set" >> ./.config
+  echo "# CONFIG_MTIGERLAKE is not set" >> ./.config
 
   # Disable some debugging
   if [ "${_debugdisable}" == "true" ]; then
@@ -348,6 +356,10 @@ export KBUILD_BUILD_TIMESTAMP="$(date -Ru${SOURCE_DATE_EPOCH:+d @$SOURCE_DATE_EP
     sed -i -e 's/# CONFIG_MGOLDMONTPLUS is not set/CONFIG_MGOLDMONTPLUS=y/' ${wrksrc}/.config
   elif [ "$_processor_opt" == "cascadelake" ]; then
     sed -i -e 's/# CONFIG_MCASCADELAKE is not set/CONFIG_MCASCADELAKE=y/' ${wrksrc}/.config
+  elif [ "$_processor_opt" == "cooperlake" ]; then
+    sed -i -e 's/# CONFIG_MCOOPERLAKE is not set/CONFIG_MCOOPERLAKE=y/' ./.config
+  elif [ "$_processor_opt" == "tigerlake" ]; then
+    sed -i -e 's/# CONFIG_MTIGERLAKE is not set/CONFIG_MTIGERLAKE=y/' ./.config
   fi
 
   # irq threading

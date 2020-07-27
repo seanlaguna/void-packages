@@ -1,15 +1,15 @@
 # Template file for 'linux57-tkg-bmq'
 # based on PKGBUILD from Tk-Glitch <ti3nou@gmail.com>
 pkgname=linux57-tkg-bmq
-_sub=5
-version=5.7.5 # forced version number
+_sub=10
+version=5.7.10 # forced version number
 _basever=5.7
-revision=8
+revision=14
 archs="x86_64" # PKGBUILD declares x86_64 only
 wrksrc=linux-${version}
 python_version=3
 patch_args="-Np1"
-hostmakedepends="schedtool xmlto libressl-devel docbook-xsl kmod inetutils bc libelf patchutils flex python-Sphinx python-sphinx_rtd_theme graphviz ImageMagick perl uboot-mkimage cpio gmp-devel libmpc-devel elfutils-devel"
+hostmakedepends="schedtool xmlto libressl-devel docbook-xsl kmod inetutils bc libelf patchutils flex python3-Sphinx python3-sphinx_rtd_theme graphviz ImageMagick perl uboot-mkimage cpio gmp-devel libmpc-devel elfutils-devel"
 makedepends="xz"
 triggers="kernel-hooks"
 _kernver="${_basever}.${_sub}-tkg-bmq"
@@ -20,7 +20,7 @@ license="GPL-2.0-only"
 homepage="http://www.kernel.org"
 distfiles="https://www.kernel.org/pub/linux/kernel/v5.x/linux-${version}.tar.xz"
 #https://www.kernel.org/pub/linux/kernel/v5.x/patch-${version}.xz"
-checksum="6c37f90354dbe1e29aa144f850b2050259f8a2d180fd24101f9eafc636bb0b01"
+checksum="4725430c65b7573b7d26c402dd9ffdad18529a302ce2e342c849e7800f193d44"
 #febbb12fde35d754628930805f696d692d5e17fcea34469b96a81072b9dd7179"
 nostrip=yes
 noshlibprovides=yes
@@ -114,7 +114,7 @@ export KBUILD_BUILD_TIMESTAMP="$(date -Ru${SOURCE_DATE_EPOCH:+d @$SOURCE_DATE_EP
   fi
 
     # BMQ
-    patch -Np1 < ${FILESDIR}/linux57-tkg-bmq-patches/0009-bmq_v5.7-r0.patch
+    patch -Np1 < ${FILESDIR}/linux57-tkg-bmq-patches/0009-prjc_v5.7-r2.patch
     if [ "${_aggressive_ondemand}" == "true" ]; then
       patch -Np1 < ${FILESDIR}/linux57-tkg-bmq-patches/0009-glitched-ondemand-bmq.patch
     fi
@@ -189,8 +189,8 @@ export KBUILD_BUILD_TIMESTAMP="$(date -Ru${SOURCE_DATE_EPOCH:+d @$SOURCE_DATE_EP
     sed -i -e 's/CONFIG_DEBUG_PREEMPT=y/# CONFIG_DEBUG_PREEMPT is not set/' ${wrksrc}/.config
   fi
 
-    # BMQ default config
-    echo "CONFIG_SCHED_BMQ=y" >> ${wrksrc}/.config
+    # PrjC / BMQ default config
+    echo "CONFIG_SCHED_ALT=y" >> ${wrksrc}/.config
 
     # Disable CFS
     sed -i -e 's/CONFIG_FAIR_GROUP_SCHED=y/# CONFIG_FAIR_GROUP_SCHED is not set/' ${wrksrc}/.config
@@ -216,9 +216,9 @@ export KBUILD_BUILD_TIMESTAMP="$(date -Ru${SOURCE_DATE_EPOCH:+d @$SOURCE_DATE_EP
     if [ "$CONDITION0" == "1" ]; then
       echo "Using default CPU sched yield type (1)"
     elif [ "$CONDITION0" == "2" ]; then
-      sed -i -e 's/int sched_yield_type __read_mostly = 1;/int sched_yield_type __read_mostly = 2;/' ${wrksrc}/kernel/sched/"${_cpusched}".c
+      sed -i -e 's/int sched_yield_type __read_mostly = 1;/int sched_yield_type __read_mostly = 2;/' ${wrksrc}/kernel/sched/alt_core.c
     else
-      sed -i -e 's/int sched_yield_type __read_mostly = 1;/int sched_yield_type __read_mostly = 0;/' ${wrksrc}/kernel/sched/"${_cpusched}".c
+      sed -i -e 's/int sched_yield_type __read_mostly = 1;/int sched_yield_type __read_mostly = 0;/' ${wrksrc}/kernel/sched/alt_core.c
     fi
 
   # Round Robin interval
@@ -254,9 +254,9 @@ export KBUILD_BUILD_TIMESTAMP="$(date -Ru${SOURCE_DATE_EPOCH:+d @$SOURCE_DATE_EP
       _rrvalue="default"
     fi
     if [ "$_rrvalue" != "default" ]; then
-        sed -i -e "s/u64 sched_timeslice_ns __read_mostly = (4 * 1000 * 1000);/u64 sched_timeslice_ns __read_mostly = (${_rrvalue} * 1000 * 1000);/" ${wrksrc}/kernel/sched/"${_cpusched}".c
+        sed -i -e "s/u64 sched_timeslice_ns __read_mostly = (4 * 1000 * 1000);/u64 sched_timeslice_ns __read_mostly = (${_rrvalue} * 1000 * 1000);/" ${wrksrc}/kernel/sched/alt_core.c
     else
-        sed -i -e "s/u64 sched_timeslice_ns __read_mostly = (4 * 1000 * 1000);/u64 sched_timeslice_ns __read_mostly = (2 * 1000 * 1000);/" ${wrksrc}/kernel/sched/"${_cpusched}".c
+        sed -i -e "s/u64 sched_timeslice_ns __read_mostly = (4 * 1000 * 1000);/u64 sched_timeslice_ns __read_mostly = (2 * 1000 * 1000);/" ${wrksrc}/kernel/sched/alt_core.c
     fi
   fi
 

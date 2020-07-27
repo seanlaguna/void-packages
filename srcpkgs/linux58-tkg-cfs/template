@@ -1,11 +1,11 @@
 # Template file for 'linux58-tkg-cfs'
 # based on PKGBUILD from Tk-Glitch <ti3nou@gmail.com>
 pkgname=linux58-tkg-cfs
-_sub=rc2
-version=5.8.rc2 # forced version number
+_sub=rc5
+version=5.8.rc5 # forced version number
 _version=5.8
 _basever=5.8.0
-revision=2
+revision=5
 archs="x86_64" # PKGBUILD declares x86_64 only
 wrksrc=linux-${_version}-${_sub}
 python_version=3
@@ -21,7 +21,7 @@ license="GPL-2.0-only"
 homepage="http://www.kernel.org"
 distfiles="https://git.kernel.org/torvalds/t/linux-${_version}-${_sub}.tar.gz"
 #https://www.kernel.org/pub/linux/kernel/v5.x/patch-${version}.xz"
-checksum="096c637e492f25379c2130291b0cf938e7fff14206dd530b1f55b2ba54b9c40f"
+checksum="69bd59fc15211f07466d322523a13071eb039ae210b4fb60cf5cf2534783e485"
 #febbb12fde35d754628930805f696d692d5e17fcea34469b96a81072b9dd7179"
 nostrip=yes
 noshlibprovides=yes

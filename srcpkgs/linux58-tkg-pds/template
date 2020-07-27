@@ -1,15 +1,15 @@
 # Template file for 'linux58-tkg-pds'
 # based on PKGBUILD from Tk-Glitch <ti3nou@gmail.com>
 pkgname=linux58-tkg-pds
-_sub=rc1
+_sub=rc7
 version=5.8 # forced version number
 _basever=5.8.0
-revision=1
+revision=7
 archs="x86_64" # PKGBUILD declares x86_64 only
 wrksrc=linux-${version}-${_sub}
 python_version=3
 patch_args="-Np1"
-hostmakedepends="schedtool xmlto libressl-devel docbook-xsl kmod inetutils bc libelf patchutils flex python-Sphinx python-sphinx_rtd_theme graphviz ImageMagick perl uboot-mkimage cpio gmp-devel libmpc-devel elfutils-devel"
+hostmakedepends="schedtool xmlto libressl-devel docbook-xsl kmod inetutils bc libelf patchutils flex python3-Sphinx python3-sphinx_rtd_theme graphviz ImageMagick perl uboot-mkimage cpio gmp-devel libmpc-devel elfutils-devel llvm10" 
 makedepends="xz"
 triggers="kernel-hooks"
 _kernver="${_basever}-${_sub}-tkg-pds"
@@ -20,7 +20,7 @@ license="GPL-2.0-only"
 homepage="http://www.kernel.org"
 distfiles="https://git.kernel.org/torvalds/t/linux-${version}-${_sub}.tar.gz"
 #https://www.kernel.org/pub/linux/kernel/v5.x/patch-${version}.xz"
-checksum="cc75371d1193f656bf02b7180908bbba8c0272c8316c1a90f81fbc97b77867bd"
+checksum="ace7c02ad8577c8fc19b2e6b5d0aeeee06721511527bc38dd975b2c56982ccec"
 #febbb12fde35d754628930805f696d692d5e17fcea34469b96a81072b9dd7179"
 nostrip=yes
 noshlibprovides=yes
@@ -654,10 +654,17 @@ export KBUILD_BUILD_TIMESTAMP="$(date -Ru${SOURCE_DATE_EPOCH:+d @$SOURCE_DATE_EP
 do_build() {
 
   _cpusched=pds
+  _compiler="clang"
 
   # Use custom compiler paths if defined
   if [ -n "${CUSTOM_GCC_PATH}" ]; then
     PATH=${CUSTOM_GCC_PATH}/bin:${CUSTOM_GCC_PATH}/lib:${CUSTOM_GCC_PATH}/include:${PATH}
+  fi
+
+  if [ "$_compiler" == "clang" ];then
+     _compiler=LLVM=1
+  else
+     _compiler=""
   fi
 
   if [ "$_force_all_threads" == "true" ]; then
@@ -675,7 +682,7 @@ do_build() {
   fi
 
   # build!
-  _runtime=$( time ( schedtool -B -n 1 -e ionice -n 1 make ${_force_all_threads} LOCALVERSION=-tkg-${_cpusched} bzImage modules 2>&1 ) 3>&1 1>&2 2>&3 ) || _runtime=$( time ( make ${_force_all_threads} LOCALVERSION=-tkg-${_cpusched} bzImage modules 2>&1 ) 3>&1 1>&2 2>&3 )
+  _runtime=$( time ( schedtool -B -n 1 -e ionice -n 1 make ${_compiler} ${_force_all_threads} LOCALVERSION=-tkg-${_cpusched} bzImage modules 2>&1 ) 3>&1 1>&2 2>&3 ) || _runtime=$( time ( make ${_compiler} ${_force_all_threads} LOCALVERSION=-tkg-${_cpusched} bzImage modules 2>&1 ) 3>&1 1>&2 2>&3 )
 
   if [ -n "$_runtime" ]; then
     printf "compilation time : \n$_runtime"
