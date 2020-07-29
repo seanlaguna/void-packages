@@ -1,6 +1,6 @@
 # Template file for 'breeze'
 pkgname=breeze
-version=5.19.2
+version=5.19.4
 revision=1
 build_style=cmake
 configure_args="-DBUILD_TESTING=OFF"
@@ -10,11 +10,11 @@ makedepends="frameworkintegration-devel kcmutils-devel kdecoration-devel
  fftw-devel plasma-framework-devel"
 depends="breeze-icons frameworkintegration breeze-snow-cursor-theme"
 short_desc="Breeze visual style for the Plasma Desktop"
-maintainer="John <johnz@posteo.net>"
+maintainer="John <me@johnnynator.dev>"
 license="GPL-2.0-or-later"
-homepage="https://projects.kde.org/projects/plasma/breeze"
+homepage="https://invent.kde.org/plasma/breeze"
 distfiles="${KDE_SITE}/plasma/${version}/${pkgname}-${version}.tar.xz"
-checksum=bee5a1c01533895ad98a2ceea9b6cf56b75fc6cb78ea87765a3995a802d614c8
+checksum=02171c903d2fc7ec7b6a25c9507290602be3f0f195fcd9388ff0db421415ff11
 
 if [ "$CROSS_BUILD" ]; then
 	hostmakedepends+=" kpackage-devel kconfig-devel kcoreaddons-devel plasma-framework"

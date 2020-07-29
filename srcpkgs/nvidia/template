@@ -3,9 +3,9 @@
 _desc="NVIDIA drivers for linux"
 
 pkgname=nvidia
-version=450.51
+version=450.57
 revision=1
-maintainer="Juan RP <xtraeme@gmail.com>"
+maintainer="Andrew Benson <abenson+void@gmail.com>"
 license="custom:NVIDIA Proprietary"
 homepage="https://www.nvidia.com"
 
@@ -20,10 +20,12 @@ conflicts="xserver-abi-video>24_1"
 _pkg="NVIDIA-Linux-x86_64-${version}"
 distfiles="http://uk.download.nvidia.com/XFree86/Linux-x86_64/${version}/${_pkg}.run"
 checksum=c25155bc5ad0121f1665047d5719cb17c60c9453b9a8fad9dea9cb334eaaea9e
+# subpackages need to be processed in this specific order
+>>>>>>> 214aecb95863fa98fb173ca4bd74406ad7cdcea5
 subpackages="nvidia-gtklibs nvidia-dkms nvidia-opencl nvidia-libs nvidia-libs-32bit"
 depends="nvidia-libs-${version}_${revision}
  nvidia-gtklibs-${version}_${revision}
- nvidia-dkms-${version}_${revision} pkgconf"
+ nvidia-dkms-${version}_${revision}"
 
 _install_libs() {
 	local libdir=$1
@@ -96,6 +98,12 @@ _install_libs() {
 		${DESTDIR}/${libdir}/libnvidia-ptxjitcompiler.so.1
 	ln -sf libnvidia-ptxjitcompiler.so.1 \
 		${DESTDIR}/${libdir}/libnvidia-ptxjitcompiler.so
+
+	vinstall libnvidia-allocator.so.${version} 755 ${libdir}
+	ln -sf libnvidia-allocator.so.${version} \
+		${DESTDIR}/${libdir}/libnvidia-allocator.so.1
+	ln -sf libnvidia-allocator.so.1 \
+		${DESTDIR}/${libdir}/libnvidia-allocator.so
 
 	# helper libs for approved partners' GRID remote apps
 	vinstall libnvidia-ifr.so.${version} 755 usr/lib
@@ -181,8 +189,14 @@ do_install() {
 	gzip -d nvidia-modprobe.1.gz
 	vman nvidia-modprobe.1
 
+	# nvidia-persistenced
+	vinstall nvidia-persistenced 4755 usr/bin
+	gzip -d nvidia-persistenced.1.gz
+	vman nvidia-persistenced.1
+
 	# opencl pkg
 	vinstall nvidia.icd 644 etc/OpenCL/vendors
+	vinstall nvidia_layers.json 644 usr/share/vulkan/implicit_layer.d
 
 	vinstall libnvidia-compiler.so.${version} 755 usr/lib
 
@@ -217,9 +231,12 @@ do_install() {
 		-e 's/__MAKEJOBS/-j$(nproc)/g' \
 		-i ${DESTDIR}/usr/src/nvidia-${version}/dkms.conf
 
+	# Xorg conf for PRIME
 	vmkdir /usr/share/X11/xorg.conf.d/
 	vinstall ${FILESDIR}/nvidia-drm-outputclass.conf 644 \
 		/usr/share/X11/xorg.conf.d 10-nvidia-drm-outputclass.conf
+
+	vbin ${FILESDIR}/prime-run
 
 	# Blacklist nouveau
 	vmkdir usr/lib/modprobe.d
@@ -230,6 +247,13 @@ do_install() {
 	vlicense LICENSE
 	vdoc README.txt README
 	vdoc NVIDIA_Changelog
+
+	# ngx is 64-bit only
+	vinstall libnvidia-ngx.so.${version} 755 usr/lib
+	ln -sf libnvidia-ngx.so.${version} \
+		${DESTDIR}/usr/lib/libnvidia-ngx.so.1
+	ln -sf libnvidia-ngx.so.1 \
+		${DESTDIR}/usr/lib/libnvidia-ngx.so
 
 	# Libraries (64bit)
 	_install_libs usr/lib
@@ -244,6 +268,7 @@ nvidia-gtklibs_package() {
 		vmove "usr/lib/lib*gtk*.so*"
 	}
 }
+
 nvidia-libs-32bit_package() {
 	short_desc="${_desc} - common libraries (32bit)"
 	# manually set 32bit depends for libglvnd
@@ -253,6 +278,7 @@ nvidia-libs-32bit_package() {
 		vmove usr/lib32
 	}
 }
+
 nvidia-libs_package() {
 	short_desc="${_desc} - common libraries"
 	depends="libglvnd"
@@ -260,6 +286,7 @@ nvidia-libs_package() {
 		vmove usr/lib
 	}
 }
+
 nvidia-dkms_package() {
 	short_desc="${_desc} - DKMS kernel module"
 	dkms_modules="nvidia ${version}"
@@ -269,6 +296,7 @@ nvidia-dkms_package() {
 		vmove usr/lib/modprobe.d
 	}
 }
+
 nvidia-opencl_package() {
 	short_desc="${_desc} - OpenCL implementation"
 	depends="libOpenCL"

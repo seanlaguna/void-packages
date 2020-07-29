@@ -1,6 +1,6 @@
 # Template file for 'postfix'
 pkgname=postfix
-version=3.5.3
+version=3.5.6
 revision=1
 hostmakedepends="perl m4"
 makedepends="icu-devel libldap-devel libmysqlclient-devel pcre-devel
@@ -10,7 +10,7 @@ maintainer="Benjamín Albiñana <benalb@gmail.com>"
 license="IPL-1.0, EPL-2.0"
 homepage="http://www.postfix.org/"
 distfiles="http://ftp.porcupine.org/mirrors/postfix-release/official/${pkgname}-${version}.tar.gz"
-checksum=e381089cf2a03105042835776f23489c0a58600a6a6ebc8cb59f5cb1eb4d8d75
+checksum=8ec0aa671582adce157675e15da1dfa7ac2b5ff653571addba643735d0ec1e6a
 
 system_accounts="postfix"
 postfix_homedir="/var/spool/postfix"

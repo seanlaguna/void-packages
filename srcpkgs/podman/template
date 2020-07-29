@@ -1,10 +1,9 @@
 # Template file for 'podman'
 pkgname=podman
-version=2.0.0
+version=2.0.3
 revision=1
-wrksrc="libpod-${version}"
 build_style=go
-go_import_path="github.com/containers/libpod"
+go_import_path="github.com/containers/libpod/v2"
 go_package="${go_import_path}/cmd/podman"
 go_build_tags="seccomp apparmor containers_image_ostree_stub
  btrfs_noversion exclude_graphdriver_btrfs"
@@ -16,7 +15,7 @@ maintainer="Cameron Nemo <cnemo@tutanota.com>"
 license="Apache-2.0"
 homepage="https://podman.io/"
 distfiles="https://github.com/containers/libpod/archive/v${version}.tar.gz"
-checksum=3abb67c0c786f54e1a1362f87248be0baf64137f74ff0c7fbc8d2426efd104ee
+checksum=924f1b8579e4c2f0f7413f8ff8e952c65243a61b5f3a73764e1600670714ad70
 
 if [ "$CROSS_BUILD" ]; then
 	go_build_tags+=" containers_image_openpgp"
