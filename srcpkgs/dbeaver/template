@@ -1,6 +1,6 @@
 # Template file for 'dbeaver'
 pkgname=dbeaver
-version=7.1.4
+version=7.2.0
 revision=1
 archs="x86_64"
 hostmakedepends="apache-maven-bin"
@@ -9,7 +9,7 @@ maintainer="Kyle Nusbaum <knusbaum+void@sdf.org>"
 license="Apache-2.0"
 homepage="https://dbeaver.io"
 distfiles="https://github.com/dbeaver/dbeaver/archive/${version}.tar.gz"
-checksum=9256089c328c0757a207b0945f6453aa1cbb7e7608bec43be37ee1cf1e0d8502
+checksum=ac1bde32670e88a637c6c62105c6fc960e4ed292cbcfb260f22d97b2203ffb58
 nopie=true
 
 do_build() {

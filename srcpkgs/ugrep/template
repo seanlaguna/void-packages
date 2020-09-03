@@ -1,6 +1,6 @@
 # Template file for 'ugrep'
 pkgname=ugrep
-version=2.5.2
+version=2.5.4
 revision=1
 build_style=gnu-configure
 configure_args="--disable-avx"
@@ -10,4 +10,4 @@ maintainer="Leah Neukirchen <leah@vuxu.org>"
 license="BSD-3-Clause"
 homepage="https://github.com/Genivia/ugrep"
 distfiles="https://github.com/Genivia/ugrep/archive/v${version}.tar.gz"
-checksum=a7b7a7db99a24b6191d7e381c536a88998d995f2ccd308ea5aba015155f8be6f
+checksum=874e61d39c8b217605e1c0604d265dda93efd0167667423e53098615bba4d03b
