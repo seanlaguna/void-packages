@@ -1,35 +1,35 @@
 # Template file for 'linux58-tkg-${_cpusched}-${_compiler_name}'
 # based on PKGBUILD from Tk-Glitch <ti3nou@gmail.com>
 _basever=58
+version=5.8.6 # forced version number
+create_wrksrc=yes
+wrksrc=linux-${version}
 _where="${XBPS_SRCPKGDIR}/linux${_basever}-tkg/files"
 srcdir="$_where"
+source ${_where}/customization.cfg
 source ${_where}/linux${_basever}-tkg-config/prepare
 _tkg_initscript
 pkgname=linux58-tkg-${_cpusched}-${_compiler_name}
 _sub=6
-version=5.8.6 # forced version number
 _version=5.8
 revision=6
 archs="x86_64" # PKGBUILD declares x86_64 only
-create_wrksrc=yes
-wrksrc=linux-${version}
 python_version=3
 patch_args="-Np1"
-hostmakedepends="schedtool xmlto libressl-devel docbook-xsl kmod inetutils bc libelf patchutils flex python3-Sphinx python3-sphinx_rtd_theme graphviz ImageMagick perl uboot-mkimage cpio gmp-devel libmpc-devel elfutils-devel pahole"
+hostmakedepends="schedtool xmlto libressl-devel docbook-xsl kmod inetutils bc libelf patchutils flex python3-Sphinx python3-sphinx_rtd_theme graphviz ImageMagick perl uboot-mkimage cpio gmp-devel libmpc-devel elfutils-devel pahole clang llvm lld"
 makedepends="xz"
 triggers="kernel-hooks"
-_kernver="${_version}.${_sub}-tkg-bmq-${_cpusched}-${_compiler_name}"
-kernel_hooks_version="${_version}.${_sub}-tkg-bmq-${_cpusched}-${_compiler_name}"
+_kernver="${version}-tkg-${_cpusched}-${_compiler_name}_${revision}"
+_make_kernver="-tkg-${_cpusched}-${_compiler_name}_${revision}"
+kernel_hooks_version="${version}-tkg-${_cpusched}-${_compiler_name}_${revision}"
 short_desc="Linux-tkg BMQ/PrjC CPU Scheduler"
 maintainer="Hyper-KVM <hyperkvmx86@gmail.com>"
 license="GPL-2.0-only"
 homepage="http://www.kernel.org"
 distfiles="https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-${version}.tar.xz
 https://raw.githubusercontent.com/graysky2/kernel_gcc_patch/master/enable_additional_cpu_optimizations_for_gcc_v10.1+_kernel_v5.8+.patch"
-#https://www.kernel.org/pub/linux/kernel/v5.x/patch-${_version}.xz"
-checksum="f8d2a4fe938ff7faa565765a52e347e518a0712ca6ddd41b198bd9cc1626a724
+checksum="8ca500ed7b2ed68f004560ea4c6b02c902f8fe1d62ace7a29a5e38a0909a0ba0
 5ab29eb64e57df83b395a29a6a4f89030d142feffbfbf73b3afc6d97a2a7fd12"
-#febbb12fde35d754628930805f696d692d5e17fcea34469b96a81072b9dd7179"
 nostrip=yes
 noshlibprovides=yes
 preserve=yes
@@ -70,62 +70,15 @@ echo '    `:sdNNNNNNNNNNNNNNNNNNNNNNNNNds:`'
 echo '       `-+shdNNNNNNNNNNNNNNNdhs+-`'
 echo '             `.-:///////:-.`'
 
-if [ -e ${FILESDIR}/cpuschedset ]; then
-  rm ${FILESDIR}/cpuschedset
-fi
-
-source "${FILESDIR}"/customization.cfg # load default configuration from file
-
-# Load external configuration file if present. Available variable values will overwrite customization.cfg ones.
-if [ -e "$_EXT_CONFIG_PATH" ]; then
-	source "$_EXT_CONFIG_PATH" && echo "External configuration file $_EXT_CONFIG_PATH will be used to override customization.cfg values." && echo ""
-fi
-
-if [ -z "$_OPTIPROFILE" ] && [ ! -e "$FILESDIR"/cpuschedset ]; then
-	# Prompt about optimized configurations. Available variable values will overwrite customization.cfg/external config ones.
-  	echo "Do you want to use a predefined optimized profile?"
-  	read -rp "`echo $'  > 1.Custom\n    2.Ryzen Desktop (Performance)\n    3.Other Desktop (Performance)\nchoice[1-3?]: '`" _OPTIPROFILE;
-fi
-if [ "$_OPTIPROFILE" == "2" ]; then
-  source "$FILESDIR"/linux58-tkg-config/ryzen-desktop-profile.cfg && echo "Ryzen Desktop (Performance) profile will be used." && echo ""
-elif [ "$_OPTIPROFILE" == "3" ]; then
-  source "$FILESDIR"/linux58-tkg-config/generic-desktop-profile.cfg && echo "Generic Desktop (Performance) profile will be used." && echo ""
-fi
-
-# CPU SCHED selector
-if [ -z "$_cpusched" ] && [ ! -e "$FILESDIR"/cpuschedset ]; then
-  echo "What CPU sched variant do you want to build/install?"
-  read -rp "`echo $'  > 1.PDS\n    2.MuQSS\n    3.PrjC / BMQ\n    4.CFS\nchoice[1-4?]: '`" CONDITION;
-  if [ "$CONDITION" == "2" ]; then
-    echo "_cpusched=\"MuQSS\"" > "$FILESDIR"/cpuschedset
-  elif [ "$CONDITION" == "3" ]; then
-    echo "_cpusched=\"bmq\"" > "$FILESDIR"/cpuschedset
-  elif [ "$CONDITION" == "4" ]; then
-    echo "_cpusched=\"cfs\"" > "$FILESDIR"/cpuschedset
-  else
-    echo "_cpusched=\"pds\"" > "$FILESDIR"/cpuschedset
-  fi
-  if [ -n "$_custom_pkgbase" ]; then
-    echo "_custom_pkgbase=\"${_custom_pkgbase}\"" >> "$FILESDIR"/cpuschedset
-  fi
-elif [ "$_cpusched" == "muqss" ] || [ "$_cpusched" == "MuQSS" ]; then
-  echo "_cpusched=\"MuQSS\"" > "$FILESDIR"/cpuschedset
-elif [ "$_cpusched" == "pds" ]; then
-  echo "_cpusched=\"pds\"" > "$FILESDIR"/cpuschedset
-elif [ "$_cpusched" == "bmq" ]; then
-  echo "_cpusched=\"bmq\"" > "$FILESDIR"/cpuschedset
-else
-  echo "_cpusched=\"cfs\"" > "$FILESDIR"/cpuschedset
-fi
-
-source "$FILESDIR"/cpuschedset
+#if [ -e ${FILESDIR}/cpuschedset ]; then
+#  rm ${FILESDIR}/cpuschedset
+#fi
 
 if [ -n "$_custom_pkgbase" ]; then
   pkgbase="${_custom_pkgbase}"
 else
-  pkgbase=linux"${_version}"-tkg-"${_cpusched}"
+  pkgbase=linux"${_basever}"-tkg-"${_cpusched}"
 fi
-
 
 export KBUILD_BUILD_HOST=voidlinux
 export KBUILD_BUILD_USER=$pkgbase
@@ -133,14 +86,12 @@ export KBUILD_BUILD_TIMESTAMP="$(date -Ru${SOURCE_DATE_EPOCH:+d @$SOURCE_DATE_EP
 
   ln -sf "${FILESDIR}/customization.cfg" "${wrksrc}" # workaround
 
-  source "${FILESDIR}/linux58-tkg-config/prepare"
   _tkg_srcprep
-
 }
 
 do_build() {
 
-  source "${FILESDIR}/linux58-tkg-config/prepare"
+#  source "${FILESDIR}/linux58-tkg-config/prepare"
   cd ${wrksrc}/linux-${version}
 
   # Use custom compiler paths if defined
@@ -163,7 +114,7 @@ do_build() {
   fi
 
   # build!
-  _runtime=$( time ( schedtool -B -n 1 -e ionice -n 1 make ${_force_all_threads} LOCALVERSION=-tkg-${_cpusched} bzImage modules 2>&1 ) 3>&1 1>&2 2>&3 ) || _runtime=$( time ( make ${_force_all_threads} LOCALVERSION=-tkg-${_cpusched} bzImage modules 2>&1 ) 3>&1 1>&2 2>&3 )
+  _runtime=$( time ( schedtool -B -n 1 -e ionice -n 1 make ${_force_all_threads} ${_compiler} LOCALVERSION=${_make_kernver} bzImage modules 2>&1 ) 3>&1 1>&2 2>&3 ) || _runtime=$( time ( make ${_force_all_threads} ${_compiler} LOCALVERSION=${_make_kernver} bzImage modules 2>&1 ) 3>&1 1>&2 2>&3 )
 
   if [ -n "$_runtime" ]; then
     printf "compilation time : \n$_runtime"
@@ -172,7 +123,6 @@ do_build() {
 
 do_install() {
 	
-	source "${FILESDIR}/linux58-tkg-config/prepare"
 	cd ${wrksrc}/linux-${version}
 
 	local arch subarch _args hdrdest
@@ -475,3 +425,4 @@ case $_cpusched-$_compiler_name in
   		}
 	}
 esac
+
