@@ -1,22 +1,21 @@
 # Template file for 'linux58-tkg-${_cpusched}-${_compiler_name}'
 # based on PKGBUILD from Tk-Glitch <ti3nou@gmail.com>
 _basever=58
-version=5.8.6 # forced version number
+version=5.8.7 # forced version number
 create_wrksrc=yes
 wrksrc=linux-${version}
+_distro="Void"
 _where="${XBPS_SRCPKGDIR}/linux${_basever}-tkg/files"
 srcdir="$_where"
 source ${_where}/customization.cfg
 source ${_where}/linux${_basever}-tkg-config/prepare
 _tkg_initscript
 pkgname=linux58-tkg-${_cpusched}-${_compiler_name}
-_sub=6
-_version=5.8
 revision=6
 archs="x86_64" # PKGBUILD declares x86_64 only
 python_version=3
 patch_args="-Np1"
-hostmakedepends="schedtool xmlto libressl-devel docbook-xsl kmod inetutils bc libelf patchutils flex python3-Sphinx python3-sphinx_rtd_theme graphviz ImageMagick perl uboot-mkimage cpio gmp-devel libmpc-devel elfutils-devel pahole clang llvm lld"
+hostmakedepends="schedtool xmlto libressl-devel docbook-xsl kmod inetutils bc libelf patchutils flex python3-Sphinx python3-sphinx_rtd_theme graphviz ImageMagick perl uboot-mkimage cpio gmp-devel libmpc-devel elfutils-devel pahole"
 makedepends="xz"
 triggers="kernel-hooks"
 _kernver="${version}-tkg-${_cpusched}-${_compiler_name}_${revision}"
@@ -28,12 +27,15 @@ license="GPL-2.0-only"
 homepage="http://www.kernel.org"
 distfiles="https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-${version}.tar.xz
 https://raw.githubusercontent.com/graysky2/kernel_gcc_patch/master/enable_additional_cpu_optimizations_for_gcc_v10.1+_kernel_v5.8+.patch"
-checksum="8ca500ed7b2ed68f004560ea4c6b02c902f8fe1d62ace7a29a5e38a0909a0ba0
+checksum="7b0bf5029c94df72d1244b6b77e79e376cff2817a782c3ac50767a4121fd17fe
 5ab29eb64e57df83b395a29a6a4f89030d142feffbfbf73b3afc6d97a2a7fd12"
 nostrip=yes
 noshlibprovides=yes
 preserve=yes
 nodebug=yes
+if [ "$_compiler_name" = "llvm" ]; then
+  hostmakedepends+=" llvm clang lld"
+fi
 
 # These files could be modified when an external module is built.
 mutable_files="
@@ -69,10 +71,6 @@ echo '   /dNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNd/'
 echo '    `:sdNNNNNNNNNNNNNNNNNNNNNNNNNds:`'
 echo '       `-+shdNNNNNNNNNNNNNNNdhs+-`'
 echo '             `.-:///////:-.`'
-
-#if [ -e ${FILESDIR}/cpuschedset ]; then
-#  rm ${FILESDIR}/cpuschedset
-#fi
 
 if [ -n "$_custom_pkgbase" ]; then
   pkgbase="${_custom_pkgbase}"
