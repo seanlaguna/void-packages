@@ -17,8 +17,8 @@ plain() {
 create_wrksrc=yes
 wrksrc=linux-tkg
 _distro="Void"
-_where="${XBPS_SRCPKGDIR}/linux${_basever}-tkg/files"
-srcdir="$_where"
+_where="${XBPS_SRCPKGDIR}/linux-tkg/files"
+srcdir="${XBPS_BUILDDIR}/${wrksrc}"
 source ${_where}/customization.cfg
 source ${_where}/linux-tkg-config/prepare
 _tkg_initscript
