@@ -139,7 +139,7 @@ _tkg_initscript() {
       echo "_cpusched=\"cfs\"" > "${_path}"/cpuschedset
     elif [ "$_cpusched" = "bmq" ]; then
       echo "_cpusched=\"bmq\"" > "${_path}"/cpuschedset
-    elif [ "$_cpusched" = "muqss" ] && [ "$_basever" = "57" ]; then
+    elif [ "$_cpusched" = "muqss" ] || [ "$_cpusched" = "MuQSS" ]; then
       echo "_cpusched=\"MuQSS\"" > "${_path}"/cpuschedset
     else
       if [ "$_nofallback" != "true" ]; then
@@ -153,7 +153,6 @@ _tkg_initscript() {
         exit 1
       fi
     fi
-#  elif [ "$_basever" = "58" ]; then
   else
     if [ -n "$_custom_pkgbase" ]; then
       echo "_custom_pkgbase=\"${_custom_pkgbase}\"" >> "${_path}"/cpuschedset
@@ -416,8 +415,7 @@ _tkg_srcprep() {
     fi
   fi
   # Skip dbg package creation on non-Arch
-  echo $_distro
-  if [ "$_distro" != "Arch" ] || [ "$_distro" = "Void" ]; then
+  if [ "$_distro" != "Arch" ]; then
     sed -i -e 's/CONFIG_DEBUG_INFO.*/CONFIG_DEBUG_INFO=n/' ${_confdir}/.config
   fi
 
@@ -806,6 +804,7 @@ _tkg_srcprep() {
       echo "# CONFIG_HZ_500_NODEF is not set" >> ${_confdir}/.config
       echo "# CONFIG_HZ_250_NODEF is not set" >> ${_confdir}/.config
       echo "# CONFIG_HZ_300_NODEF is not set" >> ${_confdir}/.config
+      echo TIMES
       echo "CONFIG_HZ_100=y" >> ${_confdir}/.config
       echo "CONFIG_HZ_100_NODEF=y" >> ${_confdir}/.config
   else

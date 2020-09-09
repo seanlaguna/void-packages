@@ -127,9 +127,7 @@ export KBUILD_BUILD_HOST=voidlinux
 export KBUILD_BUILD_USER=$pkgbase
 export KBUILD_BUILD_TIMESTAMP="$(date -Ru${SOURCE_DATE_EPOCH:+d @$SOURCE_DATE_EPOCH})"
 
-  ln -sf "${FILESDIR}/customization.cfg" "${wrksrc}" # workaround
-
-  _tkg_srcprep
+_tkg_srcprep
 }
 
 do_build() {
