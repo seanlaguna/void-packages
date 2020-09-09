@@ -20,26 +20,41 @@ _tkg_initscript() {
           echo "_basever=58" > "$_path"/versel
           echo "_basekernel=5.8" >> "$_path"/versel
           echo "_sub=7" >> "$_path"/versel
+	  if [ "$_distro" = "Void" ]; then
+	    version=5.8.7
+	  fi
           ;;
           "2")
           echo "_basever=59" > "$_path"/versel
           echo "_basekernel=5.9" >> "$_path"/versel
           echo "_sub=rc4" >> "$_path"/versel
+	  if [ "$_distro" = "Void" ]; then
+	    version=5.9.0
+	  fi
           ;;
           "3")
           echo "_basever=57" > "$_path"/versel
           echo "_basekernel=5.7" >> "$_path"/versel
           echo "_sub=19" >> "$_path"/versel
+	  if [ "$_distro" = "Void" ]; then
+	    version=5.7.19
+	  fi
           ;;
           "4")
 	  echo "_basever=54" > "$_path"/versel
 	  echo "_basekernel=5.4" >> "$_path"/versel
 	  echo "_sub=63" >> "$_path"/versel
+	  if [ "$_distro" = "Void" ]; then
+	    version=5.4.63
+	  fi
 	  ;;
           *)
           echo "_basever=58" > "$_path"/versel
           echo "_basekernel=5.8" >> "$_path"/versel
           echo "_sub=7" >> "$_path"/versel
+	  if [ "$_distro" = "Void" ]; then
+	    version=5.8.7
+	  fi
           ;;
     esac
   fi
