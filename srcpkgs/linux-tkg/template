@@ -51,26 +51,28 @@ homepage="http://www.kernel.org"
 case "$_basever" in
 	"54")
 	opt_ver="4.19-v5.4"
+	cpu_opt_sum='27b7fc535ade94b636c3ec4e809e141831e9465a0ef55215a9852b87048629e2'
+	kernel_sum='e0260dae0da01163b1a3289ad9c5cc6ee4226720e199e8a1d982e24efda7ffc0'
 	;;
 	"57")
-	opt_ver="5.7"
+	opt_ver="5.7+"
 	cpu_opt_sum='1f56a2466bd9b4477925682d8f944fabb38727140e246733214fe50aa326fc47'
 	kernel_sum='419c6248b9ae4dfead4599787aecbfd202e88bc4124523adfa6dd2d642b99fe7'
 	;;
 	"58")
-	opt_ver="5.8"
+	opt_ver="5.8+"
 	cpu_opt_sum='5ab29eb64e57df83b395a29a6a4f89030d142feffbfbf73b3afc6d97a2a7fd12'
 	kernel_sum='7b0bf5029c94df72d1244b6b77e79e376cff2817a782c3ac50767a4121fd17fe'
 	;;
 	"59")
-	opt_ver="5.8"
+	opt_ver="5.8+"
 	cpu_opt_sum='5ab29eb64e57df83b395a29a6a4f89030d142feffbfbf73b3afc6d97a2a7fd12'
 	kernel_sum='13f9de1afcd547a537c92280a18899f3f1148eb35b98ceeeac1fe85e1b681820'
 	;;
 esac
 
 distfiles="${kernel_site}
-https://raw.githubusercontent.com/graysky2/kernel_gcc_patch/master/enable_additional_cpu_optimizations_for_gcc_v10.1+_kernel_v${opt_ver}+.patch"
+https://raw.githubusercontent.com/graysky2/kernel_gcc_patch/master/enable_additional_cpu_optimizations_for_gcc_v10.1+_kernel_v${opt_ver}.patch"
 checksum="${kernel_sum}
 ${cpu_opt_sum}"
 nostrip=yes
