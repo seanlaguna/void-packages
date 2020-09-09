@@ -177,7 +177,7 @@ _tkg_initscript() {
   esac
 
 # Compiler selector
-  if [ -z "$_compiler" ] && [ ! -e "${_path}"/compilerset ]; then
+  if [ -z "$_compiler" ] && [ ! -e "${_path}"/compilerset ] && [ "$_basever" != "57" ]; then
     plain "Which compiler do you want to use?"
     read -rp "`echo $'  > 1.GCC\n    2.Clang/LLVM\nchoice[1-2?]: '`" _CONDITION_LLVM;
     if [ "$_CONDITION_LLVM" = "2" ];then
@@ -189,6 +189,8 @@ _tkg_initscript() {
   elif [ "$_compiler" = "llvm" ]; then
       echo "_compiler_name=\"llvm\"" > ${_path}/compilerset
       echo "_compiler=\"LLVM=1 CFLAGS='${_llvm_compileropt}' CXXFLAGS='${_llvm_compileropt}'\"" >> ${_path}/compilerset
+  elif [ "$_basever" = "57" ]; then
+      echo "_compiler_name=\"gcc\"" > ${_path}/compilerset
   fi
 
   source "${_path}"/cpuschedset

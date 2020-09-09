@@ -308,7 +308,7 @@ do_install() {
         depmod -b ${DESTDIR}/usr -F System.map ${_kernver}
 }
 
-linux59-tkg-dbg_package() {
+linux-tkg-dbg_package() {
    	preserve=yes
         nostrip=yes
         noverifyrdeps=yes
