@@ -28,17 +28,16 @@ revision=4
 archs="x86_64" # PKGBUILD declares x86_64 only
 python_version=3
 patch_args="-Np1"
-hostmakedepends="schedtool xmlto libressl-devel docbook-xsl kmod inetutils bc libelf patchutils flex python3-Sphinx python3-sphinx_rtd_theme graphviz perl uboot-mkimage cpio gmp-devel libmpc-devel elfutils-devel pahole"
+hostmakedepends="schedtool xmlto libressl-devel docbook-xsl kmod inetutils bc libelf patchutils flex python3-Sphinx python3-sphinx_rtd_theme graphviz perl uboot-mkimage cpio gmp-devel libmpc-devel elfutils-devel pahole libcrypto45"
 makedepends="xz"
 triggers="kernel-hooks"
 
 if [[ "$_sub" = rc* ]]; then
-  version=${_basekernel}-${_sub}
+  version=${_basekernel}.0
   _rc_kern_ver=${_basekernel}-${_sub}
   _kern_ver_dir=${_basekernel}-${_sub}
   _kern_ver=${version}-${_sub}
   kernel_site="https://git.kernel.org/torvalds/t/linux-${_rc_kern_ver}.tar.gz"
-  _kern_ver=${version}-${_sub}
 else
   version=${_basekernel}.${_sub}
   _kern_ver=${_basekernel}.${_sub}
@@ -105,36 +104,36 @@ mutable_files="
 
 do_configure() {
 
-echo '       .---.`               `.---.'
-echo '    `/syhhhyso-           -osyhhhys/`'
-echo '   .syNMdhNNhss/``.---.``/sshNNhdMNys.'
-echo '   +sdMh.`+MNsssssssssssssssNM+`.hMds+'
-echo '   :syNNdhNNhssssssssssssssshNNhdNNys:'
-echo '    /ssyhhhysssssssssssssssssyhhhyss/'
-echo '    .ossssssssssssssssssssssssssssso.'
-echo '   :sssssssssssssssssssssssssssssssss:'
-echo '  /sssssssssssssssssssssssssssssssssss/'
-echo ' :sssssssssssssoosssssssoosssssssssssss:'
-echo ' osssssssssssssoosssssssoossssssssssssso'
-echo ' osssssssssssyyyyhhhhhhhyyyyssssssssssso'
-echo ' /yyyyyyhhdmmmmNNNNNNNNNNNmmmmdhhyyyyyy/'
-echo '  smmmNNNNNNNNNNNNNNNNNNNNNNNNNNNNNmmms'
-echo '   /dNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNd/'
-echo '    `:sdNNNNNNNNNNNNNNNNNNNNNNNNNds:`'
-echo '       `-+shdNNNNNNNNNNNNNNNdhs+-`'
-echo '             `.-:///////:-.`'
+  echo '       .---.`               `.---.'
+  echo '    `/syhhhyso-           -osyhhhys/`'
+  echo '   .syNMdhNNhss/``.---.``/sshNNhdMNys.'
+  echo '   +sdMh.`+MNsssssssssssssssNM+`.hMds+'
+  echo '   :syNNdhNNhssssssssssssssshNNhdNNys:'
+  echo '    /ssyhhhysssssssssssssssssyhhhyss/'
+  echo '    .ossssssssssssssssssssssssssssso.'
+  echo '   :sssssssssssssssssssssssssssssssss:'
+  echo '  /sssssssssssssssssssssssssssssssssss/'
+  echo ' :sssssssssssssoosssssssoosssssssssssss:'
+  echo ' osssssssssssssoosssssssoossssssssssssso'
+  echo ' osssssssssssyyyyhhhhhhhyyyyssssssssssso'
+  echo ' /yyyyyyhhdmmmmNNNNNNNNNNNmmmmdhhyyyyyy/'
+  echo '  smmmNNNNNNNNNNNNNNNNNNNNNNNNNNNNNmmms'
+  echo '   /dNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNd/'
+  echo '    `:sdNNNNNNNNNNNNNNNNNNNNNNNNNds:`'
+  echo '       `-+shdNNNNNNNNNNNNNNNdhs+-`'
+  echo '             `.-:///////:-.`'
 
-if [ -n "$_custom_pkgbase" ]; then
-  pkgbase="${_custom_pkgbase}"
-else
-  pkgbase=linux"${_basever}"-tkg-"${_cpusched}"
-fi
+  if [ -n "$_custom_pkgbase" ]; then
+    pkgbase="${_custom_pkgbase}"
+  else
+    pkgbase=linux"${_basever}"-tkg-"${_cpusched}-${_compiler_name}"
+  fi
 
-export KBUILD_BUILD_HOST=voidlinux
-export KBUILD_BUILD_USER=$pkgbase
-export KBUILD_BUILD_TIMESTAMP="$(date -Ru${SOURCE_DATE_EPOCH:+d @$SOURCE_DATE_EPOCH})"
+  export KBUILD_BUILD_HOST=voidlinux
+  export KBUILD_BUILD_USER=$pkgbase
+  export KBUILD_BUILD_TIMESTAMP="$(date -Ru${SOURCE_DATE_EPOCH:+d @$SOURCE_DATE_EPOCH})"
 
-_tkg_srcprep
+  _tkg_srcprep
 }
 
 do_build() {
