@@ -1,0 +1,336 @@
+# Template file for 'llvm11'
+# -DCMAKE_C_COMPILER=/usr/bin/clang 
+# -DCMAKE_CXX_COMPILER=/usr/bin/clang++
+# -DCMAKE_VERBOSE_MAKEFILE=TRUE"
+pkgname=llvm11
+version=11.0.0
+_version=${version}rc2
+_sub=rc2
+revision=5
+wrksrc="llvm-${_version}.src"
+build_style=cmake
+configure_args="
+ -DCMAKE_BUILD_TYPE=Release
+ -DLLVM_INSTALL_UTILS=ON
+ -DLLVM_BUILD_LLVM_DYLIB=ON
+ -DLLVM_LINK_LLVM_DYLIB=ON
+ -DLLVM_ENABLE_RTTI=ON
+ -DLLVM_ENABLE_FFI=ON
+ -DLLVM_BINUTILS_INCDIR=/usr/include
+ -DLLVM_TARGETS_TO_BUILD=X86"
+hostmakedepends="groff perl python3 zlib-devel libffi-devel swig clang llvm lld"
+makedepends="python3-devel zlib-devel libffi-devel libedit-devel
+ libxml2-devel binutils-devel libatomic-devel"
+#depends="libllvm11"
+short_desc="Low Level Virtual Machine"
+maintainer="q66 <daniel@octaforge.org>"
+license="NCSA"
+homepage="https://www.llvm.org"
+distfiles="
+ https://github.com/llvm/llvm-project/releases/download/llvmorg-${version}-${_sub}/llvm-${_version}.src.tar.xz
+ https://github.com/llvm/llvm-project/releases/download/llvmorg-${version}-${_sub}/lldb-${_version}.src.tar.xz
+ https://github.com/llvm/llvm-project/releases/download/llvmorg-${version}-${_sub}/lld-${_version}.src.tar.xz
+ https://github.com/llvm/llvm-project/releases/download/llvmorg-${version}-${_sub}/clang-${_version}.src.tar.xz
+ https://github.com/llvm/llvm-project/releases/download/llvmorg-${version}-${_sub}/clang-tools-extra-${_version}.src.tar.xz
+ https://github.com/llvm/llvm-project/releases/download/llvmorg-${version}-${_sub}/compiler-rt-${_version}.src.tar.xz
+ https://github.com/llvm/llvm-project/releases/download/llvmorg-${version}-${_sub}/polly-${_version}.src.tar.xz"
+checksum="
+ 5003eb42bc301f279b11ee458b96be2970241b36d7774f00670d050baf3d2c94
+ 030be3597d9b445fbdeb42fc04be6a5f4fa061cc359e3f199be376b8a7406541
+ 28abba61ab3aae21b7178abf92935233a28b822e18832b00cd19e8161d2b1f53
+ 28ddf2caf2a66d3eaea56366bc1fbeed65c58426fff4183f99cf1130bb2d3ba3
+ da8df01d9110168fe07ebd535fbf0f9d41f61692786fd01c2e72b5596d52e22d
+ 6f6f590228cd1d87c16f611490a68e8329847fbd68cc0f03a8ce75a6cc55cf61
+ 32be9a89e1f8d935a72fc9495459121b089e29ee69cd47aab26838d8d5755d31"
+lib32disabled=yes
+python_version=3
+
+_lldb_enable=yes
+
+if [ "$CROSS_BUILD" ]; then
+	_lldb_enable=no
+fi
+
+case "$XBPS_TARGET_MACHINE" in
+	ppc64le*) ;;
+	ppc*) _lldb_enable=no ;;
+esac
+
+subpackages="clang-tools-extra clang clang-analyzer libclang libclang-cpp libllvm11 polly"
+if [ "$_lldb_enable" = "yes" ]; then
+	# XXX fails to cross compile due to python
+	subpackages+=" lldb lldb-devel"
+fi
+subpackages+=" lld lld-devel"
+
+post_patch() {
+#	# patches
+#	cd ${XBPS_BUILDDIR}/llvm-${_version}.src
+#	for i in ${FILESDIR}/patches/llvm/llvm-*.patch; do
+#		msg_normal "Applying $i to llvm\n"
+#		patch -sNp1 -i ${i}
+#	done
+#
+#	cd ${XBPS_BUILDDIR}/clang-${_version}.src
+#	for i in ${FILESDIR}/patches/clang/clang-*.patch; do
+#		msg_normal "Applying $i to clang\n"
+#		patch -sNp1 -i ${i}
+#	done
+
+	case "$XBPS_TARGET_MACHINE" in
+	armv5*)
+		cd ${XBPS_BUILDDIR}/compiler-rt-${_version}.src
+		for i in ${FILESDIR}/patches/compiler-rt/compiler-rt-*.patch; do
+			msg_normal "Applying $i to compiler-rt\n"
+			patch -sNp1 -i ${i}
+		done
+		;;
+	esac
+
+	if [ "$_lldb_enable" = "yes" ]; then
+		cd ${XBPS_BUILDDIR}/lldb-${_version}.src
+		for i in ${FILESDIR}/patches/lldb/*.patch; do
+			msg_normal "Applying $i to lldb\n"
+			patch -sNp1 -i ${i}
+		done
+		case "$XBPS_TARGET_MACHINE" in
+			*-musl) sed -i 's|__ptrace_request|int|g' source/Plugins/Process/Linux/NativeProcessLinux.cpp ;;
+		esac
+	fi
+
+	# Move clang files into the llvm source.
+	if [ -d ${XBPS_BUILDDIR}/clang-${_version}.src ]; then
+		mv ${XBPS_BUILDDIR}/clang-${_version}.src ${wrksrc}/tools/clang
+	fi
+	# Move clang-tools-extra files into llvm source.
+	if [ -d ${XBPS_BUILDDIR}/clang-tools-extra-${_version}.src ]; then
+		mv ${XBPS_BUILDDIR}/clang-tools-extra-${_version}.src ${wrksrc}/tools/clang/tools/extra
+	fi
+	# Move lld files into the llvm source.
+	if [ -d ${XBPS_BUILDDIR}/lld-${_version}.src ]; then
+		mv ${XBPS_BUILDDIR}/lld-${_version}.src ${wrksrc}/tools/lld
+	fi
+	# Move lldb files into the llvm source.
+	if [ -d ${XBPS_BUILDDIR}/lldb-${_version}.src ]; then
+		if [ "$_lldb_enable" = "yes" ]; then
+			mv ${XBPS_BUILDDIR}/lldb-${_version}.src ${wrksrc}/tools/lldb
+		else
+			rm -rf ${XBPS_BUILDDIR}/lldb-${_version}.src
+		fi
+	fi
+	# Move compiler-rt files into the llvm source.
+	if [ -d ${XBPS_BUILDDIR}/compiler-rt-${_version}.src ]; then
+		mv ${XBPS_BUILDDIR}/compiler-rt-${_version}.src ${wrksrc}/projects/compiler-rt
+	fi
+	# Move polly files into the llvm source.
+	if [ -d ${XBPS_BUILDDIR}/polly-${_version}.src ]; then
+		mv ${XBPS_BUILDDIR}/polly-${_version}.src ${wrksrc}/tools/polly
+	fi
+	case "$XBPS_TARGET_MACHINE" in
+		*-musl)
+			# Disable sanitizers
+			sed -i 's/set(COMPILER_RT_HAS_SANITIZER_COMMON TRUE)/set(COMPILER_RT_HAS_SANITIZER_COMMON FALSE)/' ${wrksrc}/projects/compiler-rt/cmake/config-ix.cmake
+			;;
+	esac
+
+}
+
+pre_configure() {
+	# Vastly reduce size of debugging symbols:
+	# # remove option not supported by clang
+#	CFLAGS=${CFLAGS/-fstack-clash-protection/}
+#	CXXFLAGS=${CXXFLAGS/-wd654/}
+#	CXXFLAGS=${CXXFLAGS/-fstack-clash-protection/}
+	CFLAGS=${CFLAGS/ -g/ -g1}
+	CXXFLAGS=${CXXFLAGS/ -g/ -g1}
+
+	# since gcc9, the build likes to blow up for ppc32 apparently because
+	# of clang being too large for a 24-bit relative call to the PLT, so
+	# optimize for size instead
+	case "$XBPS_TARGET_MACHINE" in
+		mips*-musl|ppc|ppc-musl) configure_args+=" -DVOID_CXX_OPT_FLAGS=-Os" ;;
+	esac
+
+	if [ "$CROSS_BUILD" ]; then
+		msg_normal "Building host tblgen\n"
+		mkdir -p build/HOST
+		cd build/HOST
+		CC="$BUILD_CC" CXX="$BUILD_CXX" CFLAGS="$BUILD_CFLAGS" \
+			CXXFLAGS="$BUILD_CXXFLAGS" LDFLAGS="$BUILD_LDFLAGS" \
+			cmake ../.. -DCMAKE_BUILD_TYPE=Release
+		make ${makejobs} -C utils/TableGen
+		make ${makejobs} -C tools/clang/utils/TableGen
+		configure_args+=" -DLLVM_TABLEGEN=${wrksrc}/build/HOST/bin/llvm-tblgen"
+		configure_args+=" -DCLANG_TABLEGEN=${wrksrc}/build/HOST/bin/clang-tblgen"
+		cd ../..
+	fi
+
+	case "$XBPS_TARGET_MACHINE" in
+		i686*) _arch="X86";;
+		x86_64*) _arch="X86";;
+		armv5*) _arch="Armv5te";;
+		armv6*) _arch="Armv6";;
+		armv7*) _arch="Armv7";;
+		aarch64*) _arch="AArch64";;
+		mips*) _arch="Mips";;
+		ppc*) _arch="PowerPC";;
+	esac
+	configure_args+=" -DLLVM_TARGET_ARCH=${_arch}"
+	configure_args+=" -DLLVM_HOST_TRIPLE=${XBPS_CROSS_TRIPLET:-$XBPS_TRIPLET}"
+	configure_args+=" -DLLVM_DEFAULT_TARGET_TRIPLE=${XBPS_CROSS_TRIPLET:-$XBPS_TRIPLET}"
+}
+
+do_install() {
+	vlicense LICENSE.TXT
+
+	cd build
+	cmake -DCMAKE_INSTALL_PREFIX=${DESTDIR}/usr -P cmake_install.cmake
+
+	# Fix permissions of static libs
+	chmod -x ${DESTDIR}/usr/lib/*.a
+
+	# Required for multilib.
+	if [ "$XBPS_TARGET_MACHINE" = "x86_64" ]; then
+		for _header in llvm-config; do
+			mv ${DESTDIR}/usr/include/llvm/Config/${_header}{,-64}.h
+			vinstall ${FILESDIR}/llvm-Config-${_header}.h 644 \
+				usr/include/llvm/Config ${_header}.h
+		done
+	fi
+
+	# Remove llvm-config-host in cross builds.
+	if [ "$CROSS_BUILD" ]; then
+		rm -f ${DESTDIR}/usr/bin/llvm-config-host
+	fi
+}
+
+clang-analyzer_package() {
+	archs=noarch
+	pycompile_dirs="usr/share/scan-view"
+	depends="clang-${version}_${revision} python3"
+	short_desc+=" - A source code analysis framework"
+	homepage="https://clang-analyzer.llvm.org/"
+	pkg_install() {
+		vmove usr/share/man/man1/scan-build.1
+		vmove "/usr/bin/scan-*"
+		vmove "/usr/share/scan-*"
+		vmove "/usr/libexec/*analyzer"
+	}
+}
+
+clang-tools-extra_package() {
+	lib32disabled=yes
+	depends="clang-${version}_${revision} python3"
+	short_desc+=" - Extra Clang tools"
+	homepage="https://clang.llvm.org/extra/"
+	pkg_install() {
+		vmove usr/bin/clang-apply-replacements
+		vmove usr/bin/clang-query
+		vmove usr/bin/clang-rename
+		vmove usr/bin/clang-tidy
+		vmove usr/bin/diagtool
+		vmove usr/bin/find-all-symbols
+		vmove usr/bin/hmaptool
+		vmove usr/bin/modularize
+		vmove usr/bin/pp-trace
+		vmove usr/bin/sancov
+		vmove "usr/lib/libclangApplyReplacements*"
+		vmove "usr/lib/libclangQuery*"
+		vmove "usr/lib/libclangTidy*"
+		vmove "usr/share/clang/*tidy*"
+	}
+}
+
+polly_package() {
+	short_desc+=" - Polyhedral Optimizations"
+	pkg_install() {
+		vmove usr/include/polly
+		vmove "usr/lib/libPolly*.a"
+		vmove usr/lib/cmake/polly
+	}
+}
+
+clang_package() {
+	lib32disabled=yes
+	depends="libstdc++-devel libgcc-devel  binutils ${XBPS_TARGET_LIBC}-devel
+	 libclang-${version}_${revision}"
+	short_desc+=" - C language family frontend"
+	homepage="https://clang.llvm.org/"
+	pkg_install() {
+		vmove usr/include/clang
+		vmove usr/include/clang-c
+		vmove "usr/bin/*clang*"
+		vmove usr/bin/c-index-test
+		vmove usr/lib/clang
+		vmove usr/lib/cmake/clang
+		vmove "usr/lib/libclang*.a"
+		vmove "usr/lib/libclang*.so"
+		vmove "usr/share/clang"
+	}
+}
+
+libclang_package() {
+	short_desc+=" - C frontend runtime library"
+	pkg_install() {
+		vmove "usr/lib/libclang.so.*"
+	}
+}
+
+libclang-cpp_package() {
+	short_desc+=" - C frontend runtime library (C++ interface)"
+	pkg_install() {
+		vmove "usr/lib/libclang-cpp.so.*"
+	}
+}
+
+lld_package() {
+	lib32disabled=yes
+	short_desc+=" - linker"
+	homepage="https://lld.llvm.org"
+	pkg_install() {
+		vmove usr/bin/lld*
+		vmove usr/bin/wasm-ld
+		vmove usr/bin/ld.lld*
+	}
+}
+
+lld-devel_package() {
+	lib32disabled=yes
+	short_desc+=" - linker - development files"
+	homepage="https://lld.llvm.org"
+	pkg_install() {
+		vmove usr/include/lld
+		vmove "usr/lib/liblld*a"
+	}
+}
+
+lldb_package() {
+	lib32disabled=yes
+	depends+=" python3-six"
+	short_desc+=" - LLDB debugger"
+	homepage="https://lldb.llvm.org/"
+	pkg_install() {
+		vmove usr/bin/*lldb*
+		vmove usr/lib/liblldb*so.*
+		vmove /usr/lib/python*
+		# Depend on python3-six instead of conflicting
+		rm ${PKGDESTDIR}/usr/lib/python3*/site-packages/six.py
+	}
+}
+
+lldb-devel_package() {
+	lib32disabled=yes
+	depends="lldb>=${_version}_${revision}"
+	short_desc+=" - LLDB debugger - development files"
+	pkg_install() {
+		vmove usr/include/lldb
+		vmove "usr/lib/liblldb*.so"
+	}
+}
+
+libllvm11_package() {
+	short_desc+=" - runtime library"
+	pkg_install() {
+		vmove "usr/lib/libLLVM-*.so*"
+	}
+}
