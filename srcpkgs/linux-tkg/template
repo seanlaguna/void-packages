@@ -22,34 +22,36 @@ srcdir="${XBPS_BUILDDIR}/${wrksrc}"
 source ${_where}/customization.cfg
 source ${_where}/linux-tkg-config/prepare
 _tkg_initscript
-# Template file for 'linux${_basever}-tkg-${_cpusched}-${_compiler_name}'
-pkgname=linux${_basever}-tkg-${_cpusched}-${_compiler_name}
-revision=4
+# Template file for 'linux${_basever}-tkg-${_cpusched}${_compiler_name}'
+pkgname=linux${_basever}-tkg-${_cpusched}${_compiler_name}
+revision=6
 archs="x86_64" # PKGBUILD declares x86_64 only
 python_version=3
 patch_args="-Np1"
-hostmakedepends="schedtool xmlto libressl-devel docbook-xsl kmod inetutils bc libelf patchutils flex python3-Sphinx python3-sphinx_rtd_theme graphviz perl uboot-mkimage cpio gmp-devel libmpc-devel elfutils-devel pahole libcrypto45"
+hostmakedepends="schedtool xmlto libressl-devel docbook-xsl kmod inetutils bc libelf patchutils flex python3-Sphinx python3-sphinx_rtd_theme graphviz perl uboot-mkimage cpio gmp-devel libmpc-devel elfutils-devel pahole"
 makedepends="xz"
 triggers="kernel-hooks"
 
 if [[ "$_sub" = rc* ]]; then
+  # xbps forces 3 digits in version for kernel
   version=${_basekernel}.0
   _rc_kern_ver=${_basekernel}-${_sub}
-  _kern_ver_dir=${_basekernel}-${_sub}
-  _kern_ver=${version}-${_sub}
+  _kern_ver_path=${_basekernel}-${_sub}
+  _kern_ver_dir=${version}-${_sub}
+  _kern_ver=${version}
   kernel_site="https://git.kernel.org/torvalds/t/linux-${_rc_kern_ver}.tar.gz"
 else
   version=${_basekernel}.${_sub}
   _kern_ver=${_basekernel}.${_sub}
-  _kern_ver_dir=${_basekernel}.${_sub}
+  _kern_ver_dir=${version}
+  _kern_ver_path=${_basekernel}.${_sub}
   kernel_site="https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-${_kern_ver}.tar.xz"
 fi
 
-
-_kernver="${_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
-kernel_hooks_version="${_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
-_make_kernver="-tkg-${_cpusched}-${_compiler_name}_${revision}"
-short_desc="Linux-tkg BMQ/PrjC CPU Scheduler"
+_kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+kernel_hooks_version="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+_make_kernver="-tkg-${_cpusched}${_compiler_name}_${revision}"
+short_desc="Linux-tkg"
 maintainer="Hyper-KVM <hyperkvmx86@gmail.com>"
 license="GPL-2.0-only"
 homepage="http://www.kernel.org"
@@ -68,12 +70,12 @@ case "$_basever" in
 	"58")
 	opt_ver="5.8+"
 	cpu_opt_sum='5ab29eb64e57df83b395a29a6a4f89030d142feffbfbf73b3afc6d97a2a7fd12'
-	kernel_sum='33f61bb3e99a4b8bcc0fdfc7e7d72071795bccba465184665a9ae7bd7f00a976'
+	kernel_sum='02ff5aa5e63fc7f119341e915a811c5346ba468cc485546e2d9b15abf03f8a52'
 	;;
 	"59")
 	opt_ver="5.8+"
 	cpu_opt_sum='5ab29eb64e57df83b395a29a6a4f89030d142feffbfbf73b3afc6d97a2a7fd12'
-	kernel_sum='13f9de1afcd547a537c92280a18899f3f1148eb35b98ceeeac1fe85e1b681820'
+	kernel_sum='fad9a145afe36a27740779997720999a97dd7f58c7a60ad9b4054d94d71aaaa6'
 	;;
 esac
 
@@ -85,8 +87,8 @@ nostrip=yes
 noshlibprovides=yes
 preserve=yes
 nodebug=yes
-if [ "$_compiler_name" = "llvm" ]; then
-  hostmakedepends+=" llvm clang lld"
+if [ "$_compiler_name" = "-llvm" ]; then
+  hostmakedepends+=" llvm clang lld libclang libclang-cpp libomp"
 fi
 
 # These files could be modified when an external module is built.
@@ -103,6 +105,13 @@ mutable_files="
  /usr/lib/modules/${_kernver}/modules.devname"
 
 do_configure() {
+
+  # Clang 10 can't handle these options
+  if [ "$_compiler_name" = "-llvm" ]; then
+    CFLAGS=${CFLAGS/-fstack-clash-protection -D_FORTIFY_SOURCE=2/}
+    CFLAGS+="${_llvm_compileropt}"
+  fi
+
 
   echo '       .---.`               `.---.'
   echo '    `/syhhhyso-           -osyhhhys/`'
@@ -126,7 +135,7 @@ do_configure() {
   if [ -n "$_custom_pkgbase" ]; then
     pkgbase="${_custom_pkgbase}"
   else
-    pkgbase=linux"${_basever}"-tkg-"${_cpusched}-${_compiler_name}"
+    pkgbase=linux"${_basever}"-tkg-"${_cpusched}${_compiler_name}"
   fi
 
   export KBUILD_BUILD_HOST=voidlinux
@@ -138,7 +147,16 @@ do_configure() {
 
 do_build() {
 
-  cd ${wrksrc}/linux-${_kern_ver_dir}
+  # remove mandatory -O2 flag
+  CFLAGS=${CFLAGS/-O2/}
+
+  # Clang 10 can't handle these options
+  if [ "$_compiler_name" = "-llvm" ]; then
+    CFLAGS=${CFLAGS/-fstack-clash-protection -D_FORTIFY_SOURCE=2/}
+    CFLAGS+="${_llvm_compileropt}"
+  fi
+
+  cd ${wrksrc}/linux-${_kern_ver_path}
 
   # Use custom compiler paths if defined
   if [ -n "${CUSTOM_GCC_PATH}" ]; then
@@ -159,8 +177,10 @@ do_build() {
     echo 'ccache was found and will be used'
   fi
 
+  echo $CFLAGS
+
   # build!
-  _runtime=$( time ( schedtool -B -n 1 -e ionice -n 1 make ${_force_all_threads} ${_compiler_opt} LOCALVERSION=${_make_kernver} bzImage modules 2>&1 ) 3>&1 1>&2 2>&3 ) || _runtime=$( time ( make ${_force_all_threads} ${_compiler_opt} LOCALVERSION=${_make_kernver} bzImage modules 2>&1 ) 3>&1 1>&2 2>&3 )
+  _runtime=$( time ( schedtool -B -n 1 -e ionice -n 1 make ${llvm_opt} ${_force_all_threads} LOCALVERSION=${_make_kernver} bzImage modules 2>&1 ) 3>&1 1>&2 2>&3 ) || _runtime=$( time ( make ${llvm_opt} ${_force_all_threads} LOCALVERSION=${_make_kernver} bzImage modules 2>&1 ) 3>&1 1>&2 2>&3 )
 
   if [ -n "$_runtime" ]; then
     printf "compilation time : \n$_runtime"
@@ -169,7 +189,7 @@ do_build() {
 
 do_install() {
 	
-	cd ${wrksrc}/linux-${_kern_ver_dir}
+	cd ${wrksrc}/linux-${_kern_ver_path}
 
 	local arch subarch _args hdrdest
 
@@ -191,7 +211,7 @@ do_install() {
         rm -f source build
         ln -sf ../../../src/kernel-headers-${_kernver} build
 
-        cd ${wrksrc}/linux-${_kern_ver_dir}
+        cd ${wrksrc}/linux-${_kern_ver_path}
         # Install required headers to build external modules
         install -Dm644 Makefile ${hdrdest}/Makefile
         install -Dm644 kernel/Makefile ${hdrdest}/kernel/Makefile
@@ -215,7 +235,7 @@ do_install() {
                 fi
         done
 
-	cd ${wrksrc}/linux-${_kern_ver_dir}
+	cd ${wrksrc}/linux-${_kern_ver_path}
         mkdir -p ${hdrdest}/arch/x86
         cp -a arch/x86/include ${hdrdest}/arch/x86
 
@@ -327,18 +347,18 @@ linux-tkg-dbg_package() {
 }
 
 # because xbps-src doesn't allow variables in subpkg functions
-case $_basever-$_cpusched-$_compiler_name in
-	59-pds-gcc)
-	linux59-tkg-pds-gcc_package() {
+case $_basever-$_cpusched$_compiler_name in
+	59-pds)
+	linux59-tkg-pds_package() {
 		short_desc+=" - PDS CPU Scheduler compiled w/GCC"
 		nostrip=yes
 		noshlibprovides=yes
 		preserve=yes
 		triggers="kernel-hooks"
-		_kernver="${_rc_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
-		kernel_hooks_version="${_rc_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
+		_kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
 	}
-	linux59-tkg-headers-pds-gcc_package() {
+	linux59-tkg-headers-pds_package() {
   		short_desc+="Headers and scripts for building modules for the $pkgdesc kernel"
   		nostrip=yes
   		preserve=yes
@@ -349,17 +369,17 @@ case $_basever-$_cpusched-$_compiler_name in
   		}
 	}
 	;;
-	59-bmq-gcc)
-	linux59-tkg-bmq-gcc_package() {
+	59-bmq)
+	linux59-tkg-bmq_package() {
 		short_desc+=" - BMQ CPU Scheduler compiled w/GCC"
 		nostrip=yes
 		noshlibprovides=yes
 		preserve=yes
 		triggers="kernel-hooks"
-		_kernver="${_rc_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
-		kernel_hooks_version="${_rc_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
+		_kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
 	}
-	linux59-tkg-headers-bmq-gcc_package() {
+	linux59-tkg-headers-bmq_package() {
   		short_desc+="Headers and scripts for building modules for the $pkgdesc kernel"
   		nostrip=yes
   		preserve=yes
@@ -370,17 +390,17 @@ case $_basever-$_cpusched-$_compiler_name in
   		}
 	}
 	;;
-	59-cfs-gcc)
-	linux59-tkg-cfs-gcc_package() {
+	59-cfs)
+	linux59-tkg-cfs_package() {
 		short_desc+=" - CFS CPU Scheduler compiled w/GCC"
 		nostrip=yes
 		noshlibprovides=yes
 		preserve=yes
 		triggers="kernel-hooks"
-		_kernver="${_rc_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
-		kernel_hooks_version="${_rc_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
+		_kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
 	}
-	linux59-tkg-headers-cfs-gcc_package() {
+	linux59-tkg-headers-cfs_package() {
   		short_desc+="Headers and scripts for building modules for the $pkgdesc kernel"
   		nostrip=yes
   		preserve=yes
@@ -391,17 +411,17 @@ case $_basever-$_cpusched-$_compiler_name in
   		}
 	}
 	;;
-	59-MuQSS-gcc)
-	linux59-tkg-MuQSS-gcc_package() {
+	59-MuQSS)
+	linux59-tkg-MuQSS_package() {
 		short_desc+=" - MuQSS CPU Scheduler compiled w/GCC"
 		nostrip=yes
 		noshlibprovides=yes
 		preserve=yes
 		triggers="kernel-hooks"
-		_kernver="${_rc_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
-		kernel_hooks_version="${_rc_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
+		_kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
 	}
-	linux59-tkg-headers-MuQSS-gcc_package() {
+	linux59-tkg-headers-MuQSS_package() {
   		short_desc+="Headers and scripts for building modules for the $pkgdesc kernel"
   		nostrip=yes
   		preserve=yes
@@ -419,8 +439,8 @@ case $_basever-$_cpusched-$_compiler_name in
 		noshlibprovides=yes
 		preserve=yes
 		triggers="kernel-hooks"
-		_kernver="${_rc_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
-		kernel_hooks_version="${_rc_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
+		_kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
 	}
 	linux59-tkg-headers-pds-llvm_package() {
   		short_desc+="Headers and scripts for building modules for the $pkgdesc kernel"
@@ -440,8 +460,8 @@ case $_basever-$_cpusched-$_compiler_name in
 		noshlibprovides=yes
 		preserve=yes
 		triggers="kernel-hooks"
-		_kernver="${_rc_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
-		kernel_hooks_version="${_rc_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
+		_kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
 	}
 	linux59-tkg-headers-bmq-llvm_package() {
   		short_desc+="Headers and scripts for building modules for the $pkgdesc kernel"
@@ -461,8 +481,8 @@ case $_basever-$_cpusched-$_compiler_name in
 		noshlibprovides=yes
 		preserve=yes
 		triggers="kernel-hooks"
-		_kernver="${_rc_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
-		kernel_hooks_version="${_rc_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
+		_kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
 	}
 	linux59-tkg-headers-cfs-llvm_package() {
   		short_desc+="Headers and scripts for building modules for the $pkgdesc kernel"
@@ -482,8 +502,8 @@ case $_basever-$_cpusched-$_compiler_name in
 		noshlibprovides=yes
 		preserve=yes
 		triggers="kernel-hooks"
-		_kernver="${_rc_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
-		kernel_hooks_version="${_rc_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
+		_kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
 	}
 	linux59-tkg-headers-MuQSS-llvm_package() {
   		short_desc+="Headers and scripts for building modules for the $pkgdesc kernel"
@@ -496,17 +516,17 @@ case $_basever-$_cpusched-$_compiler_name in
   		}
 	}
 	;;
-	58-upds-gcc)
-	linux58-tkg-upds-gcc_package() {
+	58-upds)
+	linux58-tkg-upds_package() {
 		short_desc+=" - undead (TkG) PDS CPU Scheduler compiled w/GCC"
 		nostrip=yes
 		noshlibprovides=yes
 		preserve=yes
 		triggers="kernel-hooks"
-		_kernver="${_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
-		kernel_hooks_version="${_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
+		_kernver="${_kern_ver}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver}-tkg-${_cpusched}${_compiler_name}_${revision}"
 	}
-	linux58-tkg-headers-upds-gcc_package() {
+	linux58-tkg-headers-upds_package() {
   		short_desc+="Headers and scripts for building modules for the $pkgdesc kernel"
   		nostrip=yes
   		preserve=yes
@@ -517,17 +537,17 @@ case $_basever-$_cpusched-$_compiler_name in
   		}
 	}
 	;;
-	58-pds-gcc)
-	linux58-tkg-pds-gcc_package() {
+	58-pds)
+	linux58-tkg-pds_package() {
 		short_desc+=" - PDS CPU Scheduler compiled w/GCC"
 		nostrip=yes
 		noshlibprovides=yes
 		preserve=yes
 		triggers="kernel-hooks"
-		_kernver="${_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
-		kernel_hooks_version="${_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
+		_kernver="${_kern_ver}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver}-tkg-${_cpusched}${_compiler_name}_${revision}"
 	}
-	linux58-tkg-headers-pds-gcc_package() {
+	linux58-tkg-headers-pds_package() {
   		short_desc+="Headers and scripts for building modules for the $pkgdesc kernel"
   		nostrip=yes
   		preserve=yes
@@ -538,17 +558,17 @@ case $_basever-$_cpusched-$_compiler_name in
   		}
 	}
 	;;
-	58-bmq-gcc)
-	linux58-tkg-bmq-gcc_package() {
+	58-bmq)
+	linux58-tkg-bmq_package() {
 		short_desc+=" - BMQ CPU Scheduler compiled w/GCC"
 		nostrip=yes
 		noshlibprovides=yes
 		preserve=yes
 		triggers="kernel-hooks"
-		_kernver="${_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
-		kernel_hooks_version="${_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
+		_kernver="${_kern_ver}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver}-tkg-${_cpusched}${_compiler_name}_${revision}"
 	}
-	linux58-tkg-headers-bmq-gcc_package() {
+	linux58-tkg-headers-bmq_package() {
   		short_desc+="Headers and scripts for building modules for the $pkgdesc kernel"
   		nostrip=yes
   		preserve=yes
@@ -559,17 +579,17 @@ case $_basever-$_cpusched-$_compiler_name in
   		}
 	}
 	;;
-	58-cfs-gcc)
-	linux58-tkg-cfs-gcc_package() {
+	58-cfs)
+	linux58-tkg-cfs_package() {
 		short_desc+=" - CFS CPU Scheduler compiled w/GCC"
 		nostrip=yes
 		noshlibprovides=yes
 		preserve=yes
 		triggers="kernel-hooks"
-		_kernver="${_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
-		kernel_hooks_version="${_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
+		_kernver="${_kern_ver}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver}-tkg-${_cpusched}${_compiler_name}_${revision}"
 	}
-	linux58-tkg-headers-cfs-gcc_package() {
+	linux58-tkg-headers-cfs_package() {
   		short_desc+="Headers and scripts for building modules for the $pkgdesc kernel"
   		nostrip=yes
   		preserve=yes
@@ -580,17 +600,17 @@ case $_basever-$_cpusched-$_compiler_name in
   		}
 	}
 	;;
-	58-MuQSS-gcc)
-	linux58-tkg-MuQSS-gcc_package() {
+	58-MuQSS)
+	linux58-tkg-MuQSS_package() {
 		short_desc+=" - MuQSS CPU Scheduler compiled w/GCC"
 		nostrip=yes
 		noshlibprovides=yes
 		preserve=yes
 		triggers="kernel-hooks"
-		_kernver="${_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
-		kernel_hooks_version="${_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
+		_kernver="${_kern_ver}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver}-tkg-${_cpusched}${_compiler_name}_${revision}"
 	}
-	linux58-tkg-headers-MuQSS-gcc_package() {
+	linux58-tkg-headers-MuQSS_package() {
   		short_desc+="Headers and scripts for building modules for the $pkgdesc kernel"
   		nostrip=yes
   		preserve=yes
@@ -608,8 +628,8 @@ case $_basever-$_cpusched-$_compiler_name in
 		noshlibprovides=yes
 		preserve=yes
 		triggers="kernel-hooks"
-		_kernver="${_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
-		kernel_hooks_version="${_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
+		_kernver="${_kern_ver}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver}-tkg-${_cpusched}${_compiler_name}_${revision}"
 	}
 	linux58-tkg-headers-upds-llvm_package() {
   		short_desc+="Headers and scripts for building modules for the $pkgdesc kernel"
@@ -629,8 +649,8 @@ case $_basever-$_cpusched-$_compiler_name in
 		noshlibprovides=yes
 		preserve=yes
 		triggers="kernel-hooks"
-		_kernver="${_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
-		kernel_hooks_version="${_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
+		_kernver="${_kern_ver}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver}-tkg-${_cpusched}${_compiler_name}_${revision}"
 	}
 	linux58-tkg-headers-pds-llvm_package() {
   		short_desc+="Headers and scripts for building modules for the $pkgdesc kernel"
@@ -650,8 +670,8 @@ case $_basever-$_cpusched-$_compiler_name in
 		noshlibprovides=yes
 		preserve=yes
 		triggers="kernel-hooks"
-		_kernver="${_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
-		kernel_hooks_version="${_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
+		_kernver="${_kern_ver}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver}-tkg-${_cpusched}${_compiler_name}_${revision}"
 	}
 	linux58-tkg-headers-bmq-llvm_package() {
   		short_desc+="Headers and scripts for building modules for the $pkgdesc kernel"
@@ -671,8 +691,8 @@ case $_basever-$_cpusched-$_compiler_name in
 		noshlibprovides=yes
 		preserve=yes
 		triggers="kernel-hooks"
-		_kernver="${_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
-		kernel_hooks_version="${_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
+		_kernver="${_kern_ver}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver}-tkg-${_cpusched}${_compiler_name}_${revision}"
 	}
 	linux58-tkg-headers-cfs-llvm_package() {
   		short_desc+="Headers and scripts for building modules for the $pkgdesc kernel"
@@ -692,8 +712,8 @@ case $_basever-$_cpusched-$_compiler_name in
 		noshlibprovides=yes
 		preserve=yes
 		triggers="kernel-hooks"
-		_kernver="${_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
-		kernel_hooks_version="${_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
+		_kernver="${_kern_ver}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver}-tkg-${_cpusched}${_compiler_name}_${revision}"
 	}
 	linux58-tkg-headers-MuQSS-llvm_package() {
   		short_desc+="Headers and scripts for building modules for the $pkgdesc kernel"
@@ -706,17 +726,17 @@ case $_basever-$_cpusched-$_compiler_name in
   		}
 	}
 	;;
-	57-pds-gcc)
-	linux57-tkg-pds-gcc_package() {
+	57-pds)
+	linux57-tkg-pds_package() {
 		short_desc+=" - PDS CPU Scheduler compiled w/GCC"
 		nostrip=yes
 		noshlibprovides=yes
 		preserve=yes
 		triggers="kernel-hooks"
-		_kernver="${_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
-		kernel_hooks_version="${_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
+		_kernver="${_kern_ver}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver}-tkg-${_cpusched}${_compiler_name}_${revision}"
 	}
-	linux57-tkg-headers-pds-gcc_package() {
+	linux57-tkg-headers-pds_package() {
   		short_desc+="Headers and scripts for building modules for the $pkgdesc kernel"
   		nostrip=yes
   		preserve=yes
@@ -727,17 +747,17 @@ case $_basever-$_cpusched-$_compiler_name in
   		}
 	}
 	;;
-	57-bmq-gcc)
-	linux57-tkg-bmq-gcc_package() {
+	57-bmq)
+	linux57-tkg-bmq_package() {
 		short_desc+=" - BMQ CPU Scheduler compiled w/GCC"
 		nostrip=yes
 		noshlibprovides=yes
 		preserve=yes
 		triggers="kernel-hooks"
-		_kernver="${_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
-		kernel_hooks_version="${_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
+		_kernver="${_kern_ver}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver}-tkg-${_cpusched}${_compiler_name}_${revision}"
 	}
-	linux57-tkg-headers-bmq-gcc_package() {
+	linux57-tkg-headers-bmq_package() {
   		short_desc+="Headers and scripts for building modules for the $pkgdesc kernel"
   		nostrip=yes
   		preserve=yes
@@ -748,17 +768,17 @@ case $_basever-$_cpusched-$_compiler_name in
   		}
 	}
 	;;
-	57-cfs-gcc)
-	linux57-tkg-cfs-gcc_package() {
+	57-cfs)
+	linux57-tkg-cfs_package() {
 		short_desc+=" - CFS CPU Scheduler compiled w/GCC"
 		nostrip=yes
 		noshlibprovides=yes
 		preserve=yes
 		triggers="kernel-hooks"
-		_kernver="${_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
-		kernel_hooks_version="${_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
+		_kernver="${_kern_ver}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver}-tkg-${_cpusched}${_compiler_name}_${revision}"
 	}
-	linux57-tkg-headers-cfs-gcc_package() {
+	linux57-tkg-headers-cfs_package() {
   		short_desc+="Headers and scripts for building modules for the $pkgdesc kernel"
   		nostrip=yes
   		preserve=yes
@@ -769,17 +789,17 @@ case $_basever-$_cpusched-$_compiler_name in
   		}
 	}
 	;;
-	57-MuQSS-gcc)
-	linux57-tkg-MuQSS-gcc_package() {
+	57-MuQSS)
+	linux57-tkg-MuQSS_package() {
 		short_desc+=" - MuQSS CPU Scheduler compiled w/GCC"
 		nostrip=yes
 		noshlibprovides=yes
 		preserve=yes
 		triggers="kernel-hooks"
-		_kernver="${_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
-		kernel_hooks_version="${_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
+		_kernver="${_kern_ver}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver}-tkg-${_cpusched}${_compiler_name}_${revision}"
 	}
-	linux57-tkg-headers-MuQSS-gcc_package() {
+	linux57-tkg-headers-MuQSS_package() {
   		short_desc+="Headers and scripts for building modules for the $pkgdesc kernel"
   		nostrip=yes
   		preserve=yes
@@ -797,8 +817,8 @@ case $_basever-$_cpusched-$_compiler_name in
 		noshlibprovides=yes
 		preserve=yes
 		triggers="kernel-hooks"
-		_kernver="${_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
-		kernel_hooks_version="${_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
+		_kernver="${_kern_ver}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver}-tkg-${_cpusched}${_compiler_name}_${revision}"
 	}
 	linux57-tkg-headers-pds-llvm_package() {
   		short_desc+="Headers and scripts for building modules for the $pkgdesc kernel"
@@ -818,8 +838,8 @@ case $_basever-$_cpusched-$_compiler_name in
 		noshlibprovides=yes
 		preserve=yes
 		triggers="kernel-hooks"
-		_kernver="${_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
-		kernel_hooks_version="${_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
+		_kernver="${_kern_ver}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver}-tkg-${_cpusched}${_compiler_name}_${revision}"
 	}
 	linux57-tkg-headers-bmq-llvm_package() {
   		short_desc+="Headers and scripts for building modules for the $pkgdesc kernel"
@@ -839,8 +859,8 @@ case $_basever-$_cpusched-$_compiler_name in
 		noshlibprovides=yes
 		preserve=yes
 		triggers="kernel-hooks"
-		_kernver="${_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
-		kernel_hooks_version="${_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
+		_kernver="${_kern_ver}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver}-tkg-${_cpusched}${_compiler_name}_${revision}"
 	}
 	linux57-tkg-headers-cfs-llvm_package() {
   		short_desc+="Headers and scripts for building modules for the $pkgdesc kernel"
@@ -860,8 +880,8 @@ case $_basever-$_cpusched-$_compiler_name in
 		noshlibprovides=yes
 		preserve=yes
 		triggers="kernel-hooks"
-		_kernver="${_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
-		kernel_hooks_version="${_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
+		_kernver="${_kern_ver}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver}-tkg-${_cpusched}${_compiler_name}_${revision}"
 	}
 	linux57-tkg-headers-MuQSS-llvm_package() {
   		short_desc+="Headers and scripts for building modules for the $pkgdesc kernel"
@@ -874,17 +894,17 @@ case $_basever-$_cpusched-$_compiler_name in
   		}
 	}
 	;;
-	54-pds-gcc)
-	linux54-tkg-pds-gcc_package() {
+	54-pds)
+	linux54-tkg-pds_package() {
 		short_desc+=" - PDS CPU Scheduler compiled w/GCC"
 		nostrip=yes
 		noshlibprovides=yes
 		preserve=yes
 		triggers="kernel-hooks"
-		_kernver="${_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
-		kernel_hooks_version="${_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
+		_kernver="${_kern_ver}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver}-tkg-${_cpusched}${_compiler_name}_${revision}"
 	}
-	linux54-tkg-headers-pds-gcc_package() {
+	linux54-tkg-headers-pds_package() {
   		short_desc+="Headers and scripts for building modules for the $pkgdesc kernel"
   		nostrip=yes
   		preserve=yes
@@ -895,17 +915,17 @@ case $_basever-$_cpusched-$_compiler_name in
   		}
 	}
 	;;
-	54-bmq-gcc)
-	linux54-tkg-bmq-gcc_package() {
+	54-bmq)
+	linux54-tkg-bmq_package() {
 		short_desc+=" - BMQ CPU Scheduler compiled w/GCC"
 		nostrip=yes
 		noshlibprovides=yes
 		preserve=yes
 		triggers="kernel-hooks"
-		_kernver="${_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
-		kernel_hooks_version="${_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
+		_kernver="${_kern_ver}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver}-tkg-${_cpusched}${_compiler_name}_${revision}"
 	}
-	linux54-tkg-headers-bmq-gcc_package() {
+	linux54-tkg-headers-bmq_package() {
   		short_desc+="Headers and scripts for building modules for the $pkgdesc kernel"
   		nostrip=yes
   		preserve=yes
@@ -916,17 +936,17 @@ case $_basever-$_cpusched-$_compiler_name in
   		}
 	}
 	;;
-	54-cfs-gcc)
-	linux54-tkg-cfs-gcc_package() {
+	54-cfs)
+	linux54-tkg-cfs_package() {
 		short_desc+=" - CFS CPU Scheduler compiled w/GCC"
 		nostrip=yes
 		noshlibprovides=yes
 		preserve=yes
 		triggers="kernel-hooks"
-		_kernver="${_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
-		kernel_hooks_version="${_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
+		_kernver="${_kern_ver}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver}-tkg-${_cpusched}${_compiler_name}_${revision}"
 	}
-	linux54-tkg-headers-cfs-gcc_package() {
+	linux54-tkg-headers-cfs_package() {
   		short_desc+="Headers and scripts for building modules for the $pkgdesc kernel"
   		nostrip=yes
   		preserve=yes
@@ -937,17 +957,17 @@ case $_basever-$_cpusched-$_compiler_name in
   		}
 	}
 	;;
-	54-MuQSS-gcc)
-	linux54-tkg-MuQSS-gcc_package() {
+	54-MuQSS)
+	linux54-tkg-MuQSS_package() {
 		short_desc+=" - MuQSS CPU Scheduler compiled w/GCC"
 		nostrip=yes
 		noshlibprovides=yes
 		preserve=yes
 		triggers="kernel-hooks"
-		_kernver="${_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
-		kernel_hooks_version="${_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
+		_kernver="${_kern_ver}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver}-tkg-${_cpusched}${_compiler_name}_${revision}"
 	}
-	linux54-tkg-headers-MuQSS-gcc_package() {
+	linux54-tkg-headers-MuQSS_package() {
   		short_desc+="Headers and scripts for building modules for the $pkgdesc kernel"
   		nostrip=yes
   		preserve=yes
@@ -965,8 +985,8 @@ case $_basever-$_cpusched-$_compiler_name in
 		noshlibprovides=yes
 		preserve=yes
 		triggers="kernel-hooks"
-		_kernver="${_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
-		kernel_hooks_version="${_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
+		_kernver="${_kern_ver}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver}-tkg-${_cpusched}${_compiler_name}_${revision}"
 	}
 	linux54-tkg-headers-pds-llvm_package() {
   		short_desc+="Headers and scripts for building modules for the $pkgdesc kernel"
@@ -986,8 +1006,8 @@ case $_basever-$_cpusched-$_compiler_name in
 		noshlibprovides=yes
 		preserve=yes
 		triggers="kernel-hooks"
-		_kernver="${_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
-		kernel_hooks_version="${_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
+		_kernver="${_kern_ver}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver}-tkg-${_cpusched}${_compiler_name}_${revision}"
 	}
 	linux54-tkg-headers-bmq-llvm_package() {
   		short_desc+="Headers and scripts for building modules for the $pkgdesc kernel"
@@ -1007,8 +1027,8 @@ case $_basever-$_cpusched-$_compiler_name in
 		noshlibprovides=yes
 		preserve=yes
 		triggers="kernel-hooks"
-		_kernver="${_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
-		kernel_hooks_version="${_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
+		_kernver="${_kern_ver}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver}-tkg-${_cpusched}${_compiler_name}_${revision}"
 	}
 	linux54-tkg-headers-cfs-llvm_package() {
   		short_desc+="Headers and scripts for building modules for the $pkgdesc kernel"
@@ -1028,8 +1048,8 @@ case $_basever-$_cpusched-$_compiler_name in
 		noshlibprovides=yes
 		preserve=yes
 		triggers="kernel-hooks"
-		_kernver="${_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
-		kernel_hooks_version="${_kern_ver}-tkg-${_cpusched}-${_compiler_name}_${revision}"
+		_kernver="${_kern_ver}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver}-tkg-${_cpusched}${_compiler_name}_${revision}"
 	}
 	linux54-tkg-headers-MuQSS-llvm_package() {
   		short_desc+="Headers and scripts for building modules for the $pkgdesc kernel"
