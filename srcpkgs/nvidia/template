@@ -3,8 +3,8 @@
 _desc="NVIDIA drivers for linux"
 
 pkgname=nvidia
-version=455.23.04
-revision=3
+version=455.28
+revision=1
 maintainer="Andrew Benson <abenson+void@gmail.com>"
 license="custom:NVIDIA Proprietary"
 homepage="https://www.nvidia.com"
@@ -19,7 +19,7 @@ conflicts="xserver-abi-video>24_1"
 
 _pkg="NVIDIA-Linux-x86_64-${version}"
 distfiles="http://uk.download.nvidia.com/XFree86/Linux-x86_64/${version}/${_pkg}.run"
-checksum=8fe033313ac02d455609dee9497cc594d4f816642335a6a37f60c948745a6b67
+checksum=e4e1499b15aedc7c0b5c0d30c170858ed1625ab2701d3bb11747ac8c8371da0f
 # subpackages need to be processed in this specific order
 subpackages="nvidia-gtklibs nvidia-dkms nvidia-opencl nvidia-libs nvidia-libs-32bit"
 depends="nvidia-libs-${version}_${revision}
