@@ -1,0 +1,21 @@
+# Template file for 'modprobed-db'
+pkgname=modprobed-db
+version=2.41
+revision=1
+build_style=gnu-configure
+depends="kmod"
+short_desc="Keeps track of EVERY kernel module ever used"
+maintainer="Hyper-KVM <hyperkvmx86@gmail.com>"
+license="MIT"
+homepage="https://wiki.archlinux.org/index.php/Modprobed-db"
+distfiles="https://github.com/graysky2/$pkgname/archive/v$version.tar.gz"
+checksum=8896ab79aaf0b656d6cb40361fe94e9fba54f4ebddf53b987fc5125c777f577f
+
+do_configure() {
+	make
+}
+
+do_install() {
+	vlicense MIT
+	make DESTDIR=$DESTDIR install
+}
