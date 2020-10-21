@@ -1,9 +1,9 @@
 #!/bin/bash
 
-ver54=68
+ver54=72
 ver57=19
-ver58=12
-ver59=rc7
+ver58=16
+ver59=1
 
 _tkg_initscript() {
   # Load external configuration file if present. Available variable values will overwrite customization.cfg ones.
@@ -14,16 +14,13 @@ _tkg_initscript() {
   # create build dir early
   if [ "$_distro" = "Void" ]; then
     _path="${XBPS_BUILDDIR}/${wrksrc}"
-    if [ ! -e ${_path} ]; then
-      mkdir ${_path}
-    fi
   else
     _path="${_where}"
   fi
 
   if [ -z "$_version" ] && [ ! -e "$_path"/versel ]; then
     plain "Which kernel version do you want to install?"
-    read -rp "`echo $'  > 1. 5.8\n    2. 5.9-rc\n    3. 5.7\n    4. 5.4\nchoice[1-4?]'`" _VERSEL;
+    read -rp "`echo $'  > 1. 5.8\n    2. 5.9\n    3. 5.7\n    4. 5.4\nchoice[1-4?]'`" _VERSEL;
     case $_VERSEL in
           "2")
           echo "_basever=59" > "$_path"/versel
@@ -73,12 +70,18 @@ _tkg_initscript() {
 		exit 1
 	esac
   fi
+
+  # source versel early if present
+  if [ -e "${_path}"/versel ]; then
+    source "${_path}"/versel
+  fi
+
   if [ "$_distro" != "Void" ]; then
-    cp "$_where"/linux-tkg-patches/* "$_where" # copy patches inside the PKGBUILD's dir to preserve makepkg sourcing and md5sum checking
-    cp "$_where"/linux-tkg-config/* "$_where" # copy config files and hooks inside the PKGBUILD's dir to preserve makepkg sourcing and md5sum checking
+    cp "$_where"/linux-tkg-patches/${_basekernel}/* "$_where" # copy patches inside the PKGBUILD's dir to preserve makepkg sourcing and md5sum checking
+    cp "$_where"/linux-tkg-config/${_basekernel}/* "$_where" # copy config files and hooks inside the PKGBUILD's dir to preserve makepkg sourcing and md5sum checking
   else
-    cp "$_where"/linux-tkg-patches/* "$_path"
-    cp "$_where"/linux-tkg-config/* "$_path"
+    cp "$_where"/linux-tkg-patches/${_basekernel}/* "$_path"
+    cp "$_where"/linux-tkg-config/${_basekernel}/* "$_path"
   fi
 
   if [ -z "$_OPTIPROFILE" ] && [ ! -e "$_path"/cpuschedset ]; then
@@ -102,68 +105,67 @@ _tkg_initscript() {
     source "${_path}"/compilerset
   fi
 
-  # source versel early if present
-  if [ -e "${_path}"/versel ]; then
-    source "${_path}"/versel
-  fi
-
   # CPU SCHED selector
-  if [ "$_basever" != "59" ]; then
-    if [ -z "$_cpusched" ] && [ ! -e "${_path}"/cpuschedset ]; then
-      plain "What CPU sched variant do you want to build/install?"
-      if [ "$_basever" = "58" ]; then
-        prompt="`echo $'  > 1.Undead PDS (TkG)\n    2.Project C / PDS\n    3.Project C / BMQ\n    4.CFS\nchoice[1-3?]: '`"
-      else
+  if [ -z "$_cpusched" ] && [ ! -e "${_path}"/cpuschedset ]; then
+    plain "What CPU sched variant do you want to build/install?"
+    if [ "$_basever" = "58" ]; then
+      prompt="`echo $'  > 1.Undead PDS (TkG)\n    2.Project C / PDS\n    3.Project C / BMQ\n    4.CFS\nchoice[1-4?]: '`"
+    elif [ "$_basever" = "59" ]; then
+      prompt="`echo $'  > 1.Project C / PDS\n    2.Project C / BMQ\n    3.MuQSS\n    4.CFS\nchoice[1-3?]: '`"
+    else
 	prompt="`echo $'  > 1.PDS\n    2.MuQSS\n    3.BMQ\n    4.CFS\nchoice[1-4?]: '`"
-      fi
-      read -rp "$prompt"  CONDITION;
-      if [ "$CONDITION" = "2" ];then
+    fi
+    read -rp "$prompt"  CONDITION;
+    if [ "$CONDITION" = "2" ];then
 	if [ "$_basever" = "58" ]; then
-          echo "_cpusched=\"pds\"" > "${_path}"/cpuschedset
-        else
-	  echo "_cpusched=\"MuQSS\"" > "${_path}"/cpuschedset
-        fi
-      elif [ "$CONDITION" = "3" ]; then
-        echo "_cpusched=\"bmq\"" > "${_path}"/cpuschedset
-      elif [ "$CONDITION" = "4" ]; then
-        echo "_cpusched=\"cfs\"" > "${_path}"/cpuschedset
+        echo "_cpusched=\"pds\"" > "${_path}"/cpuschedset
+	elif [ "$_basever" = "59" ]; then
+	  echo "_cpusched=\"bmq\"" > "${_path}"/cpuschedset
       else
+	  echo "_cpusched=\"MuQSS\"" > "${_path}"/cpuschedset
+      fi
+    elif [ "$CONDITION" = "3" ]; then
+	if [ "$_basever" != "59" ]; then
+        echo "_cpusched=\"bmq\"" > "${_path}"/cpuschedset
+	else
+	  echo "_cpusched=\"MuQSS\"" > "${_path}"/cpuschedset
+	fi
+    elif [ "$CONDITION" = "4" ]; then
+      echo "_cpusched=\"cfs\"" > "${_path}"/cpuschedset
+    else
 	if [ "$_basever" = "58" ]; then
-          echo "_cpusched=\"upds\"" > "${_path}"/cpuschedset
+        echo "_cpusched=\"upds\"" > "${_path}"/cpuschedset
 	else
 	  echo "_cpusched=\"pds\"" > "${_path}"/cpuschedset
 	fi
-      fi
-      if [ -n "$_custom_pkgbase" ]; then
-        echo "_custom_pkgbase=\"${_custom_pkgbase}\"" >> "${_path}"/cpuschedset
-      fi
-    elif [ "$_cpusched" = "upds" ]; then
-      echo "_cpusched=\"upds\"" > "${_path}"/cpuschedset
-    elif [ "$_cpusched" = "pds" ]; then
-      echo "_cpusched=\"pds\"" > "${_path}"/cpuschedset
-    elif [ "$_cpusched" = "cfs" ]; then
-      echo "_cpusched=\"cfs\"" > "${_path}"/cpuschedset
-    elif [ "$_cpusched" = "bmq" ]; then
-      echo "_cpusched=\"bmq\"" > "${_path}"/cpuschedset
-    elif [ "$_cpusched" = "muqss" ] || [ "$_cpusched" = "MuQSS" ]; then
-      echo "_cpusched=\"MuQSS\"" > "${_path}"/cpuschedset
-    else
-      if [ "$_nofallback" != "true" ]; then
-        warning "Something is wrong with your cpusched selection. Do you want to fallback to CFS (default)?"
-        read -rp "`echo $'    > N/y : '`" _fallback;
-      fi
-      if [[ "$_fallback" =~ [yY] ]] || [ "$_nofallback" = "true" ]; then
-        echo "_cpusched=\"cfs\"" > "${_path}"/cpuschedset
-      else
-        error "Exiting..."
-        exit 1
-      fi
     fi
-  else
     if [ -n "$_custom_pkgbase" ]; then
       echo "_custom_pkgbase=\"${_custom_pkgbase}\"" >> "${_path}"/cpuschedset
     fi
-    echo "_cpusched=\"cfs\"" > "$_path"/cpuschedset
+  elif [ "$_cpusched" = "upds" ]; then
+    echo "_cpusched=\"upds\"" > "${_path}"/cpuschedset
+  elif [ "$_cpusched" = "pds" ]; then
+    echo "_cpusched=\"pds\"" > "${_path}"/cpuschedset
+  elif [ "$_cpusched" = "cfs" ]; then
+    echo "_cpusched=\"cfs\"" > "${_path}"/cpuschedset
+  elif [ "$_cpusched" = "bmq" ]; then
+    echo "_cpusched=\"bmq\"" > "${_path}"/cpuschedset
+  elif [ "$_cpusched" = "muqss" ] || [ "$_cpusched" = "MuQSS" ]; then
+    echo "_cpusched=\"MuQSS\"" > "${_path}"/cpuschedset
+  else
+    if [ "$_nofallback" != "true" ]; then
+      warning "Something is wrong with your cpusched selection. Do you want to fallback to CFS (default)?"
+      read -rp "`echo $'    > N/y : '`" _fallback;
+    fi
+    if [[ "$_fallback" =~ [yY] ]] || [ "$_nofallback" = "true" ]; then
+      echo "_cpusched=\"cfs\"" > "${_path}"/cpuschedset
+    else
+      error "Exiting..."
+      exit 1
+    fi
+  fi
+  if [ -n "$_custom_pkgbase" ]; then
+    echo "_custom_pkgbase=\"${_custom_pkgbase}\"" >> "${_path}"/cpuschedset
   fi
 
   case $_compileroptlevel in
@@ -179,7 +181,7 @@ _tkg_initscript() {
   esac
 
 # Compiler selector
-  if [ -z "$_compiler" ] && [ ! -e "${_path}"/compilerset ] && [[ "$_basever" != "57" && "$_distro" = "Void" ]]; then
+  if [ -z "$_compiler" ] && [ ! -e "${_path}"/compilerset ]; then
     plain "Which compiler do you want to use?"
     read -rp "`echo $'  > 1.GCC (recommended)\n    2.Clang/LLVM\nchoice[1-2?]: '`" _CONDITION_CMPLR;
     if [ "$_CONDITION_CMPLR" = "2" ];then
@@ -192,9 +194,7 @@ _tkg_initscript() {
       echo "_compiler_name=\"-llvm\"" > ${_path}/compilerset
       echo "llvm_opt=\"LLVM=1\"" >> ${_path}/compilerset
   else
-    if [ "$_basever" = "57" ] && [ "$_distro" = "Void" ]; then
-      echo "_compiler_name=" >> ${_path}/compilerset
-    fi
+    echo "_compiler_name=" >> ${_path}/compilerset
     if [ "$_nofallback" != "true" ] && [ ! -e "${_path}"/compilerset ] && [ "$_compiler" != "llvm" ]; then
       warning "Something is wrong with your compiler selection. Do you want to fallback to GCC (default)?"
       read -rp "`echo $'    > N/y : '`" _fallback;
@@ -262,6 +262,10 @@ user_patcher() {
 
 _tkg_srcprep() {
 
+  if [ "${_distro}" = "Void" ] && [ -e ${srcdir}/sum_failed ]; then
+    exit 1
+  fi
+
   if [ "${_distro}" = "Arch" ]; then
     msg2 "Setting version..."
     scripts/setlocalversion --save-scmversion
@@ -269,7 +273,7 @@ _tkg_srcprep() {
     echo "" > localversion.20-pkgname
 
     # add upstream patch
-    if [ "$_basever" != "59" ]; then
+    if [ "$_sub" != "0" ]; then
       msg2 "Patching from $_basekernel to $pkgver"
       patch -p1 -i "$srcdir"/patch-"${pkgver}"
     fi
@@ -279,14 +283,11 @@ _tkg_srcprep() {
       msg2 "Using linux hardened patchset"
       patch -Np1 -i "$srcdir"/0012-linux-hardened.patch
     else
-      if [ "$_basever" != "58" ] && [ "$_basever" != "59" ]; then
-        patch -Np1 -i "$srcdir"/0001-add-sysctl-to-disallow-unprivileged-CLONE_NEWUSER-by_v5.4-5.7.patch
-      else
-        patch -Np1 -i "$srcdir"/0001-add-sysctl-to-disallow-unprivileged-CLONE_NEWUSER-by_v5.8+.patch
-      fi
+      patch -Np1 -i "$srcdir"/0001-add-sysctl-to-disallow-unprivileged-CLONE_NEWUSER-by.patch
     fi
   fi
 
+  pwd
   if [ "$_distro" = "Void" ] && [[ "$_sub" = rc* ]]; then
     cd ${wrksrc}/linux-${_rc_kern_ver}
   elif [ "$_distro" = "Void" ]; then
@@ -294,7 +295,7 @@ _tkg_srcprep() {
   fi
 
   # graysky's cpu opts - https://github.com/graysky2/kernel_gcc_patch
-  if [ $_compiler_name != "-llvm" ]; then
+  if [ "$_compiler_name" != "-llvm" ]; then
     msg2 "Applying graysky's cpu opts patch"
     if [ "${_distro}" = "Arch" ]; then
       patch -Np1 -i "$srcdir"/enable_additional_cpu_optimizations_for_gcc_v10.1%2B_kernel_v${opt_ver}.patch
@@ -310,7 +311,7 @@ _tkg_srcprep() {
   patch -Np1 -i "$srcdir"/0002-clear-patches.patch
 
   msg2 "Applying glitched base patch"
-  patch -Np1 -i "$srcdir"/0003-glitched-base_v${_basekernel}.patch
+  patch -Np1 -i "$srcdir"/0003-glitched-base.patch
 
   if [ -z $_misc_adds ]; then
     plain "Enable misc additions ? May contain temporary fixes pending upstream or changes that can break on non-Arch. "
@@ -322,13 +323,13 @@ _tkg_srcprep() {
 
   if [ "$_misc_adds" = "true" ] && [ "$_basever" != "54" ]; then
     msg2 "Applying misc additions patch"
-    patch -Np1 -i "$srcdir"/0012-misc-additions_v${_basekernel}.patch
+    patch -Np1 -i "$srcdir"/0012-misc-additions.patch
   fi
 
   # prjc/bmq patch rev
-  if [ "$_basever" = "58" ]; then
-    rev=3
-  elif [ "$_basever" = "57" ]; then
+  if [ "$_basever" = "59" ]; then
+    rev=0
+  elif [ "$_basever" = "58" ] || [ "$_basever" = "57" ]; then
     rev=3
   fi
 
@@ -348,9 +349,9 @@ _tkg_srcprep() {
   elif [ "${_cpusched}" = "upds" ] || [ "${_cpusched}" = "pds" ]; then
     # PDS-mq
     msg2 "Applying PDS base patch"
-    if [ "${_cpusched}" = "upds" ] || [ "$_basever" != "58" ]; then
+    if [ "${_cpusched}" = "upds" ] && [ "$_basever" != "59" ]; then
       patch -Np1 -i "$srcdir"/0005-v${_basekernel}_undead-pds099o.patch
-    else
+    elif [ "$_basever" != "54" ]; then
       patch -Np1 -i "$srcdir"/0009-prjc_v${_basekernel}-r${rev}.patch
     fi
 
@@ -365,7 +366,7 @@ _tkg_srcprep() {
     fi
 
     msg2 "Applying Glitched PDS patch"
-    patch -Np1 -i "$srcdir"/0005${doa}-glitched-pds_v${_basekernel}.patch
+    patch -Np1 -i "$srcdir"/0005${doa}-glitched-pds.patch
 
   elif [ "${_cpusched}" = "bmq" ]; then
     # Project C / BMQ
@@ -382,11 +383,7 @@ _tkg_srcprep() {
     fi
 
     msg2 "Applying Glitched BMQ patch"
-    if [ "$_basever" != "54" ]; then
-      patch -Np1 -i "$srcdir"/0009-glitched-bmq_v5.7+.patch
-    else
-      patch -Np1 -i "$srcdir"/0009-glitched-bmq_v5.4.patch
-    fi
+    patch -Np1 -i "$srcdir"/0009-glitched-bmq.patch
 
   elif [ "${_cpusched}" = "cfs" ]; then
     msg2 "Applying Glitched CFS patch"
@@ -401,7 +398,7 @@ _tkg_srcprep() {
 
   if [ "${_distro}" = "Arch" ] || [ "$_distro" = "Void" ]; then
     if [ -z "${_configfile}" ]; then
-      _configfile="config_${_basekernel}.x86_64"
+      _configfile="config.x86_64"
     fi
 
     cat "${srcdir}/${_configfile}" > ./.config
@@ -415,6 +412,8 @@ _tkg_srcprep() {
   if [ "$_basever" = "54" ]; then
     echo "CONFIG_TP_SMAPI=m" >> ./.config
     echo "CONFIG_RAID6_USE_PREFER_GEN=y" >> ./.config
+  fi
+  if [ "$_basever" = "54" ] || [ "$_basever" = "59" ]; then
     sed -i -e 's/CONFIG_RCU_BOOST_DELAY=500/CONFIG_RCU_BOOST_DELAY=0/' ./.config
   fi
   echo "# CONFIG_NTP_PPS is not set" >> ./.config
@@ -429,6 +428,11 @@ _tkg_srcprep() {
   echo "CONFIG_CMDLINE=\"${_custom_commandline}\"" >> ./.config
   echo "# CONFIG_CMDLINE_OVERRIDE is not set" >> ./.config
   echo "# CONFIG_X86_P6_NOP is not set" >> ./.config
+  
+  # openrgb
+  echo "CONFIG_I2C_NCT6775=m" >> ./.config
+
+  # ccache fix
   if [ "$_noccache" != "true" ]; then
     if { [ "$_distro" = "Arch" ] && pacman -Qq ccache &> /dev/null; } || { [ "$_distro" = "Ubuntu" ] && dpkg -l ccache > /dev/null; }\
 	    || { [ "$_distro" = "Void" ] && xbps-query -s ccache > /dev/null; } ; then
@@ -529,6 +533,9 @@ _tkg_srcprep() {
     # sched yield type
     if [ -n "$_sched_yield_type" ]; then
       CONDITION0="$_sched_yield_type"
+    # in customization.cfg for linux59-tkg _sched_yield_type is set to 0
+    elif [ "$_basever" = "59" ]; then
+      CONDITION0="0"
     else
       plain ""
       plain "CPU sched_yield_type - Choose what sort of yield sched_yield will perform."
@@ -1000,33 +1007,29 @@ _tkg_srcprep() {
   fi
 
   # fsync support
-  if [ "$_basever" != "59" ]; then
-    if [ -z "$_fsync" ]; then
-      plain ""
-      plain "Enable support for fsync, an experimental replacement for esync in Valve Proton 4.11+"
-      plain "https://steamcommunity.com/games/221410/announcements/detail/2957094910196249305"
-      read -rp "`echo $'    > N/y : '`" CONDITION9;
-    fi
-    if [[ "$CONDITION9" =~ [yY] ]] || [ "$_fsync" = "true" ]; then
-      msg2 "Patching Fsync support"
-      if [ "$_basever" != "54" ]; then
-        patch -Np1 -i "$srcdir"/0007-v5.7+-fsync.patch
-      else
-	patch -Np1 -i "$srcdir"/0007-v${_basekernel}-fsync.patch
-      fi
-    fi
+  if [ -z "$_fsync" ]; then
+    plain ""
+    plain "Enable support for fsync, an experimental replacement for esync in Valve Proton 4.11+"
+    plain "https://steamcommunity.com/games/221410/announcements/detail/2957094910196249305"
+    read -rp "`echo $'    > N/y : '`" CONDITION9;
+  fi
+  if [[ "$CONDITION9" =~ [yY] ]] || [ "$_fsync" = "true" ]; then
+    msg2 "Patching Fsync support"
+    patch -Np1 -i "$srcdir"/0007-v${_basekernel}-fsync.patch
   fi
 
   # ZFS fix
-  if [ -z "$_zfsfix" ]; then
-    plain ""
-    plain "Add back missing symbol for AES-NI/AVX support on ZFS"
-    plain "https://github.com/NixOS/nixpkgs/blob/master/pkgs/os-specific/linux/kernel/export_kernel_fpu_functions_5_3.patch"
-    read -rp "`echo $'    > N/y : '`" CONDITION11;
-  fi
-  if [[ "$CONDITION11" =~ [yY] ]] || [ "$_zfsfix" = "true" ]; then
-    msg2 "Patching missing symbol for AES-NI/AVX support on ZFS"
-    patch -Np1 -i "$srcdir"/0011-ZFS-fix.patch
+  if [ "$_basever" != "59" ]; then
+    if [ -z "$_zfsfix" ]; then
+      plain ""
+      plain "Add back missing symbol for AES-NI/AVX support on ZFS"
+      plain "https://github.com/NixOS/nixpkgs/blob/master/pkgs/os-specific/linux/kernel/export_kernel_fpu_functions_5_3.patch"
+      read -rp "`echo $'    > N/y : '`" CONDITION11;
+    fi
+    if [[ "$CONDITION11" =~ [yY] ]] || [ "$_zfsfix" = "true" ]; then
+      msg2 "Patching missing symbol for AES-NI/AVX support on ZFS"
+      patch -Np1 -i "$srcdir"/0011-ZFS-fix.patch
+    fi
   fi
 
   # Community patches
