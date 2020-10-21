@@ -1,6 +1,6 @@
 # Template file for 'linux5.8'
 pkgname=linux5.8
-version=5.8.14
+version=5.8.16
 revision=1
 wrksrc="linux-${version}"
 short_desc="Linux kernel and modules (${version%.*} series)"
@@ -8,7 +8,7 @@ maintainer="Leah Neukirchen <leah@vuxu.org>"
 license="GPL-2.0-only"
 homepage="https://www.kernel.org"
 distfiles="https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-${version}.tar.xz"
-checksum=ee767991808d234ad9acd17f0ba94ba7979d30c528876bee6fba337ea540f0af
+checksum=fdbf584f56eb5761bdb4aac5856a9ef41327e5ad677c9f89485142fc2e509dc5
 python_version=3
 patch_args="-Np1"
 
