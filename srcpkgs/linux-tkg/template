@@ -25,10 +25,12 @@ if [ ! -e ${srcdir} ]; then
 	mkdir ${srcdir}
 fi
 
-if [ ! -e ${XBPS_BUILDDIR}/${wrksrc}/linux-tkg ]; then
+if [ ! -e ${srcdir}/linux-tkg ]; then
 	cd ${srcdir}
 	git clone https://github.com/Hyper-KVM/linux-tkg.git
-	cp ${_files}/mypatches/* ${_where}
+	if [ -e ${_files}/mypatches/* ]; then
+		cp ${_files}/mypatches/* ${_where}
+	fi
 fi
 
 source ${_files}/customization.cfg
