@@ -341,12 +341,15 @@ if [ ! -e ${srcdir}/sum_check ]; then
 	done
 
 	for i in ${!sums[@]}; do
-		if [ ${sums[$i]} != ${sha256sums[$i]} ] && [ ! -e ${srcdir}/sum_failed ];then
-			error "sha256sum mismatch! ${source[$i]}"
+		if [ "${sums[$i]}" != "${sha256sums[$i]}" ] && [ ! -e ${srcdir}/sum_failed ] ;then
+			error "sha256sum mismatch! ${source[$i]} ${sha256sums[$i]} -> ${sums[$i]}"
 			touch ${srcdir}/sum_failed
 			exit 1
-		else
+		elif [ ! -e ${srcdir}/sum_failed ]; then
 			msg2 "Checking ${source[$i]} sum... OK"
+		else
+			error "Sum check failed! Will exit before build!"
+			break
 		fi
 	done
 	touch ${srcdir}/sum_check
