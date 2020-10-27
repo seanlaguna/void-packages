@@ -35,7 +35,13 @@ fi
 
 source ${_files}/customization.cfg
 source ${_where}/linux-tkg-config/prepare
-_tkg_initscript
+if [ ! -e ${srcdir}/run_check ]; then
+  _tkg_initscript
+fi
+touch ${srcdir}/run_check
+source ${srcdir}/cpuschedset
+source ${srcdir}/compilerset
+source ${srcdir}/versel
 # Template file for 'linux${_basever}-tkg-${_cpusched}${_compiler_name}'
 pkgname=linux${_basever}-tkg-${_cpusched}${_compiler_name}
 revision=7
