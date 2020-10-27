@@ -342,7 +342,7 @@ if [ ! -e ${srcdir}/sum_check ]; then
 
 	for i in ${!sums[@]}; do
 		if [ "${sums[$i]}" != "${sha256sums[$i]}" ] && [ ! -e ${srcdir}/sum_failed ] ;then
-			error "sha256sum mismatch! ${source[$i]} ${sha256sums[$i]} -> ${sums[$i]}"
+			error "sha256sum mismatch! ${source[$i]}"
 			touch ${srcdir}/sum_failed
 			exit 1
 		elif [ ! -e ${srcdir}/sum_failed ]; then
