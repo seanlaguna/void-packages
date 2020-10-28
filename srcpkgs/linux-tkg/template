@@ -37,6 +37,8 @@ source ${_files}/customization.cfg
 source ${_where}/linux-tkg-config/prepare
 if [ ! -e ${srcdir}/run_check ]; then
   _tkg_initscript
+  _compiler_opt=${_compileropt}
+  echo _compiler_opt="\"$_compileropt\"" >> "${srcdir}/compilerset"
 fi
 touch ${srcdir}/run_check
 source ${srcdir}/cpuschedset
@@ -267,7 +269,7 @@ case $_basever in
                 #0012-linux-hardened.patch
                 0012-misc-additions.patch
         )
-        sha256sums=('20da98426048a222adeaf6606c9695d7a36974f4110a5adbe77c482898b59348'
+        sha256sums=('36439a90c9d2f860298d90e141f3bf9d897dd8ece9e21cd46508f4ed7b2151bb'
             '1e15fc2ef3fa770217ecc63a220e5df2ddbcf3295eb4a021171e7edd4c6cc898'
             '66a03c246037451a77b4d448565b1d7e9368270c7d02872fbd0b5d024ed0a997'
             'f6383abef027fd9a430fd33415355e0df492cdc3c90e9938bf2d98f4f63b32e6'
@@ -466,7 +468,7 @@ echo "
 
   # remove mandatory -O2 flag
   CFLAGS=${CFLAGS/-O2/}
-  CFLAGS+="${_compileropt}"
+  CFLAGS+=" ${_compiler_opt}"
 
   cd ${wrksrc}/linux-${_kern_ver_path}
 
@@ -478,7 +480,7 @@ echo "
   fi
 
   if [ "$_force_all_threads" == "true" ]; then
-    _force_all_threads="-j$((`nproc`*2))"
+    _force_all_threads="-j$((`nproc`+1))"
   else
     _force_all_threads="${makejobs}"
   fi
@@ -490,8 +492,6 @@ echo "
     export CCACHE_NOHASHDIR="true"
     echo 'ccache was found and will be used'
   fi
-
-  echo $CFLAGS
 
   # build!
   _runtime=$( time ( schedtool -B -n 1 -e ionice -n 1 make ${llvm_opt} ${_force_all_threads} LOCALVERSION=${_make_kernver} bzImage modules 2>&1 ) 3>&1 1>&2 2>&3 ) || _runtime=$( time ( make ${llvm_opt} ${_force_all_threads} LOCALVERSION=${_make_kernver} bzImage modules 2>&1 ) 3>&1 1>&2 2>&3 )
