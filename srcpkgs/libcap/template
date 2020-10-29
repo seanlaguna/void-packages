@@ -1,6 +1,6 @@
 # Template file for 'libcap'
 pkgname=libcap
-version=2.42
+version=2.44
 revision=1
 bootstrap=yes
 build_style=gnu-makefile
@@ -13,7 +13,11 @@ maintainer="skmpz <dem.procopiou@gmail.com>"
 license="GPL-2.0-only"
 homepage="http://sites.google.com/site/fullycapable/"
 distfiles="${KERNEL_SITE}/libs/security/linux-privs/libcap2/${pkgname}-${version}.tar.xz"
-checksum=3605a9cb60076547ea9f64989e0ba576da9508e4653e8dc40ae54c0d6f443dfd
+checksum=92188359cd5be86e8e5bd3f6483ac6ce582264f912398937ef763def2205c8e1
+
+if [ "$CROSS_BUILD" ]; then
+	make_build_args="CROSS_COMPILE=${XBPS_CROSS_TRIPLET}-"
+fi
 
 if [ "$CHROOT_READY" ]; then
 	hostmakedepends="perl"
@@ -21,12 +25,6 @@ if [ "$CHROOT_READY" ]; then
 		hostmakedepends+=" gperf"
 	fi
 fi
-
-pre_build() {
-	vsed -e 's,CC :=,CC ?=,' -i Make.Rules
-	# Disable tests, as they cause cross-build failure
-	vsed -e '/test:/,/.sh/d' -e '/tests/d' -i Makefile
-}
 
 libcap-devel_package() {
 	depends="libcap>=${version}_${revision}"

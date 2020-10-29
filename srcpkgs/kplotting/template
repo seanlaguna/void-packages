@@ -1,6 +1,6 @@
 # Template file for 'kplotting'
 pkgname=kplotting
-version=5.73.0
+version=5.75.0
 revision=1
 build_style=cmake
 configure_args="-DBUILD_TESTING=OFF"
@@ -11,7 +11,7 @@ maintainer="John <me@johnnynator.dev>"
 license="LGPL-2.1-or-later"
 homepage="https://invent.kde.org/frameworks/kplotting"
 distfiles="${KDE_SITE}/frameworks/${version%.*}/${pkgname}-${version}.tar.xz"
-checksum=b5055ed9a3149c059623d88875816e9fac8d6d25d29fdfd48e0d8a16dfe01b14
+checksum=55fded2f312d104fe9e22c6baa04fc125dba9bba45db03f02f6811ab3f04a0ae
 
 kplotting-devel_package() {
 	short_desc+=" - development"

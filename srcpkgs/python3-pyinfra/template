@@ -1,8 +1,7 @@
 # Template file for 'python3-pyinfra'
 pkgname=python3-pyinfra
-version=1.0.4
-revision=2
-archs=noarch
+version=1.2
+revision=1
 wrksrc="pyinfra-${version}"
 build_style=python3-module
 hostmakedepends="python3-setuptools"
@@ -14,7 +13,7 @@ maintainer="Leah Neukirchen <leah@vuxu.org>"
 license="MIT"
 homepage="https://pyinfra.com/"
 distfiles="https://github.com/Fizzadar/pyinfra/archive/v${version}.tar.gz"
-checksum=54471ee5a3cdac30b3e4321695230347a866aae04228f7619037db569eb07fd2
+checksum=675df8367967a861a2285da10e3b80abb3b4d6a6b3a699b9027c53d59fc5ef4f
 
 post_extract() {
 	vsed -i -e '/configparser/d' setup.py  # is in Python 3.8

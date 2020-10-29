@@ -1,6 +1,6 @@
 # Template file for 'hikari'
 pkgname=hikari
-version=2.1.1
+version=2.2.2
 revision=1
 build_style=gnu-makefile
 make_cmd=bmake
@@ -16,7 +16,7 @@ license="BSD-2-Clause"
 homepage="https://hikari.acmelabs.space"
 changelog="https://hub.darcs.net/raichoo/hikari/browse/CHANGELOG.md"
 distfiles="${homepage}/releases/${pkgname}-${version}.tar.gz"
-checksum=ab75c4563aa57ae3f207b05cbb6e023cad9fd2f96cabafa1b16ed7eaf22f546d
+checksum=df9b8cb6c6b2b995a5dd4bbf32c43b374d689eabfda1620a9444d845160e4de3
 conf_files="/etc/pam.d/hikari-unlocker /etc/hikari/hikari.conf"
 
 pre_build() {

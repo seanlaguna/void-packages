@@ -1,8 +1,7 @@
 # Template file for 'parallel'
 pkgname=parallel
-version=20200722
+version=20201022
 revision=1
-archs="noarch"
 build_style=gnu-configure
 depends="perl"
 checkdepends="perl"
@@ -11,7 +10,7 @@ maintainer="Leah Neukirchen <leah@vuxu.org>"
 license="GPL-3.0-or-later"
 homepage="https://www.gnu.org/software/parallel/"
 distfiles="${GNU_SITE}/${pkgname}/${pkgname}-${version}.tar.bz2"
-checksum=4801d44f2f71eed26386a0623a6fb3cadd7fa7ec2b5a7bbc5b7b52e2a0450d6f
+checksum=35fe29864af62b5331affb84d8be683d52a7bf5fd3532fe0b6a4207a481af061
 
 pre_configure() {
 	# no html and pdf doc

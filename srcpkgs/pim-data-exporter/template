@@ -1,6 +1,6 @@
 # Template file for 'pim-data-exporter'
 pkgname=pim-data-exporter
-version=20.08.0
+version=20.08.2
 revision=1
 build_style=cmake
 hostmakedepends="extra-cmake-modules kdoctools qt5-host-tools qt5-qmake
@@ -12,4 +12,4 @@ maintainer="John <me@johnnynator.dev>"
 license="GPL-2.0-or-later"
 homepage="https://kontact.kde.org/"
 distfiles="${KDE_SITE}/release-service/${version}/src/${pkgname}-${version}.tar.xz"
-checksum=42f070d3aea3871004bea3fa712f01ef307ba12328495ded06d3115e7e8ed894
+checksum=54b09a3f763004c805cc0dce8ab2e665116b7ef29419f22ad413aa250dcb4ac0

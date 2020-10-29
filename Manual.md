@@ -141,7 +141,7 @@ to be accepted. New fonts are welcome if they provide value beyond
 aesthetics (e.g. they contain glyphs for a script missing in already
 packaged fonts).
 
-Browser forks, including those based on Chromium and Firefox, are generally not 
+Browser forks, including those based on Chromium and Firefox, are generally not
 accepted. Such forks require heavy patching, maintenance and hours of build time.
 
 <a id="buildphase"></a>
@@ -623,6 +623,12 @@ the `$DESTDIR` which will not be scanned for runtime dependencies. This may be u
 skip files which are not meant to be run or loaded on the host but are to be sent to some
 target device or emulation.
 
+- `ignore_elf_files` White space separated list of machine code files
+in /usr/share directory specified by absolute path, which are expected and allowed.
+
+- `ignore_elf_dirs` White space separated list of directories in /usr/share directory
+specified by absolute path, which are expected and allowed to contain machine code files.
+
 - `nocross` If set, cross compilation won't be allowed and will exit immediately.
 This should be set to a string describing why it fails, or a link to a travis
 buildlog demonstrating the failure.
@@ -649,6 +655,9 @@ This appends to the generated file rather than replacing it.
 
 - `nopie` Only needs to be set to something to make active, disables building the package with hardening
   features (PIE, relro, etc). Not necessary for most packages.
+
+- `nopie_files` White-space seperated list of ELF binaries that won't be checked
+for PIE.
 
 - `reverts` xbps supports a unique feature which allows to downgrade from broken
 packages automatically. In the `reverts` field one can define a list of broken
@@ -702,8 +711,10 @@ used.
 - `fetch_cmd` Executable to be used to fetch URLs in `distfiles` during the `do_fetch` phase.
 
 - `archs` Whitespace separated list of architectures that a package can be
-built for, available architectures can be found under `common/cross-profiles`
-alongside the `noarch` value for packages that do not contain any machine code.
+built for, available architectures can be found under `common/cross-profiles`.
+In general, `archs` should only be set if the upstream software explicitly targets
+certain architectures or there is a compelling reason why the software should not be
+available on some supported architectures.
 Examples:
 
 	```
@@ -713,9 +724,8 @@ Examples:
 	archs="x86_64-musl ~*-musl"
 	# Default value (all arches)
 	archs="*"
-	# Packages that do not depend on architecture-specific objects
-	archs=noarch
 	```
+Do not use noarch. It is deprecated and being removed.
 
 <a id="explain_depends"></a>
 #### About the many types of `depends` variable.
@@ -902,8 +912,8 @@ can be used to pass arguments during compilation. If your package does not make 
 extensions consider using the `gem` build style instead.
 
 - `gem` For packages that are installed using gems from [RubyGems](https://rubygems.org/).
-The gem command can be overridden by `gem_cmd`. `archs` is set to `noarch` unconditionally
-and `distfiles` is set by the build style if the template does not do so. If your gem
+The gem command can be overridden by `gem_cmd`. 
+`distfiles` is set by the build style if the template does not do so. If your gem
 provides extensions which must be compiled consider using the `gemspec` build style instead.
 
 - `ruby-module` For packages that are ruby modules and are installable via `ruby install.rb`.
@@ -947,7 +957,7 @@ Environment variables for a specific `build_style` can be declared in a filename
 matching the `build_style` name, Example:
 
     `common/environment/build-style/gnu-configure.sh`
-    
+
 - `texmf` For texmf zip/tarballs that need to go into /usr/share/texmf-dist. Includes
 duplicates handling.
 
@@ -1439,7 +1449,7 @@ type used to split architecture independent, big(ger) or huge amounts
 of data from a package's main and architecture dependent part. It is up
 to you to decide, if a `-data` subpackage makes sense for your package.
 This type is common for games (graphics, sound and music), part libraries (CAD)
-or card material (maps). Data subpackages are almost always `archs=noarch`.
+or card material (maps).
 The main package must then have `depends="${pkgname}-data-${version}_${revision}"`,
 possibly in addition to other, non-automatic depends.
 
@@ -1577,7 +1587,6 @@ The following variables influence how Haskell packages are built:
 Font packages are very straightforward to write, they are always set with the
 following variables:
 
-- `archs=noarch`: Font packages don't install arch specific files.
 - `depends="font-util"`: because they are required for regenerating the font
 cache during the install/removal of the package
 - `font_dirs`: which should be set to the directory where the package

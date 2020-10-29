@@ -1,6 +1,6 @@
 # Template file for 'zeek'
 pkgname=zeek
-version=3.1.5
+version=3.2.2
 revision=1
 archs="x86_64* i686* aarch64* armv7* ppc64*"
 build_style=cmake
@@ -12,11 +12,24 @@ maintainer="Andrew Benson <abenson+void@gmail.com>"
 license="BSD-3-Clause"
 homepage="https://www.zeek.org"
 distfiles="https://old.zeek.org/downloads/zeek-${version}.tar.gz"
-checksum=b944e8d47ac435bf83ba61cbfb66ce49eb11ca2fbbde1dc2bae638097ae399e7
+checksum=6c5748c49207241977a0d9fcbac8ce3b6abbf866ff29469fd0c2dcd3d4f99d01
 
 if [ "$XBPS_TARGET_LIBC" = "musl" ]; then
 	makedepends+=" musl-fts-devel musl-legacy-compat"
 fi
+
+post_patch() {
+	# no cpuid check in highwayhash for ppc since
+	# google pretends older hardware does not exist
+	case "$XBPS_TARGET_MACHINE" in
+		ppc64le*) ;;
+		ppc*)
+			vsed -i 's/"power"/"google-sucks"/' src/CMakeLists.txt
+			vsed -i 's/HH_ARCH_PPC/HH_ARCH_GOOGLE_SUCKS/g' \
+				auxil/highwayhash/highwayhash/instruction_sets.h
+			;;
+	esac
+}
 
 pre_configure() {
 	if [ "$CROSS_BUILD" ]; then
@@ -28,8 +41,8 @@ pre_configure() {
 		cmake ..
 		make ${makejobs} binpac bifcl
 		configure_args+="
-		 -DBIFCL_EXE_PATH:PATH=${wrksrc}/native/aux/bifcl/bifcl
-		 -DBINPAC_EXE_PATH:PATH=${wrksrc}/native/aux/binpac/src/binpac"
+		 -DBIFCL_EXE_PATH:PATH=${wrksrc}/native/auxil/bifcl/bifcl
+		 -DBINPAC_EXE_PATH:PATH=${wrksrc}/native/auxil/binpac/src/binpac"
 		cd ..
 	fi
 }
@@ -52,7 +65,6 @@ zeek-devel_package() {
 }
 
 bro_package() {
-	archs=noarch
 	build_style=meta
 	depends="${sourcepkg}>=${version}_${revision}"
 	short_desc+=" (transitional dummy package)"
@@ -61,13 +73,11 @@ bro_package() {
 binpac_package() {
 	short_desc+=" - protocol parser compiler (transitional)"
 	build_style=meta
-	archs=noarch
 	depends="${sourcepkg}>=${version}_${revision}"
 }
 
 binpac-devel_package() {
 	short_desc+=" - protocol parser compiler library (transitional)"
 	build_style=meta
-	archs=noarch
 	depends="${sourcepkg}-devel>=${version}_${revision}"
 }

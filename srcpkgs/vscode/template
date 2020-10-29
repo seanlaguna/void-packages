@@ -1,22 +1,26 @@
 # Template file for 'vscode'
 pkgname=vscode
-version=1.48.0
+version=1.50.1
 revision=1
-_electronver=7.3.2
+_electronver=9.3.1
 hostmakedepends="pkg-config python nodejs-lts-10 yarn tar git"
-makedepends="libxkbfile-devel libsecret-devel electron7"
-depends="libXtst libxkbfile nss dejavu-fonts-ttf xdg-utils ripgrep electron7"
+makedepends="libxkbfile-devel libsecret-devel electron9"
+depends="libXtst libxkbfile nss dejavu-fonts-ttf xdg-utils ripgrep electron9"
 short_desc="Microsoft Code for Linux"
 maintainer="shizonic <realtiaz@gmail.com>"
 license="MIT"
 homepage="https://code.visualstudio.com/"
 distfiles="https://github.com/Microsoft/vscode/archive/${version}.tar.gz"
-checksum=3983a6807554bc76a233cf215e6e1c936e5ace5c635fe049d019db24ccc0f62d
+checksum=7d874637055e2425fe981f387165b7c7949db0821b1135f9cd7ccd5c70903af7
 patch_args="-Np1"
 
 if [ "$XBPS_TARGET_WORDSIZE" = "32" ]; then
 	broken="FATAL ERROR: CALL_AND_RETRY_LAST Allocation failed - JavaScript heap out of memory"
 fi
+
+# avoid downloading electron binaries for target platform; we use
+# the system electron, and downloading does not work for all archs
+export ELECTRON_SKIP_BINARY_DOWNLOAD=1
 
 do_configure() {
 	# Use yarn to install dependencies
@@ -41,7 +45,7 @@ do_build() {
 	export NODE_OPTIONS="${_mem_limit}"
 	/usr/lib/node_modules/npm/bin/node-gyp-bin/node-gyp install \
 		--target=$_electronver \
-		--tarball=/usr/include/electron7/node_headers.tar.gz
+		--tarball=/usr/include/electron${_electronver%%.*}/node_headers.tar.gz
 	yarn install --ignore-engines --frozen-lockfile --arch=x64
 	export CFLAGS="$CFLAGS -I/usr/include/node"
 	yarn run gulp vscode-linux-x64-min

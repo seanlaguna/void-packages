@@ -1,5 +1,9 @@
 # INSTALL
-DISTFILE="https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb"
+
+checksum=86a2dfca066f92e2017979b9608f61d82dccde7cad77c46d972312de7c8c5881
+_baseUrl="https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable"
+_filename="google-chrome-stable_${VERSION%_*}-1_amd64.deb"
+DISTFILE="${_baseUrl}/${_filename}"
 BUILD_DIR="$(mktemp -d ${TMPDIR:-/tmp}/$PKGNAME.XXXXXX)"
 case "$ACTION" in
 post)
@@ -8,6 +12,10 @@ post)
     xbps-uhelper fetch "${DISTFILE}>$BUILD_DIR/$PKGNAME.deb"
     # Things that have to happen no matter what
     cd $BUILD_DIR
+    if [ "$(xbps-digest "$PKGNAME.deb")" != $checksum ]; then
+        echo "broken file: $_filename"
+        exit 1
+    fi
     ar x $PKGNAME.deb
     tar xf data.tar.xz --wildcards './opt/google/chrome/WidevineCdm/'
     cd -

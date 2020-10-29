@@ -1,6 +1,6 @@
 # Template file for 'kitemmodels'
 pkgname=kitemmodels
-version=5.73.0
+version=5.75.0
 revision=1
 build_style=cmake
 configure_args="-DBUILD_TESTING=OFF"
@@ -11,7 +11,7 @@ maintainer="John <me@johnnynator.dev>"
 license="LGPL-2.0-or-later"
 homepage="https://invent.kde.org/frameworks/kitemmodels"
 distfiles="${KDE_SITE}/frameworks/${version%.*}/${pkgname}-${version}.tar.xz"
-checksum=6569e289ac9263d87ef6641fe2f3914b9ace6814832ac9c61825b1c6805ae371
+checksum=fb3f4caa2e55ffb5e21ea8f65bcb6ea9b074c54f9dbbce458ba7320d6c50fdb6
 
 kitemmodels-devel_package() {
 	short_desc+=" - development"

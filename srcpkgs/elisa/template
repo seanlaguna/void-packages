@@ -1,6 +1,6 @@
 # Template file for 'elisa'
 pkgname=elisa
-version=20.08.0
+version=20.08.2
 revision=1
 build_style=cmake
 configure_args="-DBUILD_TESTING=OFF"
@@ -14,7 +14,7 @@ maintainer="John <me@johnnynator.dev>"
 license="GPL-3.0-or-later"
 homepage="https://kde.org/applications/en/multimedia/org.kde.elisa"
 distfiles="${KDE_SITE}/release-service/${version}/src/elisa-${version}.tar.xz"
-checksum=acbff9f3c3d26c2a2c249974ccd8ff0bdeb22148a8a5b72e1199f1ec2f9d712e
+checksum=6c04377dfd5e82b2b67b3a43cc3ffd3b206f24ab75c3fe18298ec80876dcc268
 
 if [ "$CROSS_BUILD" ]; then
 	hostmakedepends+=" kpackage-devel kconfig-devel kcoreaddons-devel"
