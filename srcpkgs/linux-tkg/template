@@ -50,7 +50,7 @@ revision=8
 archs="x86_64" # PKGBUILD declares x86_64 only
 python_version=3
 patch_args="-Np1"
-hostmakedepends="schedtool xmlto libressl-devel docbook-xsl kmod inetutils bc libelf patchutils flex python3-Sphinx python3-sphinx_rtd_theme graphviz perl uboot-mkimage cpio gmp-devel libmpc-devel elfutils-devel pahole git"
+hostmakedepends="schedtool xmlto libressl-devel docbook-xsl kmod inetutils bc libelf patchutils flex python3-Sphinx python3-sphinx_rtd_theme graphviz perl uboot-mkimage cpio gmp-devel libmpc-devel elfutils-devel pahole git zstd"
 makedepends="xz modprobed-db"
 triggers="kernel-hooks"
 
