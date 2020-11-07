@@ -28,9 +28,12 @@ fi
 if [ ! -e ${srcdir}/linux-tkg ]; then
 	cd ${srcdir}
 	git clone https://github.com/Frogging-Family/linux-tkg.git
-	if [ -e ${_files}/mypatches/* ]; then
-		cp ${_files}/mypatches/* ${_where}
-	fi
+	for _f in ${_files}/mypatches/*.mypatch; do
+		if [ -e "${_f}" ]; then
+			cp ${_files}/mypatches/*.mypatch ${_where}
+			break
+		fi
+	done
 fi
 
 source ${_files}/customization.cfg
@@ -38,7 +41,7 @@ source ${_where}/linux-tkg-config/prepare
 if [ ! -e ${srcdir}/run_check ]; then
   _tkg_initscript
   _compiler_opt=${_compileropt}
-  echo _compiler_opt="\"$_compileropt\"" >> "${srcdir}/compilerset"
+  echo "_compiler_opt=\"$_compileropt\"" >> "${srcdir}/compilerset"
 fi
 touch ${srcdir}/run_check
 source ${srcdir}/cpuschedset
@@ -87,7 +90,7 @@ case $_basever in
         54)
 	opt_ver="4.19-v5.4"
 	cpu_opt_sum='27b7fc535ade94b636c3ec4e809e141831e9465a0ef55215a9852b87048629e2'
-	kernel_sum='5a424b403b726bbe7dfa1d1524e431676c4a64f22a8db524534ed678bfe576b2'
+	kernel_sum='d2466fd6eb5433e7bf287b617b11b2640c65a7ea93a57eb7a80d7f537cbc1470'
         source=('config.x86_64' # stock Arch config
                 'config_hardened.x86_64' # hardened Arch config
                 90-cleanup.hook
@@ -242,7 +245,7 @@ case $_basever in
         59)
         opt_ver="5.8+"
 	cpu_opt_sum='5ab29eb64e57df83b395a29a6a4f89030d142feffbfbf73b3afc6d97a2a7fd12'
-	kernel_sum='d1ae28dfe9d25b73f2e437319df1b77d7ac1d0efd188cfb5df84a6784a318a73'
+	kernel_sum='6cc182fe19a8f3958c24d453f4ab68eb73fb5cfb8af4c95b02f3db049e655370'
         source=("config.x86_64" # stock Arch config
                 #$hardened_config_file # hardened Arch config
                 90-cleanup.hook
@@ -491,14 +494,6 @@ echo "
     _force_all_threads="-j$((`nproc`+1))"
   else
     _force_all_threads="${makejobs}"
-  fi
-
-  # ccache
-  if [ "$_noccache" != "true" ] && xbps-query -s ccache &> /dev/null; then
-    export PATH="/usr/lib/ccache/bin/:$PATH"
-    export CCACHE_SLOPPINESS="file_macro,locale,time_macros"
-    export CCACHE_NOHASHDIR="true"
-    echo 'ccache was found and will be used'
   fi
 
   # build!
