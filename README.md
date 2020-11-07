@@ -1,3 +1,7 @@
+## This repo contains linux-tkg
+
+https://github.com/Frogging-Family/linux-tkg
+
 ## The XBPS source packages collection
 
 This repository contains the XBPS source packages collection to build binary packages
