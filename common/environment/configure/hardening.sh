@@ -17,9 +17,17 @@ if [ -z "$nopie" ]; then
 		LDFLAGS="-specs=${_GCCSPECSDIR}/hardened-ld -Wl,-z,relro -Wl,-z,now ${LDFLAGS}"
 	else
 		# Enable FORITFY_SOURCE=2
-		CFLAGS="-fstack-clash-protection -D_FORTIFY_SOURCE=2 ${CFLAGS}"
-		CXXFLAGS="-fstack-clash-protection -D_FORTIFY_SOURCE=2 ${CXXFLAGS}"
-		LDFLAGS="-Wl,-z,relro -Wl,-z,now ${LDFLAGS}"
+		if [ "$XBPS_COMPILER" != "clang" ]; then
+			CFLAGS="-fstack-clash-protection -D_FORTIFY_SOURCE=2 ${CFLAGS}"
+			CXXFLAGS="-fstack-clash-protection -D_FORTIFY_SOURCE=2 ${CXXFLAGS}"
+			LDFLAGS="-Wl,-z,relro -Wl,-z,now ${LDFLAGS}"
+		# Clang 10
+		else
+			CFLAGS="${CFLAGS}"
+			CXXFLAGS="${CXXFLAGS}"
+			LDFLAGS="-Wl,-z,relro -Wl,-z,now ${LDFLAGS}"
+		fi
+
 	fi
 else
 	CFLAGS="-fno-PIE ${CFLAGS}"
