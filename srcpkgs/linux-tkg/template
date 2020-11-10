@@ -49,7 +49,7 @@ source ${srcdir}/compilerset
 source ${srcdir}/versel
 # Template file for 'linux${_basever}-tkg-${_cpusched}${_compiler_name}'
 pkgname=linux${_basever}-tkg-${_cpusched}${_compiler_name}
-revision=9
+revision=10
 archs="x86_64" # PKGBUILD declares x86_64 only
 python_version=3
 patch_args="-Np1"
@@ -90,7 +90,7 @@ case $_basever in
         54)
 	opt_ver="4.19-v5.4"
 	cpu_opt_sum='27b7fc535ade94b636c3ec4e809e141831e9465a0ef55215a9852b87048629e2'
-	kernel_sum='d2466fd6eb5433e7bf287b617b11b2640c65a7ea93a57eb7a80d7f537cbc1470'
+	kernel_sum='6f565fd31af5e1df7520c88d36d61db0f14b8fd7cc77aeb6c9b7b2ac25bef7d2'
         source=('config.x86_64' # stock Arch config
                 'config_hardened.x86_64' # hardened Arch config
                 90-cleanup.hook
@@ -245,7 +245,7 @@ case $_basever in
         59)
         opt_ver="5.8+"
 	cpu_opt_sum='5ab29eb64e57df83b395a29a6a4f89030d142feffbfbf73b3afc6d97a2a7fd12'
-	kernel_sum='6cc182fe19a8f3958c24d453f4ab68eb73fb5cfb8af4c95b02f3db049e655370'
+	kernel_sum='dea843ecac95c8780fba92005fec360e0491cb1aacc18097bcd9b169e91869b7'
         source=("config.x86_64" # stock Arch config
                 #$hardened_config_file # hardened Arch config
                 90-cleanup.hook
@@ -273,7 +273,7 @@ case $_basever in
                 #0012-linux-hardened.patch
                 0012-misc-additions.patch
         )
-        sha256sums=('9bb2762ba80f7f38bf067c968badda9671fd1b7749274105569cda30b1ae820d'
+        sha256sums=('958333f18de79c19ccf9eccb4e16e2a217a0619a1d96c2c65ccba23628815bab'
             '1e15fc2ef3fa770217ecc63a220e5df2ddbcf3295eb4a021171e7edd4c6cc898'
             '66a03c246037451a77b4d448565b1d7e9368270c7d02872fbd0b5d024ed0a997'
             'f6383abef027fd9a430fd33415355e0df492cdc3c90e9938bf2d98f4f63b32e6'
@@ -300,7 +300,7 @@ case $_basever in
         510)
         opt_ver="5.8+"
 	cpu_opt_sum='5ab29eb64e57df83b395a29a6a4f89030d142feffbfbf73b3afc6d97a2a7fd12'
-	kernel_sum='7276dafa91ba23bb988ab80be6fd010059163e1539187eb7daab22d2fa2803e2'
+	kernel_sum='6d9f639bbfa060ffa35440b3ae4b2242f004cee891c3a03ffcd6b42bb3f9fc23'
         source=("config.x86_64" # stock Arch config
                 #$hardened_config_file # hardened Arch config
                 90-cleanup.hook
