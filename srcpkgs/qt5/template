@@ -169,6 +169,7 @@ _msg_cross() {
 }
 
 do_configure() {
+	echo $nostrip
 	local opts spec
 
 	case "$XBPS_TARGET_MACHINE" in
@@ -228,7 +229,9 @@ do_configure() {
 	opts+=" -nomake examples"
 	opts+=" -optimized-qmake"
 	# opts+=" -opengl dynamic"
-	opts+=" -no-use-gold-linker"
+	if [ "$XBPS_COMPILER" != "clang" ]; then
+		opts+=" -no-use-gold-linker"
+	fi
 	opts+=" -system-libjpeg"
 	opts+=" -system-libpng"
 	opts+=" -system-zlib"
@@ -239,6 +242,9 @@ do_configure() {
 	# opts+=" -v"
 	opts+=" -skip qtwebengine"
 	opts+=" -skip qtwebview"
+	if [ "$XBPS_COMPILER" = "clang" ]; then
+		opts+=" -platform linux-clang"
+	fi
 	LDFLAGS+=" -Wl,--no-keep-memory"  # needs more than 8GB RAM else
 	if [ "$CROSS_BUILD" ]; then
 		spec=void-${XBPS_CROSS_TRIPLET}-g++
@@ -257,8 +263,8 @@ do_configure() {
 		cp -v ${FILESDIR}/uitools.pro qttools/src/designer/src/uitools/uitools.pro
 	fi
 
-	CC="cc" CXX="c++" CPP="cpp" LD="c++" AR="ar" AS="as" NM="nm" \
-	OBJDUMP="objdump" STRIP="strip" RANLIB="ranlib" \
+	CC="${XBPS_CC}" CXX="${XBPS_CXX}" CPP="${XBPS_CPP}" LD="${XBPS_LD}" AR="${XBPS_AR}" AS="${XBPS_AS}" NM="${XBPS_NM}" \
+	OBJDUMP="${XBPS_OBJDUMP}" STRIP="${XBPS_STRIP}" RANLIB="${XBPS_RANLIB}" \
 	CFLAGS="$XBPS_CFLAGS" CXXFLAGS="$XBPS_CXXFLAGS" \
 	CPPFLAGS="$XBPS_CPPFLAGS" LDFLAGS="$XBPS_LDFLAGS" \
 	LFLAGS="$XBPS_LDFLAGS" \
@@ -271,6 +277,7 @@ do_build() {
 	# is not yet ready when it is to be included. Repeating make works around that
 	# problem without having to resort to disable_parallel_build=yes
 	# or some other files
+	echo $LD
 	make ${makejobs} || make ${makejobs}
 }
 
