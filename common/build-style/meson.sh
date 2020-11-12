@@ -46,7 +46,7 @@ do_patch() {
 [binaries]
 c = '${CC}'
 cpp = '${CXX}'
-ar = '${XBPS_CROSS_TRIPLET}-gcc-ar'
+ar = '${AR}'
 nm = '${NM}'
 ld = '${LD}'
 strip = '${STRIP}'
