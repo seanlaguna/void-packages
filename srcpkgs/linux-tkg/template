@@ -49,7 +49,7 @@ source ${srcdir}/compilerset
 source ${srcdir}/versel
 # Template file for 'linux${_basever}-tkg-${_cpusched}${_compiler_name}'
 pkgname=linux${_basever}-tkg-${_cpusched}${_compiler_name}
-revision=10
+revision=11
 archs="x86_64" # PKGBUILD declares x86_64 only
 python_version=3
 patch_args="-Np1"
@@ -90,7 +90,7 @@ case $_basever in
         54)
 	opt_ver="4.19-v5.4"
 	cpu_opt_sum='27b7fc535ade94b636c3ec4e809e141831e9465a0ef55215a9852b87048629e2'
-	kernel_sum='6f565fd31af5e1df7520c88d36d61db0f14b8fd7cc77aeb6c9b7b2ac25bef7d2'
+	kernel_sum='a3e03e6970240dddc8174bf9f49b56d774c40125eabe1582d2ebe85b01addbf7'
         source=('config.x86_64' # stock Arch config
                 'config_hardened.x86_64' # hardened Arch config
                 90-cleanup.hook
@@ -192,7 +192,7 @@ case $_basever in
         ;;
         58)
         opt_ver="5.8+"
-	cpu_opt_sum='5ab29eb64e57df83b395a29a6a4f89030d142feffbfbf73b3afc6d97a2a7fd12'
+	cpu_opt_sum='126cd35b1153b69dd8d713f902d09ecc64ce8af2e4fa6f021219a65e62e13875'
 	kernel_sum='4ab4a3f694b7b4cfbe78871eab34c8039ad33692144c45c669827a594da85534'
         source=(config.x86_64 # stock Arch config
                 #config_hardened.x86_64 # hardened Arch config
@@ -244,8 +244,8 @@ case $_basever in
         ;;
         59)
         opt_ver="5.8+"
-	cpu_opt_sum='5ab29eb64e57df83b395a29a6a4f89030d142feffbfbf73b3afc6d97a2a7fd12'
-	kernel_sum='dea843ecac95c8780fba92005fec360e0491cb1aacc18097bcd9b169e91869b7'
+	cpu_opt_sum='126cd35b1153b69dd8d713f902d09ecc64ce8af2e4fa6f021219a65e62e13875'
+	kernel_sum='7656733b316562662026ac82a7c0be41440e16bbf1bdc5447b119e34ff3b86a6'
         source=("config.x86_64" # stock Arch config
                 #$hardened_config_file # hardened Arch config
                 90-cleanup.hook
@@ -299,7 +299,7 @@ case $_basever in
         ;;
         510)
         opt_ver="5.8+"
-	cpu_opt_sum='5ab29eb64e57df83b395a29a6a4f89030d142feffbfbf73b3afc6d97a2a7fd12'
+	cpu_opt_sum='126cd35b1153b69dd8d713f902d09ecc64ce8af2e4fa6f021219a65e62e13875'
 	kernel_sum='6d9f639bbfa060ffa35440b3ae4b2242f004cee891c3a03ffcd6b42bb3f9fc23'
         source=("config.x86_64" # stock Arch config
                 #$hardened_config_file # hardened Arch config
