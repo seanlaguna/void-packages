@@ -678,18 +678,18 @@ fi
 #
 # Default Compiler options
 #
-[ ! -n "$XBPS_CC" ] && XBPS_CC="gcc"
-[ ! -n "$XBPS_CXX" ] && XBPS_CXX="g++"
-[ ! -n "$XBPS_CPP" ] && XBPS_CPP="cpp"
-[ ! -n "$XBPS_AR" ] && XBPS_AR="ar"
-[ ! -n "$XBPS_AS" ] && XBPS_AS="as"
-[ ! -n "$XBPS_NM" ] && XBPS_NM="nm"
-[ ! -n "$XBPS_LD" ] && XBPS_LD="ld"
-[ ! -n "$XBPS_STRIP" ] && XBPS_STRIP="strip"
-[ ! -n "$XBPS_OBJCOPY" ] && XBPS_OBJCOPY="objcopy"
-[ ! -n "$XBPS_OBJDUMP" ] && XBPS_OBJDUMP="objdump"
-[ ! -n "$XBPS_RANLIB" ] && XBPS_RANLIB="ranlib"
-[ ! -n "$XBPS_READELF" ] && XBPS_READELF="readelf"
+[ ! "$XBPS_CC" ] && XBPS_CC="gcc"
+[ ! "$XBPS_CXX" ] && XBPS_CXX="g++"
+[ ! "$XBPS_CPP" ] && XBPS_CPP="cpp"
+[ ! "$XBPS_AR" ] && XBPS_AR="ar"
+[ ! "$XBPS_AS" ] && XBPS_AS="as"
+[ ! "$XBPS_NM" ] && XBPS_NM="nm"
+[ ! "$XBPS_LD" ] && XBPS_LD="ld"
+[ ! "$XBPS_STRIP" ] && XBPS_STRIP="strip"
+[ ! "$XBPS_OBJCOPY" ] && XBPS_OBJCOPY="objcopy"
+[ ! "$XBPS_OBJDUMP" ] && XBPS_OBJDUMP="objdump"
+[ ! "$XBPS_RANLIB" ] && XBPS_RANLIB="ranlib"
+[ ! "$XBPS_READELF" ] && XBPS_READELF="readelf"
 
 # Set Compiler
 case "$XBPS_COMPILER" in

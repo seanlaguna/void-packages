@@ -15,31 +15,24 @@ if [ -z "$nopie" ]; then
 		CFLAGS="-specs=${_GCCSPECSFILE} ${CFLAGS}"
 		CXXFLAGS="-specs=${_GCCSPECSFILE} ${CXXFLAGS}"
 		LDFLAGS="-specs=${_GCCSPECSDIR}/hardened-ld -Wl,-z,relro -Wl,-z,now ${LDFLAGS}"
-	else
-		# Enable FORITFY_SOURCE=2
-		if [ $CLANG_VER -ge 1001 ] || [ "${XBPS_COMPILER}" != "clang" ]; then
-			CFLAGS="-fstack-clash-protection -D_FORTIFY_SOURCE=2 -fPIE ${CFLAGS}"
-			CXXFLAGS="-fstack-clash-protection -D_FORTIFY_SOURCE=2 -fPIE ${CXXFLAGS}"
-			if [ "$XBPS_COMPILER" = "clang" ]; then
-				# -pie needed for PIE with clang
-				LDFLAGS="-Wl,-z,relro -Wl,-z,now -pie ${LDFLAGS}"
-			else
-				LDFLAGS="-Wl,-z,relro -Wl,-z,now ${LDFLAGS}"
-			fi
-		# Clang < 10.0.1
-		else
-			CFLAGS="-fPIE ${CFLAGS}" #-fPIC 
-			CXXFLAGS="-fPIE ${CXXFLAGS}" #-fPIC 
+	# Enable FORITFY_SOURCE=2
+	elif [ $CLANG_VER -ge 1001 ] || [ "${XBPS_COMPILER}" != "clang" ]; then
+		CFLAGS="-fstack-clash-protection -D_FORTIFY_SOURCE=2 -fPIE ${CFLAGS}"
+		CXXFLAGS="-fstack-clash-protection -D_FORTIFY_SOURCE=2 -fPIE ${CXXFLAGS}"
+		if [ "$XBPS_COMPILER" = "clang" ]; then
+			# -pie needed for PIE with clang
 			LDFLAGS="-Wl,-z,relro -Wl,-z,now -pie ${LDFLAGS}"
+		else
+			LDFLAGS="-Wl,-z,relro -Wl,-z,now ${LDFLAGS}"
 		fi
-
+	# Clang < 10.0.1
+	else
+		CFLAGS="-fPIE ${CFLAGS}"
+		CXXFLAGS="-fPIE ${CXXFLAGS}"
+	 	LDFLAGS="-Wl,-z,relro -Wl,-z,now -pie ${LDFLAGS}"
 	fi
 else
 	CFLAGS="-fno-PIE ${CFLAGS}"
 	CXXFLAGS="-fno-PIE ${CFLAGS}"
-	if [ "$XBPS_COMPILER" != "clang" ]; then
-		LDFLAGS="-no-pie ${LDFLAGS}"
-	else
-		LDFLAGS="${LDFLAGS}"
-	fi
+	LDFLAGS="${LDFLAGS}"
 fi
