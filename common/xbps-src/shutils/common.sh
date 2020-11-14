@@ -554,7 +554,7 @@ setup_pkg() {
 	        export PKG_CONFIG="pkg-config"
             #export XBPS_CROSS_BASE=/usr
         else
-	        export CC="${XBPS_CROSS_TRIPLET}-cc"
+	        export CC="${XBPS_CROSS_TRIPLET}-gcc"
 	        export CXX="${XBPS_CROSS_TRIPLET}-c++"
 	        export CPP="${XBPS_CROSS_TRIPLET}-cpp"
 	        export FC="${XBPS_CROSS_TRIPLET}-gfortran"

@@ -18,8 +18,8 @@ if [ -z "$nopie" ]; then
 	else
 		# Enable FORITFY_SOURCE=2
 		if [ $CLANG_VER -ge 1001 ] || [ "${XBPS_COMPILER}" != "clang" ]; then
-			CFLAGS="-fstack-clash-protection -D_FORTIFY_SOURCE=2 -fPIC ${CFLAGS}"
-			CXXFLAGS="-fstack-clash-protection -D_FORTIFY_SOURCE=2 -fPIC ${CXXFLAGS}"
+			CFLAGS="-fstack-clash-protection -D_FORTIFY_SOURCE=2 -fPIE ${CFLAGS}"
+			CXXFLAGS="-fstack-clash-protection -D_FORTIFY_SOURCE=2 -fPIE ${CXXFLAGS}"
 			if [ "$XBPS_COMPILER" = "clang" ]; then
 				# -pie needed for PIE with clang
 				LDFLAGS="-Wl,-z,relro -Wl,-z,now -pie ${LDFLAGS}"
@@ -28,8 +28,8 @@ if [ -z "$nopie" ]; then
 			fi
 		# Clang < 10.0.1
 		else
-			CFLAGS="-fPIC ${CFLAGS}"
-			CXXFLAGS="-fPIC ${CXXFLAGS}"
+			CFLAGS="-fPIE ${CFLAGS}" #-fPIC 
+			CXXFLAGS="-fPIE ${CXXFLAGS}" #-fPIC 
 			LDFLAGS="-Wl,-z,relro -Wl,-z,now -pie ${LDFLAGS}"
 		fi
 
