@@ -709,18 +709,18 @@ case "$XBPS_COMPILER" in
         XBPS_READELF="llvm-readelf"
     ;;
     *)
-        XBPS_CC="$XBPS_CC"
-        XBPS_CXX="$XBPS_CXX"
-        XBPS_CPP="$XBPS_CPP"
-        XBPS_AR="$XBPS_AR"
-        XBPS_AS="$XBPS_AS"
-        XBPS_NM="$XBPS_NM"
-        XBPS_LD="$XBPS_LD"
-        XBPS_STRIP="$XBPS_STRIP"
-        XBPS_OBJCOPY="$XBPS_OBJCOPY"
-        XBPS_OBJDUMP="$XPBS_OBJDUMP"
-        XBPS_RANLIB="$XBPS_RANLIB"
-        XBPS_READELF="$XBPS_READELF"
+	[ ! "$XBPS_CC" ] && XBPS_CC="$XBPS_CC"
+	[ ! "$XBPS_CXX" ] && XBPS_CXX="$XBPS_CXX"
+	[ ! "$XBPS_CPP" ] && XBPS_CPP="$XBPS_CPP"
+	[ ! "$XBPS_AR" ] && XBPS_AR="$XBPS_AR"
+	[ ! "$XBPS_AS" ] && XBPS_AS="$XBPS_AS"
+	[ ! "$XBPS_NM" ] && XBPS_NM="$XBPS_NM"
+	[ ! "$XBPS_LD" ] && XBPS_LD="$XBPS_LD"
+	[ ! "$XBPS_STRIP" ] && XBPS_STRIP="$XBPS_STRIP"
+	[ ! "$XBPS_OBJCOPY" ] && XBPS_OBJCOPY="$XBPS_OBJCOPY"
+    [ ! "$XBPS_OBJDUMP" ] && XBPS_OBJDUMP="$XBPS_OBJDUMP"
+    [ ! "$XBPS_RANLIB" ] && XBPS_RANLIB="$XBPS_RANLIB"
+    [ ! "$XBPS_READELF" ] && XBPS_READELF="$XBPS_READELF"
 esac
 
 #
@@ -728,18 +728,18 @@ esac
 # use those options
 # 
 if [ ! "$XBPS_COMPILER" ]; then
-        XBPS_CC="$XBPS_CC"
-        XBPS_CXX="$XBPS_CXX"
-        XBPS_CPP="$XBPS_CPP"
-        XBPS_AR="$XBPS_AR"
-        XBPS_AS="$XBPS_AS"
-        XBPS_NM="$XBPS_NM"
-        XBPS_LD="$XBPS_LD"
-        XBPS_STRIP="$XBPS_STRIP"
-        XBPS_OBJCOPY="$XBPS_OBJCOPY"
-        XBPS_OBJDUMP="$XPBS_OBJDUMP"
-        XBPS_RANLIB="$XBPS_RANLIB"
-        XBPS_READELF="$XBPS_READELF"
+	[ ! "$XBPS_CC" ] && XBPS_CC="$XBPS_CC"
+	[ ! "$XBPS_CXX" ] && XBPS_CXX="$XBPS_CXX"
+	[ ! "$XBPS_CPP" ] && XBPS_CPP="$XBPS_CPP"
+	[ ! "$XBPS_AR" ] && XBPS_AR="$XBPS_AR"
+	[ ! "$XBPS_AS" ] && XBPS_AS="$XBPS_AS"
+	[ ! "$XBPS_NM" ] && XBPS_NM="$XBPS_NM"
+	[ ! "$XBPS_LD" ] && XBPS_LD="$XBPS_LD"
+	[ ! "$XBPS_STRIP" ] && XBPS_STRIP="$XBPS_STRIP"
+	[ ! "$XBPS_OBJCOPY" ] && XBPS_OBJCOPY="$XBPS_OBJCOPY"
+    [ ! "$XBPS_OBJDUMP" ] && XBPS_OBJDUMP="$XBPS_OBJDUMP"
+    [ ! "$XBPS_RANLIB" ] && XBPS_RANLIB="$XBPS_RANLIB"
+    [ ! "$XBPS_READELF" ] && XBPS_READELF="$XBPS_READELF"
 fi
 
 #
