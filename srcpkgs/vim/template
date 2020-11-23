@@ -1,9 +1,9 @@
 # Template file for 'vim'
 pkgname=vim
-version=8.2.0891
+version=8.2.1948
 revision=1
 hostmakedepends="gettext glib-devel pkg-config"
-makedepends="acl-devel gtk+3-devel libXt-devel lua-devel ncurses-devel
+makedepends="acl-devel gtk+3-devel libXt-devel lua53-devel ncurses-devel
  perl python3-devel ruby-devel"
 depends="vim-common>=${version}"
 short_desc="Vim editor (vi clone)"
@@ -11,7 +11,7 @@ maintainer="Neel Chotai <neel@chot.ai>"
 license="Vim"
 homepage="https://www.vim.org"
 distfiles="https://github.com/vim/vim/archive/v${version}.tar.gz"
-checksum=1848dbc78d21e119b9314de06ce9852137d740f8c3fb97f558dea3f7f01bed44
+checksum=7f868ab36bd1a7f56e68366d7c767239b30c49beddb725c4b254cf95cf8b7dda
 python_version=3
 
 subpackages="xxd vim-common vim-x11 gvim"
@@ -112,7 +112,6 @@ do_install() {
 vim-common_package() {
 	short_desc+=" - common files"
 	depends="xxd"
-	archs=noarch
 	alternatives="
 	 vi:ex:/usr/bin/vim
 	 vi:ex.1:/usr/share/man/man1/vim.1

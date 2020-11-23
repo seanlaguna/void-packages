@@ -1,6 +1,6 @@
 # Template file for 'wine'
 pkgname=wine
-version=5.10
+version=5.22
 revision=1
 build_style=gnu-configure
 configure_args="--bindir=/usr/libexec/wine"
@@ -9,7 +9,7 @@ maintainer="Helmut Pozimski <helmut@pozimski.eu>"
 license="LGPL-2.1-or-later"
 homepage="http://www.winehq.org/"
 distfiles="https://dl.winehq.org/wine/source/${version%%.*}.x/wine-${version}.tar.xz"
-checksum=9baaa09216c817f61bce39626b869d1e387d436eccda3d9e054cfab84802333d
+checksum=09bd06c87c8c974e6ad34507cec875d7217eb56fc09df838d5453e0ebbce4d21
 
 lib32mode=full
 archs="i686 x86_64*"
@@ -27,8 +27,7 @@ makedepends="gettext-devel lcms2-devel zlib-devel ncurses-devel
  FAudio-devel gst-plugins-base1-devel"
 depends="libXi libXinerama libXcomposite libXcursor libOSMesa
  desktop-file-utils hicolor-icon-theme liberation-fonts-ttf
- gnutls"
-depends="wine-common>=${version}_${revision}"
+ gnutls wine-common>=${version}_${revision} libwine>=${version}_${revision}"
 
 case $XBPS_TARGET_MACHINE in
 	x86_64*) configure_args+=" --enable-win64 --libdir=/usr/lib"
@@ -89,7 +88,6 @@ wine-devel_package() {
 }
 
 wine-common_package() {
-	archs="noarch"
 	short_desc+=" - common files"
 	binfmts="/usr/bin/wine --magic MZ"
 	pkg_install() {

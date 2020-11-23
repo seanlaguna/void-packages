@@ -1,38 +1,57 @@
 # Template file for 'elfutils'
 pkgname=elfutils
-version=0.179
-revision=1
+version=0.182
+revision=4
 build_style=gnu-configure
-configure_args="--program-prefix=eu- --disable-debuginfod"
+configure_args="--program-prefix=eu-"
 hostmakedepends="automake libtool pkg-config"
-makedepends="bzip2-devel liblzma-devel zlib-devel"
+_devel_depends="bzip2-devel liblzma-devel zlib-devel libzstd-devel"
+makedepends="${_devel_depends} libcurl-devel libarchive-devel sqlite-devel
+ libmicrohttpd-devel"
 short_desc="Utilities to handle ELF object files"
-maintainer="Orphaned <orphan@voidlinux.org>"
+maintainer="Érico Nogueira <ericonr@disroot.org>"
 license="GPL-3.0-or-later"
 homepage="https://sourceware.org/elfutils/"
 distfiles="https://sourceware.org/${pkgname}/ftp/${version}/${pkgname}-${version}.tar.bz2"
-checksum=25a545566cbacaa37ae6222e58f1c48ea4570f53ba991886e2f5ce96e22a23a2
+checksum=ecc406914edf335f0b7fc084ebe6c460c4d6d5175bfdd6688c1c78d9146b8858
+# subpackages require explicit ordering
+subpackages="debuginfod libdebuginfod libelf elfutils-devel"
 
-CFLAGS="-Wno-error -Wno-error=null-dereference"
+CFLAGS="-Wno-error"
+CXXFLAGS="-Wl,-z,stack-size=2097152"
 
-case "$XBPS_TARGET_MACHINE" in
-	*-musl) makedepends+=" argp-standalone musl-fts-devel musl-obstack" ;;
-esac
-
-if [ "$CROSS_BUILD" ]; then
-	# kernel headers in our cross-* packages are too old (need >= 4.1)
-	CFLAGS+=" -DBPF_PSEUDO_MAP_FD=1"
+if [ "$XBPS_TARGET_LIBC" = musl ]; then
+	makedepends+=" argp-standalone musl-fts-devel musl-obstack-devel musl-legacy-compat"
+	# XXX: breaks some expected functionality
+	CFLAGS+=" -DFNM_EXTMATCH=0"
 fi
 
 post_extract() {
-	case "$XBPS_TARGET_MACHINE" in
-		*-musl) cp ${FILESDIR}/error.h lib
-			cp ${FILESDIR}/error.h src
-	esac
+	if [ "$XBPS_TARGET_LIBC" = musl ]; then
+		cp ${FILESDIR}/error.h lib
+		cp ${FILESDIR}/error.h src
+	fi
 }
 
 pre_configure() {
 	autoreconf -if
+}
+
+libdebuginfod_package() {
+	short_desc+=" - debuginfod library"
+	pkg_install() {
+		vmove "usr/lib/libdebuginfod*.so*"
+		vmove etc/profile.d
+	}
+}
+
+debuginfod_package() {
+	short_desc+=" - debuginfod programs"
+	pkg_install() {
+		vmove "usr/bin/debuginfod*"
+		vmove "usr/share/man/man1/debuginfod-find.1"
+		vmove "usr/share/man/man8/debuginfod.8"
+	}
 }
 
 libelf_package() {
@@ -43,11 +62,13 @@ libelf_package() {
 }
 
 elfutils-devel_package() {
-	depends="libelf>=${version}_${revision}"
+	depends="libelf>=${version}_${revision} libdebuginfod>=${version}_${revision}
+	 ${_devel_depends}"
 	short_desc+=" - development files"
 	pkg_install() {
 		vmove usr/include
 		vmove usr/lib/pkgconfig
 		vmove "usr/lib/*.a"
+		vmove usr/share/man/man3
 	}
 }

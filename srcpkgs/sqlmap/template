@@ -1,8 +1,7 @@
 # Template file for 'sqlmap'
 pkgname=sqlmap
-version=1.4.6
+version=1.4.11
 revision=1
-archs=noarch
 pycompile_dirs="usr/share/sqlmap"
 depends="python3"
 short_desc="Automatic SQL injection and database takeover tool"
@@ -10,7 +9,7 @@ maintainer="Andrew Benson <abenson+void@gmail.com>"
 license="GPL-2.0-or-later"
 homepage="http://sqlmap.org"
 distfiles="https://github.com/sqlmapproject/sqlmap/archive/${version}.tar.gz"
-checksum=d4ca1b529942c61243759727ec41f43dff19880ed63fca6b10df34f5b71579e6
+checksum=80cc07e08cc7e9662c6b8ce99fd3ae8706458b8009c56369dbb1f57b3b6634c5
 python_version=3
 
 do_install() {

@@ -1,14 +1,14 @@
 # Template file for 'kwrited'
 pkgname=kwrited
-version=5.19.0
+version=5.20.3
 revision=1
 build_style=cmake
 configure_args="-DBUILD_TESTING=OFF"
 hostmakedepends="extra-cmake-modules gettext kcoreaddons qt5-devel qt5-qmake"
 makedepends="kdbusaddons-devel knotifications-devel kpty-devel kdoctools"
 short_desc="KDE daemon listening for wall and write messages"
-maintainer="John <johnz@posteo.net>"
+maintainer="John <me@johnnynator.dev>"
 license="GPL-2.0-or-later"
-homepage="https://projects.kde.org/projects/plasma/kwrited"
+homepage="https://invent.kde.org/plasma/kwrited"
 distfiles="${KDE_SITE}/plasma/${version}/${pkgname}-${version}.tar.xz"
-checksum=cb2d0fcbf3165799836d0255b22332c5c9e346b4ff689c3beee8036b6009ab7f
+checksum=456b3583f6da4be4b8996c75a9709def8aefbe2d4e71fb50fcaed35a0d1d112e

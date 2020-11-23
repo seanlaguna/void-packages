@@ -70,10 +70,11 @@ python_wrapper() {
 	[ -x ${XBPS_WRAPPERDIR}/${wrapper} ] && return 0
 	cat >>${XBPS_WRAPPERDIR}/${wrapper}<<_EOF
 #!/bin/sh
-if [ "\$1" = "--includes" ]; then
-	echo "-I${XBPS_CROSS_BASE}/usr/include/python${version}"
-fi
-exit \$?
+case "\$1" in
+--includes|--cflags)
+	echo "-I${XBPS_CROSS_BASE}/usr/include/python${version}" ;;
+esac
+exit 0
 _EOF
 	chmod 755 ${XBPS_WRAPPERDIR}/${wrapper}
 }
@@ -208,7 +209,7 @@ hook() {
 	generic_wrapper3 libetpan-config
 	generic_wrapper3 giblib-config
 	python_wrapper python-config 2.7
-	python_wrapper python3-config 3.8
+	python_wrapper python3-config 3.9
 	apr_apu_wrapper apr-1-config
 	apr_apu_wrapper apu-1-config
 }

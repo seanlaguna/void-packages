@@ -1,12 +1,12 @@
 # Template file for 'boost'
 pkgname=boost
 version=1.72.0
-revision=3
+revision=4
 wrksrc="${pkgname}_${version//\./_}"
 hostmakedepends="which bzip2-devel icu-devel python-devel python3-devel"
 makedepends="zlib-devel bzip2-devel icu-devel python-devel python3-devel"
 short_desc="Free peer-reviewed portable C++ source libraries"
-maintainer="John <johnz@posteo.net>"
+maintainer="John <me@johnnynator.dev>"
 license="BSL-1.0"
 homepage="http://www.boost.org/"
 distfiles="https://dl.bintray.com/boostorg/release/${version}/source/boost_${version//./_}.tar.bz2"
@@ -71,7 +71,7 @@ do_build() {
 	cat > user-config.jam <<-__EOF
 	using gcc : : ${CXX} : <cxxflags>"${CXXFLAGS}" <linkflags>"${LDFLAGS}" ;
 	using python : 2.7 : ${XBPS_CROSS_BASE}/usr/bin/python2 : ${XBPS_CROSS_BASE}/usr/include/python2.7 : ${XBPS_CROSS_BASE}/usr/lib/python2.7 ;
-	using python : ${py3_ver} : ${XBPS_CROSS_BASE}/usr/bin/python3 : ${XBPS_CROSS_BASE}${py3_inc} : ${XBPS_CROSS_BASE}${py3_lib} ;
+	using python : ${py3_ver} : ${XBPS_CROSS_BASE}/usr/bin/python3 : ${XBPS_CROSS_BASE}/${py3_inc} : ${XBPS_CROSS_BASE}/${py3_lib} ;
 
 	__EOF
 	# --no-cmake-config should be removed with boost-1.71 or later
@@ -136,7 +136,6 @@ boost-python3-1.72_package() {
 	}
 }
 boost-build_package() {
-	archs=noarch
 	conf_files="/etc/site-config.jam"
 	short_desc+=" - Boost.Build framework"
 	pkg_install() {

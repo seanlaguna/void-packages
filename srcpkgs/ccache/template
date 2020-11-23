@@ -1,19 +1,32 @@
 # Template file for 'ccache'
 pkgname=ccache
-version=3.7.9
+version=4.1
 revision=1
 bootstrap=yes
-build_style=gnu-configure
-make_check_args="CC=gcc"
-makedepends="zlib-devel"
-checkdepends="perl"
+build_style=cmake
+configure_args="-DENABLE_TESTING=OFF"
+makedepends="libzstd-devel zlib-devel"
 short_desc="Fast C/C++ Compiler Cache"
 maintainer="Enno Boland <gottox@voidlinux.org>"
 license="GPL-3.0-or-later"
 homepage="https://ccache.samba.org/"
 changelog="https://ccache.dev/releasenotes.html"
 distfiles="https://github.com/ccache/ccache/releases/download/v${version}/${pkgname}-${version}.tar.xz"
-checksum=f893da7543bfb9172bd55e603fcbdfcd83e6def176a28689c13235695b4cf44b
+checksum=5fdc804056632d722a1182e15386696f0ea6c59cb4ab4d65a54f0b269ae86f99
+
+if [ -z "$CHROOT_READY" ]; then
+	hostmakedepends="cmake-bootstrap"
+else
+	hostmakedepends="asciidoc perl"
+fi
+
+if [ -n "$CHROOT_READY" ] && [ -n "$XBPS_CHECK_PKGS" ]; then
+	configure_args+=" -DENABLE_TESTING=ON"
+fi
+
+if [ "$XBPS_TARGET_NO_ATOMIC8" ]; then
+	makedepends+=" libatomic-devel"
+fi
 
 post_install() {
 	vmkdir usr/lib/ccache/bin

@@ -1,23 +1,28 @@
 # Template file for 'dhcpcd'
 pkgname=dhcpcd
-version=9.1.1
-revision=1
+version=9.3.2
+revision=2
 build_style=configure
 make_check_target=test
-configure_args="--prefix=/usr --sbindir=/usr/bin --sysconfdir=/etc --rundir=/run/dhcpcd --privsepuser=_dhcpcd"
+configure_args="
+ --prefix=/usr --sbindir=/usr/bin --sysconfdir=/etc --rundir=/run/dhcpcd
+ $(vopt_if privsep --privsepuser=_dhcpcd)"
 hostmakedepends="ntp pkg-config"
 makedepends="eudev-libudev-devel"
 short_desc="RFC2131 compliant DHCP client"
-maintainer="Juan RP <xtraeme@gmail.com>"
+maintainer="Cameron Nemo <cnemo@tutanota.com>"
 license="BSD-2-Clause"
 homepage="https://roy.marples.name/projects/dhcpcd"
 distfiles="https://roy.marples.name/downloads/dhcpcd/dhcpcd-${version}.tar.xz"
-checksum=bb742911be1f660db42a7323acc793b587f467c5de5b7186735c16d20204737d
+checksum=6d49af5e766a2515e6366e4f669663df04ecdf90a1a60ddb1d7a2feb4b5d2566
 lib32disabled=yes
 conf_files=/etc/dhcpcd.conf
-# privsep
+
 system_accounts="_dhcpcd"
 _dhcpcd_homedir="/var/db/dhcpcd"
+
+build_options="privsep"
+desc_option_privsep="Enable privilege separation mode for the daemon"
 
 post_install() {
 	vsv dhcpcd

@@ -1,6 +1,6 @@
 # Template file for 'sddm-kcm'
 pkgname=sddm-kcm
-version=5.19.0
+version=5.20.3
 revision=1
 build_style=cmake
 configure_args="-DBUILD_TESTING=OFF"
@@ -10,8 +10,8 @@ makedepends="kio-devel xcb-util-image-devel libXcursor-devel
  knewstuff-devel"
 depends="sddm"
 short_desc="KDE Config Module for SDDM"
-maintainer="John <johnz@posteo.net>"
+maintainer="John <me@johnnynator.dev>"
 license="GPL-2.0-or-later"
-homepage="https://projects.kde.org/projects/plasma/sddm-kcm"
+homepage="https://invent.kde.org/plasma/sddm-kcm"
 distfiles="${KDE_SITE}/plasma/${version}/${pkgname}-${version}.tar.xz"
-checksum=8d8118150c75cbfa21547db57ed1445d391c501a483be8a9ee9cdc20acee5cfe
+checksum=0cfbc85d829612d81c1337a9e4dd1271fcf8d2307ba84134700be8c3927fd924

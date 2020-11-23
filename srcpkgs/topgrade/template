@@ -1,11 +1,11 @@
 # Template file for 'topgrade'
 pkgname=topgrade
-version=4.7.0
+version=5.9.1
 revision=1
 build_style=cargo
 short_desc="Meta upgrade tool for pip, flatpak, your distro and everything else"
 maintainer="jcgruenhage <jan.christian@gruenhage.xyz>"
 license="GPL-3.0-only"
 homepage="https://github.com/r-darwish/topgrade"
-distfiles="${homepage}/archive/v${version}.tar.gz"
-checksum=7e91995682380dc2a32375c7f5054f8c805fd6c47a06cb1432a315afee5a8405
+distfiles="https://github.com/r-darwish/topgrade/archive/v${version}.tar.gz"
+checksum=fea2053a667546fe4f6fa722e3cac2f229c6abdae78f220a4dda25398ba2494d

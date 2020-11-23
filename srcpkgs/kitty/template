@@ -1,6 +1,6 @@
 # Template file for 'kitty'
 pkgname=kitty
-version=0.17.4
+version=0.19.2
 revision=1
 pycompile_dirs="usr/lib/kitty"
 hostmakedepends="ncurses pkg-config python3 wayland-devel wayland-protocols"
@@ -13,7 +13,7 @@ license="GPL-3.0-or-later"
 homepage="https://sw.kovidgoyal.net/kitty/"
 changelog="https://sw.kovidgoyal.net/kitty/changelog.html"
 distfiles="https://github.com/kovidgoyal/kitty/releases/download/v${version}/kitty-${version}.tar.xz"
-checksum=9c4a32588a52051552f3daffccd14445327e132138bb5afb486f12e4f0308f2a
+checksum=152b551619e4747b72b636d1c5dd42356b11999e147dae01f1e47bca02280c46
 patch_args="-Np1"
 python_version=3
 LDFLAGS+=" -Wl,-z,stack-size=2097152"
@@ -41,7 +41,6 @@ do_install() {
 
 kitty-terminfo_package() {
 	short_desc+=" - terminfo data"
-	archs=noarch
 	pkg_install() {
 		vmove usr/share/terminfo
 	}

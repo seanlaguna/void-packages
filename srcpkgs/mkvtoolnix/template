@@ -1,14 +1,14 @@
 # Template file for 'mkvtoolnix'
 pkgname=mkvtoolnix
-version=47.0.0
+version=51.0.0
 revision=1
 build_style=gnu-configure
 build_helper=qmake
 configure_args="--with-docbook-xsl-root=/usr/share/xsl/docbook --enable-qt
  --disable-update-check"
-hostmakedepends="autoconf docbook-xsl libxslt pkg-config qt5-tools-devel ruby"
-makedepends="boost-devel cmark-devel file-devel json-c++
- libflac-devel libmatroska-devel libvorbis-devel pugixml-devel
+hostmakedepends="autoconf docbook-xsl gettext libxslt pkg-config qt5-tools-devel ruby"
+makedepends="boost-devel cmark-devel file-devel fmt-devel json-c++ libdvdread-devel
+ libflac-devel libmatroska-devel libvorbis-devel pcre2-devel pugixml-devel
  qt5-multimedia-devel qt5-tools-devel"
 short_desc="Create, alter and inspect Matroska videos"
 maintainer="Matthias von Faber <mvf@gmx.eu>"
@@ -16,7 +16,7 @@ license="GPL-2.0-only"
 homepage="https://mkvtoolnix.download"
 changelog="https://mkvtoolnix.download/doc/NEWS.md"
 distfiles="https://mkvtoolnix.download/sources/${pkgname}-${version}.tar.xz"
-checksum=8b7744203758025585b28200906c4b85716a6b1b95fed77cc520f9ae59c2ae44
+checksum=c17aa010a13c943b1347c5a20f7f6e05337a7d90317f525345813bcbcdcf4c70
 
 if [ "$CROSS_BUILD" ]; then
 	configure_args+=" --with-boost=${XBPS_CROSS_BASE}/usr"

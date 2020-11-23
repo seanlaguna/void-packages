@@ -1,6 +1,6 @@
 # Template file for 'ipset'
 pkgname=ipset
-version=7.6
+version=7.9
 revision=1
 build_style=gnu-configure
 configure_args="--with-kmod=no PKG_CONFIG=pkg-config"
@@ -11,7 +11,7 @@ maintainer="Leah Neukirchen <leah@vuxu.org>"
 license="GPL-2.0-only"
 homepage="http://ipset.netfilter.org/"
 distfiles="${homepage}${pkgname}-${version}.tar.bz2"
-checksum=0e7d44caa9c153d96a9b5f12644fbe35a632537a5a7f653792b72e53d9d5c2db
+checksum=b75c13689eddf1d95b396840a69dc04fd7ae4112b10b70594bc0405df7b9b30a
 
 libipset_package() {
 	short_desc+=" - library files"

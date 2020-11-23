@@ -1,29 +1,23 @@
 # Template file for 'hikari'
 pkgname=hikari
-version=2.0.1
-revision=1
+version=2.2.2
+revision=2
 build_style=gnu-makefile
 make_cmd=bmake
 make_use_env=yes
 make_build_args="WITH_POSIX_C_SOURCE=YES WITH_XWAYLAND=YES
  WITH_SCREENCOPY=YES WITH_GAMMACONTROL=YES WITH_LAYERSHELL=YES ETC_PREFIX="
-make_install_args="ETC_PREFIX="
-hostmakedepends="bmake pkg-config"
-makedepends="wlroots-devel pango-devel cairo-devel pam-devel glib-devel
- libinput-devel xcb-util-errors-devel xcb-util-wm-devel libucl-devel
- libxkbcommon-devel pixman-devel libevdev-devel"
+make_install_args="ETC_PREFIX= WITHOUT_SUID=YES"
+hostmakedepends="bmake pkg-config wayland-devel"
+makedepends="wlroots-devel pango-devel cairo-devel pam-devel glib-devel libucl-devel"
 short_desc="Stacking Wayland compositor with tiling features"
 maintainer="Andrew J. Hesford <ajh@sideband.org>"
 license="BSD-2-Clause"
 homepage="https://hikari.acmelabs.space"
+changelog="https://hub.darcs.net/raichoo/hikari/browse/CHANGELOG.md"
 distfiles="${homepage}/releases/${pkgname}-${version}.tar.gz"
-checksum=13e496ddf8d31b9d49862b97e5609c6d0fb2014d1fbe16636be59be8b00ffbfa
+checksum=df9b8cb6c6b2b995a5dd4bbf32c43b374d689eabfda1620a9444d845160e4de3
 conf_files="/etc/pam.d/hikari-unlocker /etc/hikari/hikari.conf"
-
-if [ "$CROSS_BUILD" ]; then
-	# Makefile executes wayland-scanner
-	hostmakedepends+=" wayland-devel"
-fi
 
 pre_build() {
 	# The hikari Makefile appends to the CFLAGS and LDFLAGS variables;

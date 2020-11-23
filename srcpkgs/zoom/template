@@ -1,6 +1,6 @@
 # Template file for 'zoom'
 pkgname=zoom
-version=5.0.418682.0603
+version=5.4.54779.1115
 revision=1
 archs="x86_64"
 wrksrc=zoom
@@ -11,7 +11,7 @@ maintainer="Daniel Santana <daniel@santana.tech>"
 license="custom:Proprietary"
 homepage="https://zoom.us/"
 distfiles="https://zoom.us/client/${version}/zoom_x86_64.pkg.tar.xz"
-checksum=ad43d761872a422612f560449745780415f9d0705d5ce79902f00a1aed251585
+checksum=9a3a60f9df617bcaae8a722724d6a3f3609ff2b16ae7efd0c88b1f8c6ea341cd
 repository=nonfree
 noshlibprovides=yes
 noverifyrdeps=yes
@@ -33,7 +33,8 @@ pre_install() {
 		rm -rf opt/zoom/platforms
 		rm -rf opt/zoom/platforminputcontexts
 		rm -rf opt/zoom/platformthemes
-		rm -rf opt/zoom/Qt{,GraphicalEffects,Qml,Quick,Quick.2}
+		rm -rf opt/zoom/Qt{,GraphicalEffects,Qml,Quick,Quick.2,Wayland}
+		rm -rf opt/zoom/wayland-*
 		rm -f opt/zoom/libmpg123.so
 		rm -f opt/zoom/libfaac1.so
 		rm -f opt/zoom/libturbojpeg.so{,.*}

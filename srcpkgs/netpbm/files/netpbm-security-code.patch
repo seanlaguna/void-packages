@@ -494,18 +494,6 @@ diff -up netpbm-10.58.01/converter/ppm/ppmtomitsu.c.security-code netpbm-10.58.0
          medias.maxcols *= 2;
          medias.maxrows *= 2;
      }
-diff -up netpbm-10.58.01/converter/ppm/ppmtopcx.c.security-code netpbm-10.58.01/converter/ppm/ppmtopcx.c
---- netpbm-10.58.01/converter/ppm/ppmtopcx.c.security-code	2012-04-09 15:31:44.000000000 +0200
-+++ netpbm-10.58.01/converter/ppm/ppmtopcx.c	2012-04-09 15:40:03.210619702 +0200
-@@ -419,6 +419,8 @@ ppmTo16ColorPcx(pixel **            cons
-             else                   Planes = 1;
-         }
-     }
-+    overflow2(BitsPerPixel, cols);
-+    overflow_add(BitsPerPixel * cols, 7);
-     BytesPerLine = ((cols * BitsPerPixel) + 7) / 8;
-     MALLOCARRAY_NOFAIL(indexRow, cols);
-     MALLOCARRAY_NOFAIL(planesrow, BytesPerLine);
 diff -up netpbm-10.58.01/converter/ppm/ppmtopj.c.security-code netpbm-10.58.01/converter/ppm/ppmtopj.c
 --- netpbm-10.58.01/converter/ppm/ppmtopj.c.security-code	2012-04-09 15:31:44.000000000 +0200
 +++ netpbm-10.58.01/converter/ppm/ppmtopj.c	2012-04-09 15:40:03.212619677 +0200
@@ -981,29 +969,6 @@ diff -up netpbm-10.58.01/urt/Runput.c.security-code netpbm-10.58.01/urt/Runput.c
  	if ( h_cmap == NULL )
  	{
  	    fprintf( stderr,
-diff -up netpbm-10.58.01/urt/scanargs.c.security-code netpbm-10.58.01/urt/scanargs.c
---- netpbm-10.58.01/urt/scanargs.c.security-code	2012-04-09 15:31:45.000000000 +0200
-+++ netpbm-10.58.01/urt/scanargs.c	2012-04-09 15:40:03.235619390 +0200
-@@ -38,6 +38,8 @@
-  *
-  *  Modified at BRL 16-May-88 by Mike Muuss to avoid Alliant STDC desire
-  *  to have all "void" functions so declared.
-+ *
-+ *  2002-12-19: Fix maths wrapping bugs. Alan Cox <alan@redhat.com>
-  */
- 
- #include <stdio.h>
-@@ -63,8 +65,8 @@ typedef int *ptr;
- /* 
-  * Storage allocation macros
-  */
--#define NEW( type, cnt )	(type *) malloc( (cnt) * sizeof( type ) )
--#define RENEW( type, ptr, cnt )	(type *) realloc( ptr, (cnt) * sizeof( type ) )
-+#define NEW( type, cnt )	(type *) malloc2( (cnt) , sizeof( type ) )
-+#define RENEW( type, ptr, cnt )	(type *) realloc2( ptr, (cnt), sizeof( type ) )
- 
- static CONST_DECL char * prformat( CONST_DECL char *, int );
- static int isnum( CONST_DECL char *, int, int );
 --- netpbm-10.58.01/lib/libpbm1.c.orig	2014-06-16 21:12:28.499230631 -0400
 +++ netpbm-10.58.01/lib/libpbm1.c	2014-06-16 21:12:55.932519324 -0400
 @@ -78,6 +78,7 @@
@@ -1042,13 +1007,3 @@ diff -up netpbm-10.58.01/urt/scanargs.c.security-code netpbm-10.58.01/urt/scanar
  
      for (channel = 0; channel < maxchannel; ++channel) {
          unsigned int row;
---- netpbm-10.58.01/converter/other/pnmtosgi.c.orig	2014-07-08 16:57:30.878754976 -0400
-+++ netpbm-10.58.01/converter/other/pnmtosgi.c	2014-07-08 17:11:55.164018919 -0400
-@@ -212,6 +214,7 @@
-     ScanElem * temp;
- 
-     if (storage != STORAGE_VERBATIM) {
-+        overflow2(channels, rows);
-         MALLOCARRAY_NOFAIL(table, channels * rows);
-         MALLOCARRAY_NOFAIL(rletemp, WORSTCOMPR(cols));
-     } else

@@ -1,16 +1,21 @@
 # Template file for 'libzip'
 pkgname=libzip
-version=1.7.0
+version=1.7.3
 revision=1
 build_style=cmake
-hostmakedepends="perl groff"
+hostmakedepends="perl groff pkg-config"
 makedepends="bzip2-devel libressl-devel zlib-devel liblzma-devel"
 short_desc="C library for reading, creating, and modifying zip archives"
 maintainer="Orphaned <orphan@voidlinux.org>"
 license="BSD-3-Clause"
 homepage="https://libzip.org/"
 distfiles="https://libzip.org/download/libzip-${version}.tar.gz"
-checksum=cfe303cc224bf23c5256a458de5e21a3d466dd352201f2fe44e99297aeae8b21
+checksum=0e2276c550c5a310d4ebf3a2c3dfc43fb3b4602a072ff625842ad4f3238cb9cc
+
+post_patch() {
+	vsed -i lib/zip_crypto_openssl.c \
+		-e '/^#include <openssl\/rand\.h>/a #include <limits.h>'
+}
 
 post_install() {
 	vlicense LICENSE

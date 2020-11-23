@@ -1,13 +1,13 @@
 # Template file for 'amdvlk'
 pkgname=amdvlk
-version=2020.Q2.4
+version=2020.Q4.3
 revision=1
-_llpc_commit=9b4d0a4c3e146ea898d4bb3e86fb4170f75c3daa
-_xgl_commit=116d28a446eba3a9f8e6f577bab34fc07e090993
-_pal_commit=13b6271de2f72f62adf098e681c5000f47db2a6c
-_llvm_project_commit=c57487b76215ee74b1038039f47b210a28cad65e
-_spvgen_commit=2f679769a8491f423f5cf2f06adfa2870a82935d
-_MetroHash_commit=712f76fee75d69b23a1ea8f6465752c3ccaaf9a2
+_llpc_commit=3b3506161572475b0c163a5d44444fd98922b7d8
+_xgl_commit=87430a6fa88da11473eed49603def2fa47b51fa0
+_pal_commit=4ae736bdbc5d5dee59851ac564c5e21d807b44b0
+_llvm_project_commit=11778b213e0e979cbe185901b365f0b2e9a66522
+_spvgen_commit=fb798cb760a436e9496dbaab8827e4d183b74744
+_MetroHash_commit=3c566dd9cda44ca7fd97659e0b53ac953f9037d2
 _CWPack_commit=7387247eb9889ddcabbc1053b9c2052e253b088e
 archs="i686* x86_64*"
 create_wrksrc=yes
@@ -15,12 +15,13 @@ build_wrksrc="xgl"
 build_style=cmake
 configure_args="-DBUILD_WAYLAND_SUPPORT=ON
  -DXGL_METROHASH_PATH=../../metrohash
- -DXGL_CWPACK_PATH=../../cwpack"
+ -DXGL_CWPACK_PATH=../../cwpack
+ -DLLVM_PARALLEL_LINK_JOBS=2"
 hostmakedepends="pkg-config python3 perl"
 makedepends="libxml2-devel xorg-server-devel libXrandr-devel libffi-devel"
 depends="vulkan-loader"
 short_desc="AMD Open Source Driver For Vulkan"
-maintainer="John <johnz@posteo.net>"
+maintainer="John <me@johnnynator.dev>"
 license="MIT"
 homepage="https://github.com/GPUOpen-Drivers/AMDVLK"
 distfiles="https://github.com/GPUOpen-Drivers/AMDVLK/archive/v-${version}.tar.gz
@@ -31,13 +32,13 @@ distfiles="https://github.com/GPUOpen-Drivers/AMDVLK/archive/v-${version}.tar.gz
  https://github.com/GPUOpen-Drivers/spvgen/archive/${_spvgen_commit}.tar.gz
  https://github.com/GPUOpen-Drivers/MetroHash/archive/${_MetroHash_commit}.tar.gz
  https://github.com/GPUOpen-Drivers/CWPack/archive/${_CWPack_commit}.tar.gz"
-checksum="3ca0b3e10233a22bbb9d703d1bde7d24a9046790eb6828140311ae837cc01e1b
- d54b0846b733e72c1b0491561469ef35d689b35436ac7a85f5c6452ae15c3a97
- ab4b368b4dd8233aa32cf633785c9974a1074ea4db48aca2770ca71d72af9efb
- f9fe1955545257153fd47b344e7c2d574a5574a7ef4a5232a60ff15f534bf8e1
- 5ca5a82e35fddc6c6e7e3f64cb347835322519024cbb93e76e1ec0a0bed0cd6d
- 268952f9d8032317ed293ed41f344ed5522921a9b3d1cf97b15a0e64b52c28b7
- 07c7389894a4acd9aff7ddb6d70fc3ea6a4cc10589b69ce92c737487cbe2d37d
+checksum="83d963cdffbd3b816379abd26105c75bf55788e68a2836be0a086c9604750b94
+ 2fa3a50a61ae39a9b08c92bb2b035f03d21d6d137dffdd5318e56fc48dccd91f
+ da14aa4de81be1bfe366f94d9cd7d4f025b45a67215cefa08a47cc1e3bf357eb
+ f871c688dbf124772e00d965ca7f3ba3a69f5e9a0fda2a3454ce0087e6b69e2e
+ 3947879b78906177e5028fc08c62a13c9517ddeb87790be03fb7b0799063339a
+ 371b137edf4d5ec4f4483ec10ac1419fffa73b6abb1931dd637a59c1b6247e65
+ cc8ff538fede25fe023984b3fde27f09b000bdc49793534794cd1d2bf881750a
  186060fbcf87165224ba7df0e1858b66ebc42cf190c481aef1df8d89ebab7abd"
 nocross=yes
 lib32files="/usr/share/vulkan/icd.d/amd_icd32.json"
@@ -60,16 +61,6 @@ pre_configure() {
 	esac
 	configure_args+=" -DLLVM_TARGET_ARCH=${_arch}"
 	configure_args+=" -DLLVM_DEFAULT_TARGET_TRIPLE=${XBPS_CROSS_TRIPLET:-$XBPS_TRIPLET}"
-}
-
-pre_build() {
-	# lower burden on build servers, llvm eats too much memory
-	if [ "$XBPS_MAKEJOBS" -gt 2 ]; then
-		echo $XBPS_MAKEJOBS
-		export makejobs="-j$(( $XBPS_MAKEJOBS / 2 ))"
-		echo $XBPS_MAKEJOBS
-	fi
-
 }
 
 do_install() {

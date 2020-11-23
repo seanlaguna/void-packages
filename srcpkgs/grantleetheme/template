@@ -1,6 +1,6 @@
 # Template file for 'grantleetheme'
 pkgname=grantleetheme
-version=20.04.1
+version=20.08.3
 revision=1
 build_style=cmake
 configure_args="KDE_INSTALL_USE_QT_SYS_PATHS=TRUE"
@@ -8,11 +8,11 @@ hostmakedepends="extra-cmake-modules qt5-qmake qt5-host-tools python3
  gettext kcoreaddons"
 makedepends="grantlee5-devel ki18n-devel kiconthemes-devel knewstuff-devel"
 short_desc="Library for Grantlee theming support"
-maintainer="John <johnz@posteo.net>"
+maintainer="John <me@johnnynator.dev>"
 license="GPL-2.0-or-later, LGPL-2.1-or-later"
 homepage="https://community.kde.org/KDE_PIM"
 distfiles="${KDE_SITE}/release-service/${version}/src/grantleetheme-${version}.tar.xz"
-checksum=5d6a173f42e79610832fa1616b705e2d6b5c0ab652ec528f06c069b058614b3d
+checksum=c557e353f090b3a3cde25d31a1d0c36ba1a9d4f7f94b19a4dfe3fb2d76d9671d
 
 grantleetheme-devel_package() {
 	depends="${sourcepkg}>=${version}_${revision} ${makedpends}"

@@ -1,6 +1,6 @@
 # Template file for 'kiconthemes'
 pkgname=kiconthemes
-version=5.70.0
+version=5.75.0
 revision=1
 build_style=cmake
 configure_args="-DBUILD_TESTING=OFF"
@@ -8,11 +8,11 @@ hostmakedepends="kcoreaddons extra-cmake-modules kcoreaddons qt5-qmake qt5-host-
  gettext python3"
 makedepends="kitemviews-devel qt5-svg-devel karchive-devel kconfigwidgets-devel"
 short_desc="KDE Icon GUI utilities"
-maintainer="John <johnz@posteo.net>"
+maintainer="John <me@johnnynator.dev>"
 license="LGPL-2.0-only, GPL-2.0-or-later"
-homepage="https://projects.kde.org/projects/frameworks/kiconthemes"
+homepage="https://invent.kde.org/frameworks/kiconthemes"
 distfiles="${KDE_SITE}/frameworks/${version%.*}/${pkgname}-${version}.tar.xz"
-checksum=2903b8ad05c6a0d115fc8c4accdb5fb8541ea05e69a9b70362cee3dc86bb7825
+checksum=250b551ecfc5381c36267c51fdc86948ed85b1f477b12bd15a57d2d4e44a88db
 
 kiconthemes-devel_package() {
 	short_desc+=" - development"

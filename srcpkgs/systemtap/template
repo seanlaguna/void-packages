@@ -1,19 +1,19 @@
 # Template file for 'systemtap'
 pkgname=systemtap
-version=4.2
-revision=3
+version=4.4
+revision=1
 archs="i686 x86_64 armv6l armv7l aarch64 ppc64le"
 build_style=gnu-configure
 hostmakedepends="python3"
 makedepends="elfutils-devel"
 depends="python3"
-python_version=3
 short_desc="Infrastructure to simplify the gathering of information"
 maintainer="Orphaned <orphan@voidlinux.org>"
 license="GPL-3.0-or-later"
 homepage="https://sourceware.org/systemtap/"
 distfiles="https://sourceware.org/systemtap/ftp/releases/systemtap-${version}.tar.gz"
-checksum=0984ebe3162274988252ec35074021dc1e8420d87a8b35f437578562fce08781
+checksum=ca70b6107537162ce401f8965a7e315950c1292c02ea50a490e77bd6fde5638c
+python_version=3
 
 systemtap-devel_package() {
 	depends="systemtap-${version}_${revision}"

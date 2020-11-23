@@ -1,10 +1,11 @@
 # Template file for 'openradtool'
 pkgname=openradtool
-version=0.8.15
+version=0.11.1
 revision=1
 build_style=configure
 configure_args="PREFIX=/usr MANDIR=/usr/share/man"
 make_cmd="bmake"
+make_check_target="regress"
 hostmakedepends="bmake pkg-config which"
 makedepends="expat-devel"
 checkdepends="kcgi ksql sqlite zlib-devel"
@@ -14,7 +15,7 @@ license="ISC"
 homepage="https://kristaps.bsd.lv/openradtool/"
 changelog="https://kristaps.bsd.lv/openradtool/archive.html"
 distfiles="https://kristaps.bsd.lv/openradtool/snapshots/openradtool-${version}.tar.gz"
-checksum=74338a7bd35d8027dbd0f75498ed53100369e7b5eee82960b32736d5ebc5392b
+checksum=90af8f7458880550acb90b1fca9918d5369339b54760ac9338d3b0691c7b9695
 
 post_install() {
 	sed -n '2,16p' main.c >LICENSE

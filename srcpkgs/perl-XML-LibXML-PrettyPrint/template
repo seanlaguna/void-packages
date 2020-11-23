@@ -1,8 +1,7 @@
 # Template file for 'perl-XML-LibXML-PrettyPrint'
 pkgname=perl-XML-LibXML-PrettyPrint
 version=0.006
-revision=1
-archs=noarch
+revision=2
 wrksrc="${pkgname/perl-/}-${version}"
 build_style=perl-module
 hostmakedepends="perl"
@@ -10,7 +9,7 @@ makedepends="perl"
 depends="$makedepends perl-Exporter-Tiny perl-XML-LibXML"
 checkdepends="$depends perl-Test-Warnings"
 short_desc="Perl extension to PrettyPrint XML"
-maintainer="John <johnz@posteo.net>"
+maintainer="John <me@johnnynator.dev>"
 license="Artistic-1.0-perl, GPL-1.0-or-later"
 homepage="https://metacpan.org/pod/XML::LibXML::PrettyPrint"
 distfiles="${CPAN_SITE}/XML/${pkgname/perl-/}-${version}.tar.gz"

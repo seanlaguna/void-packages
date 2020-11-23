@@ -1,6 +1,6 @@
 # Template file for 'plasma-integration'
 pkgname=plasma-integration
-version=5.19.0
+version=5.20.3
 revision=1
 build_style=cmake
 configure_args="-DBUILD_TESTING=OFF"
@@ -10,8 +10,8 @@ makedepends="kio-devel kwayland-devel libXcursor-devel qt5-quickcontrols2-devel
  breeze"
 depends="noto-fonts-ttf font-hack-ttf breeze qqc2-desktop-style"
 short_desc="Theme integration plugins for the Plasma workspaces"
-maintainer="John <johnz@posteo.net>"
+maintainer="John <me@johnnynator.dev>"
 license="LGPL-2.0-or-later"
-homepage="https://projects.kde.org/projects/plasma/plasma-integration"
+homepage="https://invent.kde.org/plasma/plasma-integration"
 distfiles="${KDE_SITE}/plasma/${version}/${pkgname}-${version}.tar.xz"
-checksum=430eabea3ff270b8e8bd9b3b73393bc8b1df82c1373d7123a769bef877c5185f
+checksum=621864e59ee583d0e21ffbebba881198ace728c12694606ed8ff180549f314fd

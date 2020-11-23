@@ -1,16 +1,16 @@
 # Template file for 'akonadi-contacts'
 pkgname=akonadi-contacts
-version=20.04.1
+version=20.08.3
 revision=1
 build_style=cmake
 hostmakedepends="extra-cmake-modules gettext kcoreaddons"
 makedepends="kio-devel kcontacts-devel kmime-devel akonadi-mime-devel prison-devel"
 short_desc="Libraries and daemons to implement Contact Management in Akonadi"
-maintainer="John <johnz@posteo.net>"
+maintainer="John <me@johnnynator.dev>"
 license="LGPL-2.0-or-later, GPL-2.0-or-later"
 homepage="https://community.kde.org/KDE_PIM/Akonadi"
 distfiles="${KDE_SITE}/release-service/${version}/src/akonadi-contacts-${version}.tar.xz"
-checksum=917a7656a745e3cad94ec6470040b6fb384a14bcf9b571e82d3a256ab37aef45
+checksum=9a38969b4e99ef7190c5c48740efdb3048337914086d47134e98c0ea02e9c9a2
 
 if [ "$CROSS_BUILD" ];then
 	hostmakedepends+=" qt5-qmake qt5-host-tools python3 kconfig"

@@ -1,7 +1,7 @@
 # Template file for 'yabasic'
 pkgname=yabasic
 reverts="2.769_1"
-version=2.86.9
+version=2.87.1
 revision=1
 build_style=gnu-configure
 hostmakedepends="pkg-config"
@@ -11,7 +11,7 @@ maintainer="Diogo Leal <diogo@diogoleal.com>"
 license="MIT, GPL-3.0-or-later"
 homepage="https://2484.de/yabasic/"
 distfiles="https://2484.de/yabasic/download/yabasic-${version}.tar.gz"
-checksum=aa18c07fc32e1c9db8da0b686d8fcc0538fea70e78b826fdb832c461fed9134f
+checksum=432f912d80ca00ae00a93ede197d45fde4db1345a61dc42976d10f2b7f9e1dce
 
 do_install() {
 	vbin yabasic

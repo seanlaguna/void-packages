@@ -1,8 +1,8 @@
 # Template file for 'minio'
 pkgname=minio
-version=2020.06.03
+version=2020.11.13
 revision=1
-_version="${version//./-}T22-13-49Z"
+_version="${version//./-}T20-10-18Z"
 wrksrc=${pkgname}-RELEASE.${_version}
 build_style=go
 go_import_path="github.com/minio/minio"
@@ -13,7 +13,7 @@ maintainer="Gerardo Di Iorio <arete74@gmail.com>"
 license="Apache-2.0"
 homepage="https://github.com/minio/minio"
 distfiles="${homepage}/archive/RELEASE.${_version}.tar.gz"
-checksum=5a3d0cd6dc24163346972f3fbe47841b6bb550fccc81991f1c37b3b43a4f4c47
+checksum=acf8169ff57f28d7bedb3bceb30f323286fc5ec593b5d994c0b00f3d4d820c24
 system_accounts="_minio"
 _minio_homedir="/var/lib/minio"
 _minio_descr="Minio Daemon User"

@@ -1,9 +1,9 @@
 # Template file for 'ImageMagick'
 pkgname=ImageMagick
 _majorver=7.0.10
-_patchver=18
+_patchver=38
 version="${_majorver}.${_patchver}"
-revision=2
+revision=1
 wrksrc="${pkgname}-${_majorver}-${_patchver}"
 build_style=gnu-configure
 configure_args="--without-autotrace --with-wmf=yes
@@ -21,7 +21,7 @@ license="ImageMagick"
 homepage="https://www.imagemagick.org/"
 changelog="https://imagemagick.org/script/changelog.php"
 distfiles="https://github.com/ImageMagick/ImageMagick/archive/${_majorver}-${_patchver}.tar.gz"
-checksum=2de0a0fac9590838c63fcacacca473bbeec04b1a8519924c5a360b44fe661edd
+checksum=8aa555f174260cdc02e4a2c281df0d4dc807f7019837646c80d90391ee65bc7c
 
 subpackages="libmagick libmagick-devel"
 

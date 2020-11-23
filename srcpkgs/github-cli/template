@@ -1,9 +1,10 @@
 # Template file for 'github-cli'
 pkgname=github-cli
-version=0.10.0
+version=1.2.1
 revision=1
 wrksrc="cli-${version}"
 build_style=go
+build_helper=qemu
 go_import_path="github.com/cli/cli/cmd/gh"
 go_ldflags="-X github.com/cli/cli/command.Version=v${version}"
 short_desc="GitHub CLI tool"
@@ -12,7 +13,7 @@ license="MIT"
 homepage="https://cli.github.com"
 changelog="https://github.com/cli/cli/releases"
 distfiles="https://github.com/cli/cli/archive/v${version}.tar.gz"
-checksum=5d7474a89cd0d284387f1b58dc8b1771ebae8fc83cfa2410b354435b295c07df
+checksum=ae7f03426b9d9ebf40be3cdbd4ce8cec7aeeda8e51acd34d8d0aaf0b3c4ea550
 
 pre_build() {
 	local _date
@@ -22,6 +23,17 @@ pre_build() {
 	fi
 }
 
+post_build() {
+	gh=$(find $GOPATH/bin -name gh)
+	for shell in bash fish zsh; do
+		vtargetrun $gh completion -s $shell > github-cli.$shell
+	done
+}
+
 post_install() {
 	vlicense LICENSE
+
+	for shell in bash fish zsh; do
+		vcompletion github-cli.$shell $shell gh
+	done
 }

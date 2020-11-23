@@ -1,8 +1,7 @@
 # Template file for 'python3-certifi'
 pkgname=python3-certifi
-version=2020.04.05.2
-revision=2
-archs=noarch
+version=2020.11.08
+revision=1
 wrksrc="python-certifi-${version}"
 build_style=python3-module
 hostmakedepends="python3-setuptools"
@@ -11,4 +10,9 @@ maintainer="Karl Nilsson <karl.robert.nilsson@gmail.com>"
 license="MPL-2.0"
 homepage="https://certifi.io"
 distfiles="https://github.com/certifi/python-certifi/archive/${version}.tar.gz"
-checksum=0b3cb5b202c377c7002a02af05f988d04e91ef970b74dc13b96ce9ca8e34462f
+checksum=dd07a714e15233b50700491a69d27899e55a4dfabe4d0675ea69d5f31db6fe5a
+
+do_check() {
+	cd build/lib
+	python3 -c 'import certifi as m; print(m)'
+}

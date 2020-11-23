@@ -1,17 +1,17 @@
 # Template file for 'kitemmodels'
 pkgname=kitemmodels
-version=5.70.0
+version=5.75.0
 revision=1
 build_style=cmake
 configure_args="-DBUILD_TESTING=OFF"
 hostmakedepends="kcoreaddons extra-cmake-modules qt5-host-tools qt5-declarative-devel"
 makedepends="qt5-devel qt5-declarative-devel"
 short_desc="Set of item models extending the Qt model-view framework"
-maintainer="John <johnz@posteo.net>"
+maintainer="John <me@johnnynator.dev>"
 license="LGPL-2.0-or-later"
-homepage="https://projects.kde.org/projects/frameworks/kitemmodels"
+homepage="https://invent.kde.org/frameworks/kitemmodels"
 distfiles="${KDE_SITE}/frameworks/${version%.*}/${pkgname}-${version}.tar.xz"
-checksum=ecdbf98705cedb7b2a193800106452900520d10ae8cfba2148e45ef1a02efe74
+checksum=fb3f4caa2e55ffb5e21ea8f65bcb6ea9b074c54f9dbbce458ba7320d6c50fdb6
 
 kitemmodels-devel_package() {
 	short_desc+=" - development"

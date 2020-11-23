@@ -1,17 +1,17 @@
 # Template file for 'kguiaddons'
 pkgname=kguiaddons
-version=5.70.0
+version=5.75.0
 revision=1
 build_style=cmake
 configure_args="-DBUILD_TESTING=OFF"
 hostmakedepends="kcoreaddons pkg-config extra-cmake-modules qt5-host-tools qt5-tools-devel"
 makedepends="qt5-tools-devel qt5-x11extras-devel xcb-util-devel"
 short_desc="KDE frameworks - Addons to QtGui"
-maintainer="John <johnz@posteo.net>"
+maintainer="John <me@johnnynator.dev>"
 license="LGPL-2.0-only, LGPL-2.0-or-later, LGPL-2.1-or-later"
-homepage="https://projects.kde.org/projects/frameworks/kguiaddons"
+homepage="https://invent.kde.org/frameworks/kguiaddons"
 distfiles="${KDE_SITE}/frameworks/${version%.*}/${pkgname}-${version}.tar.xz"
-checksum=b43c80e10dea65c7f9325d9ba26a2b95aa8586f697b14e0e84f4ffb46093cdfa
+checksum=58aba1bd986020f7b4bde0d35a7b09730716cbdffde734e6d29cc9d18500253b
 
 kguiaddons-devel_package() {
 	short_desc+=" - development"

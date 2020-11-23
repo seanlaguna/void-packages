@@ -1,17 +1,17 @@
 # Template file for 'libksysguard'
 pkgname=libksysguard
-version=5.19.0
-revision=2
+version=5.20.3
+revision=1
 build_style=cmake
 hostmakedepends="extra-cmake-modules gettext kauth qt5-host-tools qt5-qmake"
 makedepends="plasma-framework-devel qt5-webchannel-devel knewstuff-devel
  $(vopt_if webengine 'qt5-webengine-devel qt5-location-devel')"
 short_desc="KDE libksysguard"
-maintainer="John <johnz@posteo.net>"
+maintainer="John <me@johnnynator.dev>"
 license="LGPL-2.1-or-later"
-homepage="https://projects.kde.org/projects/plasma/libksysguard"
+homepage="https://invent.kde.org/plasma/libksysguard"
 distfiles="${KDE_SITE}/plasma/${version}/${pkgname}-${version}.tar.xz"
-checksum=f026b65372aa49b1f72a7c8029cb3d7afd131de9592cc5392fe05771a4da26d3
+checksum=98d85bc9db01f77586701386e1612194df0b4fab8d650833aa4f0f13956fc830
 
 build_options="webengine"
 

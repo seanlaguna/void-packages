@@ -1,6 +1,6 @@
 # Template file for 'ksolid'
 pkgname=ksolid
-version=5.70.0
+version=5.75.0
 revision=1
 wrksrc="${pkgname#k}-${version}"
 build_style=cmake
@@ -10,11 +10,11 @@ hostmakedepends="kcoreaddons pkg-config flex extra-cmake-modules qt5-host-tools
 makedepends="qt5-tools-devel qt5-declarative-devel"
 depends="upower udisks2 media-player-info"
 short_desc="KDE frameworks - Hardware integration and detection"
-maintainer="John <johnz@posteo.net>"
+maintainer="John <me@johnnynator.dev>"
 license="LGPL-2.1-or-later"
-homepage="https://projects.kde.org/projects/frameworks/solid"
+homepage="https://invent.kde.org/frameworks/solid"
 distfiles="${KDE_SITE}/frameworks/${version%.*}/${pkgname#k}-${version}.tar.xz"
-checksum=e76b0f2d64853dcfa7e5887e9733d4e9821bba6e68e62f3488b21b1ed979962a
+checksum=471bb76ca0971ab945f2270490b1f72300d86b2b36094ac610e5af69df738a77
 
 libksolid_package() {
 	short_desc+=" - runtime library"

@@ -57,6 +57,8 @@ rust = 'rustc'
 g-ir-scanner = '${XBPS_CROSS_BASE}/usr/bin/g-ir-scanner'
 g-ir-compiler = '${XBPS_CROSS_BASE}/usr/bin/g-ir-compiler'
 g-ir-generate = '${XBPS_CROSS_BASE}/usr/bin/g-ir-generate'
+llvm-config = '/usr/bin/llvm-config'
+cups-config = '${XBPS_CROSS_BASE}/usr/bin/cups-config'
 
 [properties]
 needs_exe_wrapper = true
@@ -105,7 +107,7 @@ do_configure() {
 		--localstatedir=/var \
 		--sharedstatedir=/var/lib \
 		--buildtype=plain \
-		--auto-features=enabled \
+		--auto-features=auto \
 		--wrap-mode=nodownload \
 		-Db_lto=true -Db_ndebug=true \
 		-Db_staticpic=true \

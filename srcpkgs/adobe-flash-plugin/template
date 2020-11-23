@@ -1,6 +1,6 @@
 # Template file for 'adobe-flash-plugin'
 pkgname=adobe-flash-plugin
-version=32.0.0.371
+version=32.0.0.453
 revision=1
 depends="curl hicolor-icon-theme desktop-file-utils"
 short_desc="Adobe Flash Player plugin for Netscape compatible browsers"
@@ -23,15 +23,15 @@ if [ "$XBPS_TARGET_MACHINE" = "x86_64" ]; then
 	 ${_url}/flash_player_npapi_linux.x86_64.tar.gz
 	 ${_url}/flash_player_ppapi_linux.x86_64.tar.gz"
 	checksum="
-	 62c1a22af9d3e8cf3f3a219100482d8e274343641bf575cfb312ba1ee50389fd
-	 aaaaab6d4c757035904786f006d96cbb08be8788481ffffec542cf203484dc68"
+	 587fe7027ef410e6833a9428b61ea28d4047bce6e8ed4bff3127cb9e08723e37
+	 cab3d2b3a02b1348d991259a7602ffb1d12ec1912984a68bcab0f7ccdf27a9f7"
 else
 	distfiles="
 	 ${_url}/flash_player_npapi_linux.i386.tar.gz
 	 ${_url}/flash_player_ppapi_linux.i386.tar.gz"
 	checksum="
-	 c8c2353d76723f1873b16c596428af938ef9a355e3772672fc4089f282560f3b
-	 218b39df90d5e63410fca6633b5dc6f749c691f8325027e37f9a375a361f6156"
+	 4151cdbba10488978aa2baae19ec147012e17d79c59a6bb40453e35435571df8
+	 88f71944d5c08d1b36446c9c865fc82bcb89d55cd148f62afee8dd928943caf6"
 fi
 distfiles+=" ${_eula}"
 checksum+=" ${_eulacksum}"

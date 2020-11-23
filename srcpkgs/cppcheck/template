@@ -1,6 +1,6 @@
 # Template file for 'cppcheck'
 pkgname=cppcheck
-version=2.0
+version=2.2
 revision=1
 build_style=gnu-makefile
 make_build_args="
@@ -18,7 +18,7 @@ license="GPL-3.0-or-later"
 homepage="http://cppcheck.sourceforge.net"
 changelog="https://sourceforge.net/p/cppcheck/news/"
 distfiles="https://github.com/danmar/cppcheck/archive/${version}.tar.gz"
-checksum=fdba69d9f8db4bbe27ee00bb88839d212b6a848372add7ad8f567236deb0f00f
+checksum=ad96290a1842c5934bf9c4268cb270953f3078d4ce33a9a53922d6cb6daf61aa
 
 post_install() {
 	vman cppcheck.1

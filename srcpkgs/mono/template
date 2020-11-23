@@ -1,10 +1,9 @@
 # Template file for 'mono'
 pkgname=mono
-version=6.8.0.123
+version=6.12.0.90
 revision=1
 build_style=gnu-configure
 configure_args="--disable-system-aot"
-# XXX: figure out how to split this up into subpkgs.
 hostmakedepends="perl python3 cmake which"
 makedepends="zlib-devel libX11-devel libgdiplus-devel"
 depends="ca-certificates python3-Pillow"
@@ -13,12 +12,13 @@ maintainer="Helmut Pozimski <helmut@pozimski.eu>"
 license="MIT, BSD-3-Clause, GPL-2.0-or-later, LGPL-2.0-or-later, MPL-1.1"
 homepage="https://www.mono-project.com"
 distfiles="https://download.mono-project.com/sources/mono/${pkgname}-${version}.tar.xz"
-checksum=e2e42d36e19f083fc0d82f6c02f7db80611d69767112af353df2f279744a2ac5
+checksum=51de5c02ad511333f93ff585bca54c8784de35af4ff27b759d16b46c4402cdac
 lib32disabled=yes
 python_version="3"
 
 case "$XBPS_TARGET_MACHINE" in
 	*-musl) configure_args+=" --disable-boehm --without-sigaltstack" ;;
+	arm*)	configure_args+=" --disable-boehm" ;;
 esac
 
 post_install() {
