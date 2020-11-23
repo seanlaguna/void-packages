@@ -3,7 +3,7 @@
 _desc="NVIDIA drivers for linux (Vulkan developer branch)"
 
 pkgname=nvidia-vulkan
-version=440.66.17
+version=455.46.02
 revision=1
 maintainer="Hyper-KVM <hyperkvmx86@gmail.com>"
 license="custom:NVIDIA Proprietary"
@@ -18,7 +18,7 @@ conflicts="xserver-abi-video>24_1 nvidia nvidia-libs nvidia-libs-32bit nvidia-op
 
 _pkg="NVIDIA-Linux-x86_64-${version}"
 distfiles="https://developer.nvidia.com/vulkan-beta-${version//.}-linux>${_pkg}.run"
-checksum="1e9bcc3211b8611ded6d59fe6bd36e8bb60d1f42f54c37e50a3977c4a26f8163"
+checksum="870e71c049fe9bb3376e1b6f744bb7f8fb064b4dc82026a4953057611ed3c417"
 subpackages="nvidia-gtklibs-vulkan nvidia-dkms-vulkan nvidia-opencl-vulkan nvidia-libs-vulkan nvidia-libs-32bit-vulkan"
 depends="nvidia-libs-vulkan-${version}_${revision} nvidia-gtklibs-vulkan-${version}_${revision} nvidia-dkms-vulkan-${version}_${revision}"
 
@@ -73,11 +73,11 @@ _install_libs() {
 	ln -sf libnvidia-fbc.so.${version} ${DESTDIR}/${libdir}/libnvidia-fbc.so
 	ln -sf libnvidia-fbc.so.${version} ${DESTDIR}/${libdir}/libnvidia-fbc.so.1
 
-	vinstall libnvidia-fatbinaryloader.so.${version} 755 ${libdir}
-	ln -sf libnvidia-fatbinaryloader.so.${version} \
-		${DESTDIR}/${libdir}/libnvidia-fatbinaryloader.so.1
-	ln -sf libnvidia-fatbinaryloader.so.1 \
-		${DESTDIR}/${libdir}/libnvidia-fatbinaryloader.so
+#	vinstall libnvidia-fatbinaryloader.so.${version} 755 ${libdir}
+#	ln -sf libnvidia-fatbinaryloader.so.${version} \
+#		${DESTDIR}/${libdir}/libnvidia-fatbinaryloader.so.1
+#	ln -sf libnvidia-fatbinaryloader.so.1 \
+#		${DESTDIR}/${libdir}/libnvidia-fatbinaryloader.so
 
 	# CUDA
 	vinstall libcuda.so.${version} 755 ${libdir}
@@ -112,12 +112,12 @@ do_extract() {
 	rm -f ${_pkg}.run
 }
 
-do_patch() {
-	cd ${_pkg}
-	patch -Np1 < ${FILESDIR}/kernel-5.6-vulkan.patch
-	patch -Np1 < ${FILESDIR}/kernel-5.7.patch
-	patch -Np1 < ${FILESDIR}/kernel-5.8.patch
-}
+#do_patch() {
+#	cd ${_pkg}
+#	patch -Np1 < ${FILESDIR}/kernel-5.6-vulkan.patch
+#	patch -Np1 < ${FILESDIR}/kernel-5.7.patch
+#	patch -Np1 < ${FILESDIR}/kernel-5.8.patch
+#}
 
 do_install() {
 	cd ${_pkg}
@@ -132,8 +132,8 @@ do_install() {
 	ln -sf libglxserver_nvidia.so.${version} \
 		${DESTDIR}/usr/lib/nvidia/xorg/libglxserver_nvidia.so.1
 
-	vinstall libnvidia-egl-wayland.so.1.1.4 755 usr/lib
-	ln -sf libnvidia-egl-wayland.so.1.1.4 \
+	vinstall libnvidia-egl-wayland.so.1.1.5 755 usr/lib
+	ln -sf libnvidia-egl-wayland.so.1.1.5 \
 		${DESTDIR}/usr/lib/libnvidia-egl-wayland.so.1
 
 	vinstall 10_nvidia.json 755 usr/share/glvnd/egl_vendor.d
