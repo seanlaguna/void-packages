@@ -91,7 +91,7 @@ case $_basever in
         54)
 	opt_ver="4.19-v5.4"
 	cpu_opt_sum='27b7fc535ade94b636c3ec4e809e141831e9465a0ef55215a9852b87048629e2'
-	kernel_sum='a59091fb08ff66a344a7842b7c891f36cef609eed1d2944edf475cca8d91ce25'
+	kernel_sum='49da425c1f3c530fd3ff31d85a0461f6b6dc6e459f7faf3eee23e49a98ce64c7'
         source=('config.x86_64' # stock Arch config
                 'config_hardened.x86_64' # hardened Arch config
                 90-cleanup.hook
@@ -246,7 +246,7 @@ case $_basever in
         59)
         opt_ver="5.8+"
 	cpu_opt_sum='126cd35b1153b69dd8d713f902d09ecc64ce8af2e4fa6f021219a65e62e13875'
-	kernel_sum='f591b2f2e939ae6bd35cae2dc3cb87f9472e439695df7f23ed0a341a2c66f030'
+	kernel_sum='5eb20a65a410669928f94b3975872e493fa6d0fe441c6a78b7564affa2a5d260'
         source=("config.x86_64" # stock Arch config
                 #$hardened_config_file # hardened Arch config
                 90-cleanup.hook
@@ -290,7 +290,7 @@ case $_basever in
             'fca63d15ca4502aebd73e76d7499b243d2c03db71ff5ab0bf5cf268b2e576320'
             '19661ec0d39f9663452b34433214c755179894528bf73a42f6ba52ccf572832a'
             'b302ba6c5bbe8ed19b20207505d513208fae1e678cf4d8e7ac0b154e5fe3f456'
-            '7aba0a625404ed78e73c57860871af3b52610ae5196407286811322e3cd76aa3'
+            '14a261f1940a2b21b6b14df7391fc2c6274694bcfabfac3d0e985a67285dbfe7'
             '9fad4a40449e09522899955762c8928ae17f4cdaa16e01239fd12592e9d58177'
             'a557b342111849a5f920bbe1c129f3ff1fc1eff62c6bd6685e0972fc88e39911'
             '11d2343174e5486e8ea1a1e98f9f6f1a1625043f6547484f5a729a83f94336eb'
