@@ -51,7 +51,7 @@ source ${srcdir}/versel
 # Template file for 'linux${_basever}-tkg-${_cpusched}${_compiler_name}'
 pkgname=linux${_basever}-tkg-${_cpusched}${_compiler_name}
 pkgdesc="Linux-tkg"
-revision=13
+revision=14
 archs="x86_64" # PKGBUILD declares x86_64 only
 python_version=3
 patch_args="-Np1"
@@ -92,7 +92,7 @@ case $_basever in
         54)
 	opt_ver="4.19-v5.4"
 	cpu_opt_sum='27b7fc535ade94b636c3ec4e809e141831e9465a0ef55215a9852b87048629e2'
-	kernel_sum='9470bde475726996202d845a5fc3bc8bd3bb546bbc6816fb663fa73df25d8427'
+	kernel_sum='beec970bbb93de8ab839f27930f7ab00c7bd65af0ffa07a50e765affdc2561c6'
         source=('config.x86_64' # stock Arch config
                 'config_hardened.x86_64' # hardened Arch config
                 90-cleanup.hook
@@ -247,7 +247,7 @@ case $_basever in
         59)
         opt_ver="5.8+"
 	cpu_opt_sum='126cd35b1153b69dd8d713f902d09ecc64ce8af2e4fa6f021219a65e62e13875'
-	kernel_sum='b436a89a5c872a2a029d5dee6aa5bc61128978f4cae6fcb7e507c35cdd6acc2a'
+	kernel_sum='39fcfb41dcdf71b6b42b88eff3d8cedbe7523830ccae847f3914c0b97e1e6b49'
         source=("config.x86_64" # stock Arch config
                 #$hardened_config_file # hardened Arch config
                 90-cleanup.hook
