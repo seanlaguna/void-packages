@@ -3,7 +3,7 @@
 _desc="NVIDIA drivers for linux"
 
 pkgname=nvidia
-version=450.80.02
+version=455.38
 revision=1
 maintainer="Andrew Benson <abenson+void@gmail.com>"
 license="custom:NVIDIA Proprietary"
@@ -19,7 +19,7 @@ conflicts="xserver-abi-video>24_1"
 
 _pkg="NVIDIA-Linux-x86_64-${version}"
 distfiles="http://uk.download.nvidia.com/XFree86/Linux-x86_64/${version}/${_pkg}.run"
-checksum=0f5a2f19f822d46c54500f4a6192dad9948821ed14ce7c13b38264d67aaf95b3
+checksum=d87d1e58bf4df889a219f659eb07241813aff852b8cf6c68fa09972ad914dc74
 # subpackages need to be processed in this specific order
 subpackages="nvidia-gtklibs nvidia-dkms nvidia-opencl nvidia-libs nvidia-libs-32bit"
 depends="nvidia-libs-${version}_${revision}
@@ -116,6 +116,12 @@ do_extract() {
 	rm -f ${_pkg}.run
 }
 
+do_patch() {
+	cd ${_pkg}
+	patch -Np1 < ${FILESDIR}/license.patch
+	patch -Np1 < ${FILESDIR}/nvidia-fix-linux-5.10.patch
+}
+
 do_install() {
 	cd ${_pkg}
 
@@ -129,7 +135,7 @@ do_install() {
 	ln -sf libglxserver_nvidia.so.${version} \
 		${DESTDIR}/usr/lib/nvidia/xorg/libglxserver_nvidia.so.1
 
-	vinstall libnvidia-egl-wayland.so.1.1.4 755 usr/lib
+	vinstall libnvidia-egl-wayland.so.1.1.5 755 usr/lib
 	ln -sf libnvidia-egl-wayland.so.1.1.4 \
 		${DESTDIR}/usr/lib/libnvidia-egl-wayland.so.1
 
@@ -199,6 +205,13 @@ do_install() {
 		${DESTDIR}/usr/lib/libnvidia-opencl.so
 	ln -sf libnvidia-opencl.so.${version} \
 		${DESTDIR}/usr/lib/libnvidia-opencl.so.1
+
+	# NGX
+	vinstall libnvidia-ngx.so.${version} 755 usr/lib
+	ln -sf libnvidia-ngx.so.${version} \
+		${DESTDIR}/usr/lib/libnvidia-ngx.so
+	ln -sf libnvidia-ngx.so.${version} \
+		${DESTDIR}/usr/lib/libnvidia-ngx.so.1
 
 	# vulkan icd
 	vinstall nvidia_icd.json 644 usr/share/vulkan/icd.d
