@@ -1,6 +1,6 @@
 # Template file for 'linux5.10'
 pkgname=linux5.10
-version=5.10.1
+version=5.10.4
 revision=1
 wrksrc="linux-${version}"
 short_desc="Linux kernel and modules (${version%.*} series)"
@@ -8,7 +8,7 @@ maintainer="Leah Neukirchen <leah@vuxu.org>"
 license="GPL-2.0-only"
 homepage="https://www.kernel.org"
 distfiles="https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-${version}.tar.xz"
-checksum=ed1661128c9bd3e8c9f55e345f715b90fefcf6b127c77e0286773242e7a14e5c
+checksum=904e396c26e9992a16cd1cc989460171536bed7739bf36049f6eb020ee5d56ec
 python_version=3
 patch_args="-Np1"
 
@@ -71,12 +71,6 @@ do_configure() {
 		ppc64*) arch=powerpc; subarch=ppc64;;
 		ppc*) arch=powerpc;;
 		mips*) arch=mips;;
-	esac
-
-	case "$XBPS_TARGET_MACHINE" in
-		aarch64*) # XXX: fix segfault in pahole 1.18; should be fixed in new releases
-			vsed -i scripts/link-vmlinux.sh -e's;${PAHOLE} -J;& --btf_encode_force;'
-			;;
 	esac
 
 	if [ -f ${FILESDIR}/${subarch:-$arch}-dotconfig-custom ]; then

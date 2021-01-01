@@ -319,7 +319,7 @@ read_pkg() {
 setup_distfiles_mirror() {
     local mirror scheme path
 
-    # Scheme file:// mirror locations only work with uchroot or proot
+    # Scheme file:// mirror locations only work with uchroot
     for mirror in $XBPS_DISTFILES_MIRROR; do
         scheme="file"
         if [[ "$mirror" == *://* ]]; then
@@ -329,7 +329,7 @@ setup_distfiles_mirror() {
             path="$mirror"
         fi
         [ "$scheme" != "file" ] && continue
-        if [ "$XBPS_CHROOT_CMD" == "uchroot" -o "$XBPS_CHROOT_CMD" == "proot" ]; then
+        if [ "$XBPS_CHROOT_CMD" == "uchroot" ]; then
             if [ ! -d "$path" ]; then
                 msg_warn "xbps-src: Invalid path in XBPS_DISTFILES_MIRROR ($mirror)\n"
                 continue
@@ -902,7 +902,11 @@ case "$XBPS_TARGET" in
         for f in ${XBPS_COMMONDIR}/environment/setup/*.sh; do
             source $f
         done
-        source ${XBPS_COMMONDIR}/build-profiles/${XBPS_MACHINE}.sh
+        if [ "$XBPS_CROSS_BUILD" ]; then
+            source ${XBPS_COMMONDIR}/cross-profiles/${XBPS_CROSS_BUILD}.sh
+        else
+            source ${XBPS_COMMONDIR}/build-profiles/${XBPS_MACHINE}.sh
+        fi
         eval value="\${$XBPS_TARGET_PKG}"
         echo $value
         ;;
