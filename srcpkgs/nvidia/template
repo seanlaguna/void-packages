@@ -4,7 +4,7 @@ _desc="NVIDIA drivers for linux"
 
 pkgname=nvidia
 version=460.27.04
-revision=1
+revision=3
 maintainer="Andrew Benson <abenson+void@gmail.com>"
 license="custom:NVIDIA Proprietary"
 homepage="https://www.nvidia.com"
@@ -116,11 +116,12 @@ do_extract() {
 	rm -f ${_pkg}.run
 }
 
-#do_patch() {
-#	cd ${_pkg}
+do_patch() {
+	cd ${_pkg}
 #	patch -Np1 < ${FILESDIR}/license.patch
 #	patch -Np1 < ${FILESDIR}/nvidia-fix-linux-5.10.patch
-#}
+	patch -Np1 < ${FILESDIR}/nvidia-fix-linux-5.11.patch
+}
 
 do_install() {
 	cd ${_pkg}
