@@ -3,8 +3,8 @@
 _desc="NVIDIA drivers for linux"
 
 pkgname=nvidia
-version=460.27.04
-revision=3
+version=460.32.03
+revision=1
 maintainer="Andrew Benson <abenson+void@gmail.com>"
 license="custom:NVIDIA Proprietary"
 homepage="https://www.nvidia.com"
@@ -19,7 +19,7 @@ conflicts="xserver-abi-video>24_1"
 
 _pkg="NVIDIA-Linux-x86_64-${version}"
 distfiles="http://uk.download.nvidia.com/XFree86/Linux-x86_64/${version}/${_pkg}.run"
-checksum=a654eab5ce50650c0cd1fdcc78c655d0de573a2b925c20839252ffab2cbc1ccf
+checksum=4f2122fc23655439f214717c4c35ab9b4f5ab8537cddfdf059a5682f1b726061
 # subpackages need to be processed in this specific order
 subpackages="nvidia-gtklibs nvidia-dkms nvidia-opencl nvidia-libs nvidia-libs-32bit"
 depends="nvidia-libs-${version}_${revision}
@@ -117,7 +117,7 @@ do_extract() {
 }
 
 do_patch() {
-	cd ${_pkg}
+	cd ${_pkg}/kernel
 #	patch -Np1 < ${FILESDIR}/license.patch
 #	patch -Np1 < ${FILESDIR}/nvidia-fix-linux-5.10.patch
 	patch -Np1 < ${FILESDIR}/nvidia-fix-linux-5.11.patch
